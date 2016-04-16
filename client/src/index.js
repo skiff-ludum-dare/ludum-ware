@@ -1,5 +1,8 @@
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
+import 'normalize.css'
+import './index.css'
+
 
 import React from 'react';
 import {render} from 'react-dom';
@@ -11,7 +14,6 @@ import createLogger from 'redux-logger';
 
 import {reducer} from './state';
 import App from './App'
-
 
 const store = createStore(
   reducer,
