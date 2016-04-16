@@ -22,23 +22,23 @@ describe('gameState', function() {
     assert.equal(
       reducer(initialState, {
         type: c.JOIN_GAME,
-        playerId: 'test',
+        userId: 'test',
         name: 'me',
       }).players[0].owner, true
     );
   });
 
-  const fullState = _.reduce(_.range(6), (state, playerId) => {
+  const fullState = _.reduce(_.range(6), (state, userId) => {
     return reducer(state, {
       type: c.JOIN_GAME,
-      playerId: 'p' + playerId,
-      name: playerId
+      userId: 'p' + userId,
+      name: userId
     });
   }, undefined);
 
   const readyState = reducer(fullState, {
     type: c.START_GAME,
-    playerId: 'test',
+    userId: 'test',
   });
 
   it(c.START_GAME, () => {
@@ -64,10 +64,10 @@ describe('gameState', function() {
     accuserUserId: 'p4',
   });
 
-  const lynchedState = _.reduce(_.range(3), (state, playerId) => {
+  const lynchedState = _.reduce(_.range(3), (state, userId) => {
     return reducer(state, {
       type: c.VOTE_YES,
-      userId: 'p' + playerId,
+      userId: 'p' + userId,
     });
   }, nominateState);
 
@@ -76,10 +76,10 @@ describe('gameState', function() {
     assert.equal(lynchedState.phase, c.PHASE_NIGHT);
   });
 
-  const savedState = _.reduce(_.range(3), (state, playerId) => {
+  const savedState = _.reduce(_.range(3), (state, userId) => {
     return reducer(state, {
       type: c.VOTE_NO,
-      userId: 'p' + playerId,
+      userId: 'p' + userId,
     });
   }, nominateState);
 

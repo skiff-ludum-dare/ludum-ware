@@ -24,7 +24,7 @@ function getRand(seed, len=10) {
   return Number(rand);
 }
 
-module.exports = function game(gameCode, ownerPlayerId, seed) {
+module.exports = function game(gameCode, ownerUserId, seed) {
   const initialState = assign({}, initialGameState, {gameCode});
 
   return function gameReducer(state=initialState, action) {
@@ -33,19 +33,19 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
     switch(action.type) {
 
       case c.JOIN_GAME: {
-        const {playerId, name} = action;
+        const {userId, name} = action;
         if (state.phase !== c.PHASE_LOBBY) return state;
-        if (state.players.indexOf(playerId) > -1) return state;
+        if (state.players.indexOf(userId) > -1) return state;
 
         const player = {
-          id: playerId,
+          id: userId,
           name,
           ready: false,
           online: false,
           toEat: null,
           role: null,
           alive: true,
-          owner: playerId === ownerPlayerId,
+          owner: userId === ownerUserId,
         };
 
         return update(state, {
@@ -57,7 +57,7 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
 
       case c.START_GAME: {
         if (state.phase !== c.PHASE_LOBBY) return state;
-        if (action.playerId !== ownerPlayerId) return state;
+        if (action.userId !== ownerUserId) return state;
         if (amount < 5) return state;
 
         const found = [];
