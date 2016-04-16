@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import _ from 'underscore';
 import * as views from './views';
+import {Starfield} from './Starfield';
 import { PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY, PAGE_REVEAL, PAGE_NIGHT, PAGE_DAY, PAGE_VOTE, PAGE_END } from './constants';
 import {showHost, showJoin, joinGame, hostGame, cancel, startGame, revealReady, chooseVictim, nominate, voteYes, voteNo } from './state';
 
@@ -96,7 +97,12 @@ const App = React.createClass({
     console.log(page);
     const Page = pages[page];
 
-    return <Page/>;
+    return <article>
+      <Starfield/>
+      <main id="page">
+        <Page/>
+      </main>
+    </article>;
   }
 });
 
