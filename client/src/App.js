@@ -5,8 +5,14 @@ import { connect } from 'react-redux'
 import _ from 'underscore';
 import * as views from './views';
 import {Starfield} from './Starfield';
-import { PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY, PAGE_REVEAL, PAGE_NIGHT, PAGE_DAY, PAGE_VOTE, PAGE_END } from './constants';
-import {showHost, showJoin, joinGame, hostGame, cancel, startGame, revealReady, chooseVictim, nominate, voteYes, voteNo } from './state';
+import {
+  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY,
+  PAGE_REVEAL, PAGE_NIGHT, PAGE_DAY, PAGE_VOTE, PAGE_END
+} from './constants';
+import {
+  showHost, showJoin, joinGame, hostGame, cancel,
+  startGame, revealReady, chooseVictim, nominate, voteYes, voteNo
+} from './state';
 
 const Menu = connect(
   state => ({}),
