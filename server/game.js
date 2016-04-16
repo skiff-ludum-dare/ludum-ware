@@ -33,13 +33,13 @@ module.exports = function game(gameCode, ownerUserId, seed) {
     switch(action.type) {
 
       case c.JOIN_GAME: {
-        const {userId, name} = action;
+        const {userId, playerName} = action;
         if (state.phase !== c.PHASE_LOBBY) return state;
         if (state.players.indexOf(userId) > -1) return state;
 
         const player = {
           id: userId,
-          name,
+          name: playerName,
           ready: false,
           online: false,
           toEat: null,
