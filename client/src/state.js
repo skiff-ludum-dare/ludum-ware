@@ -9,8 +9,8 @@ import {
   GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, CHOOSE_VICTIM,
 } from './constants';
 
-const API_CREATE_GAME = 'http://127.0.0.1:8080/game';
-const SOCKET_IO_ENDPOINT = 'http://127.0.0.1:8080';
+const API_CREATE_GAME = `http://${window.location.hostname}:8080/game`;
+const SOCKET_IO_ENDPOINT = `http://${window.location.hostname}:8080`;
 
 const initialState = {
   page: PAGE_MENU,
