@@ -5,8 +5,10 @@ const server = require('http').createServer();
 const url = require('url');
 const express = require('express');
 const app = express();
-const WebSocketServer = require('ws').Server;
-const wss = new WebSocketServer({ server: server });
+// const WebSocketServer = require('ws').Server;
+// const wss = new WebSocketServer({ server: server });
+const io = require('socket.io')(server);
+
 const _ = require('lodash');
 const uuid = require('uuid');
 const c = require('./constants');
@@ -42,8 +44,8 @@ function createGame(userId) {
   };
 }
 
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(plain) {
+io.on('connection', function connection(socket) {
+  socket.on('message', function incoming(plain) {
     console.log('received: %s', plain);
     let message = {};
 
@@ -51,30 +53,30 @@ wss.on('connection', function connection(ws) {
       message = JSON.parse(plain);
     } catch(e) {
       console.log('invalid command: %s', plain);
-      ws.send('invalid message packet');
+      socket.emit('invalid message packet');
       return;
     }
 
     if (!message.userId) {
-      ws.send('need userId');
+      socket.emit('need userId');
       return;
     }
 
     // FIXME: leaky
-    playerMap[message.userId] = ws;
+    playerMap[message.userId] = socket;
 
     if (c[message.type]) {
       //dispatch
       if (message.type === c.CREATE_GAME) {
         console.log('deprecated');
         const {state} = createGame(message.userId);
-        ws.send(JSON.stringify(state));
+        socket.emit(JSON.stringify(state));
         return;
 
       } else {
 
         if (!message.gameCode || !games[message.gameCode]) {
-          ws.send('need gameCode to do game ops or game not found');
+          socket.emit('need gameCode to do game ops or game not found');
           return;
         }
 
@@ -83,14 +85,14 @@ wss.on('connection', function connection(ws) {
 
         newState.players.forEach( ({id}) => {
           const client = playerMap[id];
-          client.send(JSON.stringify(newState));
+          client.emit(JSON.stringify(newState));
         });
 
         return
       }
     } else {
       console.log('unknown command: %s', message.type);
-      ws.send('unknown command');
+      socket.emit('unknown command');
       return
     }
   });
