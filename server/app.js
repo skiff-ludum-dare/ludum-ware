@@ -11,23 +11,10 @@ const c = require('./constants');
 const extend = require('lodash/fp/extend');
 const game = require('./game');
 
-const players = {
-};
+const players = {};
 
-const games = {
-  _example: {
-    gameCode: "FLUBLE",
-    phase: "lobby/reveal/day/night/",
-    round: "null/1/2/3/4",
-    players: {
-      ID1: {
-        id: 'ID1',
-        role: "villager/wolf",
-        alive: "true/false",
-      },
-    },
-  },
-};
+const games = {};
+const gameStates = {};
 
 function createPlayer(name) {
   return players.push({
@@ -36,33 +23,60 @@ function createPlayer(name) {
   });
 }
 
-function createGame() {
+function findGame(clientId) {
+  _.each(games, (v, k) => {
+    if (v.players.indexOf(clientId) > -1) {
+      return k;
+    }
+  });
+  return null;
+}
+
+function createGame(clientId) {
   const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
-  games[code] = {
-    phase: 'lobby',
-    round: null,
-    players: {},
-  }
-  return code;
+  const reducer = game(code, clientId, _.random(1, 1000));
+  games[code] = reducer;
+  gameStates[code] = reducer();
+  return gameStates[code];
 }
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(plain) {
     console.log('received: %s', plain);
+    let message = {};
+
     try {
-      const message = JSON.parse(plain);
-      if (c[message.type]) {
-        //dispatch
-        game(message.gameCode, message.playerId)
-      } else {
-        console.log('unknown command: %s', message.type);
-      }
+      message = JSON.parse(plain);
     } catch(e) {
       console.log('invalid command: %s', plain);
+      ws.send('invalid message packet');
+      return;
+    }
+
+    if (!message.clientId) {
+      ws.send('need clientId');
+      return;
+    }
+
+    if (c[message.type]) {
+      //dispatch
+      if (message.type === c.CREATE_GAME) {
+        const state = createGame(message.clientId);
+        ws.send(JSON.stringify(state));
+        return;
+      } else {
+        const id = findGame(clientId);
+        gameStates[id] = games[id](gameStates[id], message);
+        ws.send(JSON.stringify(gameStates[id]));
+        return
+      }
+    } else {
+      console.log('unknown command: %s', message.type);
+      ws.send('unknown command');
+      return
     }
   });
 
-  ws.send('something');
 });
 
 // app.post('/game', (req, res) => {

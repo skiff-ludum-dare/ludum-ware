@@ -28,7 +28,6 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
   const initialState = assign({}, initialGameState, {gameCode});
 
   return function gameReducer(state=initialState, action) {
-
     const amount = Object.keys(state.players).length;
 
     switch(action.type) {
