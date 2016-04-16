@@ -49,6 +49,9 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
   const initialState = assign({}, initialGameState, {gameCode});
 
   return function gameReducer(state=initialState, action) {
+
+    const amount = Object.keys(state.players).length;
+
     switch(action.type) {
 
       case c.JOIN_GAME: {
@@ -59,7 +62,6 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
       case c.START_GAME: {
         if (state.phase !== c.PHASE_LOBBY) return state;
         if (action.playerId !== ownerPlayerId) return state;
-        const amount = Object.keys(state.players).length;
         if (amount < 5) return state;
 
         const found = [];
@@ -106,14 +108,75 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
       }
 
       case c.NOMINATE: {
+        const {nominateUserId, accuserUserId} = action;
+        if (state.phase !== c.PHASE_DAY) return state;
+
+        return update(state, {
+          nomination: {
+            $set: {
+              nominatedUserId: nominatedUserId,
+              accuserUserId: accuserUserId,
+              yesVotes: [accuserUserId],
+              noVotes: [],
+            }
+          }
+        });
         break;
       }
 
+      // TODO prevent multiple votes / both
       case c.VOTE_YES: {
+        const {userId} = action;
+        if (state.phase !== c.PHASE_VOTE) return state;
+
+        const newState = update(state, {
+          nominate: {
+            yesVotes: {$push: [userId]}
+          }
+        });
+        const nominated = newState.nominate.nominatedUserId;
+
+        if (newState.yesVotes.length > amount/2) {
+          const newNewState = update(newState, {
+            players: {
+              [nominated]: {
+                alive: {$set: false},
+              },
+            },
+            nominate: {$set: null},
+            phase: c.PHASE_DAY,
+          });
+
+          const nextPhase =
+            _.any(werewolves(newNewState), {alive: true})
+            ? c.PHASE_NIGHT : c.PHASE_END;
+
+          return update(newNewState, {
+            phase: {$set: nextPhase},
+          });
+        }
+
+        return newState;
         break;
       }
 
       case c.VOTE_NO: {
+        const {userId} = action;
+        if (state.phase !== c.PHASE_VOTE) return state;
+
+        const newState = update(state, {
+          nominate: {
+            noVotes: {$push: [userId]}
+          }
+        });
+        if (newState.noVotes.length > amount/2) {
+          return update(newState, {
+            nominate: {$set: null},
+            phase: c.PHASE_DAY,
+          });
+        }
+
+        return newState;
         break;
       }
 
