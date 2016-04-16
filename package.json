@@ -1,0 +1,20 @@
+{
+  "name": "werewolf",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "express": "^4.13.4",
+    "key-mirror": "^1.0.1",
+    "lodash": "^4.11.1",
+    "pi": "^1.2.1",
+    "uuid": "^2.0.2",
+    "ws": "^1.1.0"
+  }
+}
