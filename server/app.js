@@ -14,7 +14,6 @@ const game = require('./game');
 const players = {};
 
 const games = {};
-const gameStates = {};
 
 function createPlayer(name) {
   return players.push({
@@ -35,9 +34,12 @@ function findGame(clientId) {
 function createGame(clientId) {
   const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
   const reducer = game(code, clientId, _.random(1, 1000));
-  games[code] = reducer;
-  gameStates[code] = reducer();
-  return gameStates[code];
+  const state = reducer(undefined, {});
+
+  return games[code] = {
+    update: (action) => games[code].state = reducer(games[code].state, action),
+    state,
+  };
 }
 
 wss.on('connection', function connection(ws) {
@@ -61,13 +63,19 @@ wss.on('connection', function connection(ws) {
     if (c[message.type]) {
       //dispatch
       if (message.type === c.CREATE_GAME) {
-        const state = createGame(message.clientId);
+        const {state} = createGame(message.clientId);
         ws.send(JSON.stringify(state));
         return;
       } else {
-        const id = findGame(clientId);
-        gameStates[id] = games[id](gameStates[id], message);
-        ws.send(JSON.stringify(gameStates[id]));
+
+        if (!message.gameCode || !games[message.gameCode]) {
+          ws.send('need gameCode to do game ops or game not found');
+          return;
+        }
+
+        const {update, state} = games[message.gameCode];
+        const newState = update(message);
+        ws.send(JSON.stringify(newState));
         return
       }
     } else {
