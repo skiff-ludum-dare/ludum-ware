@@ -1,4 +1,9 @@
 import React from 'react';
+import Hammer from 'hammerjs';
+
+function supportsMultiTouch() {
+  return window.navigator.maxTouchPoints > 1
+}
 
 export const Menu = React.createClass({
   displayName: 'Menu',
@@ -115,6 +120,20 @@ export const Reveal = React.createClass({
     };
   },
 
+  componentDidMount() {
+    const revealing = new Hammer.Manager(this.refs.reveal);
+    const numPointers = supportsMultiTouch() ? 2 : 1;
+
+    revealing.add( new Hammer.Press({ event: 'revealhold', pointers: numPointers }) );
+    revealing.on('revealhold', () => {
+      revealing.on('revealholdup', () => {
+        revealing.off('revealholdup');
+        this.hide();
+      });
+      this.show();
+    });
+  },
+
   show () {
     this.setState({show: true, hasShown: true});
   },
@@ -128,16 +147,11 @@ export const Reveal = React.createClass({
     const { show, hasShown } = this.state;
     const normal = <div>Normal Identity</div>;
     const secret = <div>{role}</div>;
+    const instruction = supportsMultiTouch() ? 'Press two fingers to reveal' : 'Click and hold to reveal';
     return (
       <div>
-        <div
-         onMouseDown={this.show}
-         onMouseUp={this.hide}
-         onTouchStart={this.show}
-         onTouchEnd={this.hide}
-         onTouchCancel={this.hide}
-          >
-          <h1>Reveal</h1>
+        <div ref="reveal">
+          <h1>Reveal <small>({instruction})</small></h1>
           { show ? secret : normal }
         </div>
         { hasShown && (
