@@ -1,20 +1,16 @@
 'use strict';
 import uuid from 'uuid';
 import io from 'socket.io-client';
+import {
+  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY, PAGE_REVEAL, PAGE_NIGHT, PAGE_VOTE, PAGE_DAY, PAGE_END,
+  CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, NOMINATE, VOTE_YES, VOTE_NO, DEVOUR, UPDATE_STATE,
+  ERROR,
+  SHOW_HOST, SHOW_JOIN,
+  GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, CHOOSE_VICTIM,
+} from './constants';
 
 const API_CREATE_GAME = 'http://127.0.0.1:8080/game';
 const SOCKET_IO_ENDPOINT = 'http://127.0.0.1:8080';
-
-
-export const PAGE_MENU = "PAGE_MENU";
-export const PAGE_HOST = "PAGE_HOST";
-export const PAGE_JOIN = "PAGE_JOIN";
-export const PAGE_LOBBY = "PAGE_LOBBY";
-export const PAGE_REVEAL = "PAGE_REVEAL";
-export const PAGE_NIGHT = "PAGE_NIGHT";
-export const PAGE_VOTE  = "PAGE_VOTE";
-export const PAGE_DAY = "PAGE_DAY";
-export const PAGE_END = "PAGE_END";
 
 const initialState = {
   page: PAGE_MENU,
@@ -35,27 +31,6 @@ const initialState = {
   },
 };
 
-const SHOW_HOST = 'SHOW_HOST';
-const SHOW_JOIN = 'SHOW_JOIN';
-
-
-const JOIN_GAME = "JOIN_GAME";
-const CONNECTING = "CONNECTING";
-const CONNECTED = "CONNECTED";
-const HOST_GAME = "HOST_GAME";
-const CANCEL = "CANCEL";
-const CHOOSE_VICTIM = "CHOOSE_VICTIM";
-
-const ERROR = "ERROR";
-
-const START_GAME = "START_GAME";
-const REVEAL_READY = "REVEAL_READY";
-const NOMINATE = "NOMINATE";
-const VOTE_YES = "VOTE_YES";
-const VOTE_NO = "VOTE_NO";
-const DEVOUR = "DEVOUR";
-
-const GAME_STATE_UPDATE = "GAME_STATE_UPDATE";
 
 export function reducer(state=initialState, action) {
 

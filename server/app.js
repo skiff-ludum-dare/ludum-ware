@@ -101,6 +101,11 @@ io.on('connection', function connection(socket) {
 });
 
 app.post('/game', (req, res) => {
+  if (!req.body.userId) {
+    res.status(400).send('need userId');
+    return
+  }
+
   const {state} = createGame(req.body.userId);
   res.json(state);
 });
