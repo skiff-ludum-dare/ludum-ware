@@ -268,7 +268,14 @@ export function hostGame(playerName) {
       userId,
     });
 
-    fetch(API_CREATE_GAME, {method: 'POST', body: JSON.stringify({userId})})
+    fetch(API_CREATE_GAME, {
+        method: 'POST',
+        body: JSON.stringify({userId}),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      })
       .then(r => r.json())
       .then(
         (data) => {
