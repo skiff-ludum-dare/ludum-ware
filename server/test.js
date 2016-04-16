@@ -13,7 +13,7 @@ describe('gameState', function() {
       gameCode: 'TEST',
       phase: c.PHASE_LOBBY,
       round: null,
-      players: {},
+      players: [],
       nomination: null,
     });
   });
@@ -24,7 +24,7 @@ describe('gameState', function() {
         type: c.JOIN_GAME,
         playerId: 'test',
         name: 'me',
-      }).players.test.owner, true
+      }).players[0].owner, true
     );
   });
 
@@ -42,10 +42,10 @@ describe('gameState', function() {
   });
 
   it(c.START_GAME, () => {
-    assert.equal(Object.keys(fullState.players).length, 6);
+    assert.equal(fullState.players.length, 6);
 
     assert.equal(
-      readyState.players.p0.role, c.VILLAGER
+      readyState.players[0].role, c.VILLAGER
     );
   });
 
@@ -55,7 +55,7 @@ describe('gameState', function() {
   });
 
   it(c.REVEAL_READY, () => {
-    assert.equal(revealState.players.p3.ready, true);
+    assert.equal(revealState.players[3].ready, true);
   });
 
   const nominateState = reducer(revealState, {
@@ -72,7 +72,7 @@ describe('gameState', function() {
   }, nominateState);
 
   it(c.VOTE_YES, () => {
-    assert.equal(lynchedState.players.p3.alive, false);
+    assert.equal(lynchedState.players[3].alive, false);
     assert.equal(lynchedState.phase, c.PHASE_NIGHT);
   });
 
@@ -84,7 +84,7 @@ describe('gameState', function() {
   }, nominateState);
 
   it(c.VOTE_NO, () => {
-    assert.equal(savedState.players.p3.alive, true);
+    assert.equal(savedState.players[3].alive, true);
   });
 
   const werewolves = _.filter(lynchedState.players, {role: c.WEREWOLF});
@@ -98,7 +98,7 @@ describe('gameState', function() {
   }, lynchedState);
 
   it(c.DEVOUR, () => {
-    assert.equal(devouredState.players.p0.alive, false);
+    assert.equal(devouredState.players[0].alive, false);
     assert.equal(devouredState.phase, c.PHASE_DAY);
   });
 

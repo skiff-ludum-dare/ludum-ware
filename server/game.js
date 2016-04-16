@@ -10,7 +10,7 @@ const initialGameState = {
   gameCode: null,
   phase: c.PHASE_LOBBY,
   round: null,
-  players: {},
+  players: [],
   nomination: null,
 };
 
@@ -28,32 +28,30 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
   const initialState = assign({}, initialGameState, {gameCode});
 
   return function gameReducer(state=initialState, action) {
-    const amount = Object.keys(state.players).length;
+    const amount = state.players.length;
 
     switch(action.type) {
 
       case c.JOIN_GAME: {
         const {playerId, name} = action;
         if (state.phase !== c.PHASE_LOBBY) return state;
-        if (!(playerId in state.players)) {
+        if (state.players.indexOf(playerId) > -1) return state;
 
-          const player = {
-            id: playerId,
-            name,
-            ready: false,
-            online: false,
-            toEat: null,
-            role: null,
-            alive: true,
-            owner: playerId === ownerPlayerId,
-          };
+        const player = {
+          id: playerId,
+          name,
+          ready: false,
+          online: false,
+          toEat: null,
+          role: null,
+          alive: true,
+          owner: playerId === ownerPlayerId,
+        };
 
-          return update(state, {
-            players: { [playerId]: {$set: player}}
-          });
-        }
+        return update(state, {
+          players: {$push: [player]},
+        });
 
-        return state;
         break;
       }
 
@@ -63,14 +61,13 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
         if (amount < 5) return state;
 
         const found = [];
-        //
         do {
           const rand = getRand(seed + found.length, 6);
           found.push(Math.floor(amount / (1000000 / rand)));
         } while (found.length < WEREWOLVES);
 
         let i = 0;
-        const playersWithRoles = _.mapValues(state.players, (v, k) => {
+        const playersWithRoles = state.players.map(v => {
           return assign({}, v, {
             role: found.indexOf(i++) > -1 ? c.WEREWOLF : c.VILLAGER,
           });
@@ -86,9 +83,11 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
 
       case c.REVEAL_READY: {
         if (state.phase !== c.PHASE_REVEAL) return state;
+        const {userId} = action;
+        const idx = playerIndex(state, userId);
         const newState = update(state, {
           players: {
-            [action.userId]: { ready: {$set: true} }
+            [idx]: { ready: {$set: true} }
           },
           phase: {$set: c.PHASE_DAY},
         });
@@ -144,12 +143,11 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
         });
 
         if (newState.nomination.yesVotes.length > amount/2) {
+          const idx = playerIndex(state, nominated);
+          if (idx == -1) return state;
+
           const newNewState = update(newState, {
-            players: {
-              [nominated]: {
-                alive: {$set: false},
-              },
-            },
+            players: {[idx]: {alive: {$set: false}}},
             nomination: {$set: null},
             phase: {$set: c.PHASE_DAY},
           });
@@ -193,21 +191,21 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
         if (state.phase !== c.PHASE_NIGHT) return state;
 
         const {wolfUserId, victimUserId} = action;
-        if (state.players[wolfUserId].role !== c.WEREWOLF) return state;
-        if (state.players[victimUserId].role !== c.VILLAGER) return state;
+        const widx = playerIndex(state, wolfUserId);
+        const vidx = playerIndex(state, victimUserId);
+
+        if (state.players[widx].role !== c.WEREWOLF) return state;
+        if (state.players[vidx].role !== c.VILLAGER) return state;
 
         const newState = update(state, {
-          players: {[wolfUserId]: {
-            toEat: {$set: victimUserId}
-          }}
+          players: {[widx]: { toEat: {$set: victimUserId} }}
         });
 
         if (_.every(werewolves(newState), {toEat: victimUserId})) {
           const nextState = update(newState, {
-            players: {[victimUserId]: {
-              alive: {$set: false}
-            }}
+            players: {[vidx]: {alive: {$set: false}}}
           });
+
           if (_.every(villagers(nextState), {alive: false})) {
             return update(nextState, {
               phase: {$set: c.PHASE_END},
@@ -230,6 +228,10 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
     }
     return state;
   }
+}
+
+function playerIndex(state, userId) {
+  return _.findIndex(state.players, {id: userId});
 }
 
 function werewolves(state) {
