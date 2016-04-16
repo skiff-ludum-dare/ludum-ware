@@ -22,18 +22,18 @@ app.options('*', cors());
 const playerMap = {};
 const games = {};
 
-function findGame(clientId) {
+function findGame(userId) {
   _.each(games, (v, k) => {
-    if (v.players.indexOf(clientId) > -1) {
+    if (v.players.indexOf(userId) > -1) {
       return k;
     }
   });
   return null;
 }
 
-function createGame(clientId) {
+function createGame(userId) {
   const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
-  const reducer = game(code, clientId, _.random(1, 1000));
+  const reducer = game(code, userId, _.random(1, 1000));
   const state = reducer(undefined, {});
 
   return games[code] = {
@@ -55,20 +55,22 @@ wss.on('connection', function connection(ws) {
       return;
     }
 
-    if (!message.clientId) {
-      ws.send('need clientId');
+    if (!message.userId) {
+      ws.send('need userId');
       return;
     }
 
     // FIXME: leaky
-    playerMap[message.clientId] = ws;
+    playerMap[message.userId] = ws;
 
     if (c[message.type]) {
       //dispatch
       if (message.type === c.CREATE_GAME) {
-        const {state} = createGame(message.clientId);
+        console.log('deprecated');
+        const {state} = createGame(message.userId);
         ws.send(JSON.stringify(state));
         return;
+
       } else {
 
         if (!message.gameCode || !games[message.gameCode]) {
@@ -79,7 +81,7 @@ wss.on('connection', function connection(ws) {
         const {update, state} = games[message.gameCode];
         const newState = update(message);
 
-        state.players.forEach( id => {
+        newState.players.forEach( ({id}) => {
           const client = playerMap[id];
           client.send(JSON.stringify(newState));
         });
@@ -96,7 +98,7 @@ wss.on('connection', function connection(ws) {
 });
 
 app.post('/game', (req, res) => {
-  const {state} = createGame(req.body.clientId);
+  const {state} = createGame(req.body.userId);
   res.json(state);
 });
 
