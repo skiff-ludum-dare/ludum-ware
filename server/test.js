@@ -36,6 +36,16 @@ describe('gameState', function() {
     });
   }, undefined);
 
+  const randomTest = reducer(fullState, {
+    type: c.START_GAME,
+    userId: 'test',
+    wereWolves: 7,
+  });
+
+  it('RANDOM', () => {
+    assert.isTrue(_.every(randomTest.players, {role: c.WEREWOLF}));
+  });
+
   const readyState = reducer(fullState, {
     type: c.START_GAME,
     userId: 'test',
@@ -45,7 +55,7 @@ describe('gameState', function() {
     assert.equal(fullState.players.length, 6);
 
     assert.equal(
-      readyState.players[0].role, c.VILLAGER
+      readyState.players[1].role, c.VILLAGER
     );
   });
 
@@ -93,12 +103,12 @@ describe('gameState', function() {
     return reducer(state, {
       type: c.DEVOUR,
       wolfUserId: player.id,
-      victimUserId: 'p0',
+      victimUserId: 'p1',
     });
   }, lynchedState);
 
   it(c.DEVOUR, () => {
-    assert.equal(devouredState.players[0].alive, false);
+    assert.equal(devouredState.players[1].alive, false);
     assert.equal(devouredState.phase, c.PHASE_DAY);
   });
 

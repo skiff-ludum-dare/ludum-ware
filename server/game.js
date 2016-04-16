@@ -5,6 +5,7 @@ const {without} = require('lodash/fp');
 const pi = require('pi');
 const c = require('./constants');
 const assign = require('lodash/assign');
+const reservoir = require('reservoir');
 
 const initialGameState = {
   gameCode: null,
@@ -17,11 +18,8 @@ const initialGameState = {
 const WEREWOLVES = 2;
 
 function getRand(seed, len=10) {
-  let rand = null;
-  do {
-    rand = pi(seed + len + 2).slice(-len);
-  } while (rand.charAt(0) === "0");
-  return Number(rand);
+  const rand = pi(seed + len + 2).slice(-len);
+  return Number("0." +rand);
 }
 
 module.exports = function game(gameCode, ownerUserId, seed) {
@@ -58,18 +56,16 @@ module.exports = function game(gameCode, ownerUserId, seed) {
       case c.START_GAME: {
         if (state.phase !== c.PHASE_LOBBY) return state;
         if (action.userId !== ownerUserId) return state;
-        if (amount < 5) return state;
+        // if (amount < 5) return state;
 
-        const found = [];
-        do {
-          const rand = getRand(seed + found.length, 6);
-          found.push(Math.floor(amount / (1000000 / rand)));
-        } while (found.length < WEREWOLVES);
+        const wolves = reservoir(action.wereWolves || WEREWOLVES, _.partial(getRand, seed));
+        state.players.forEach(p => {
+          wolves.pushSome(p.id);
+        });
 
-        let i = 0;
         const playersWithRoles = state.players.map(v => {
           return assign({}, v, {
-            role: found.indexOf(i++) > -1 ? c.WEREWOLF : c.VILLAGER,
+            role: wolves.indexOf(v.id) > -1 ? c.WEREWOLF : c.VILLAGER,
           });
         });
 
