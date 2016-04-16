@@ -1,13 +1,14 @@
 #!/usr/bin/env node --harmony --harmony_destructuring --harmony_spreadcalls --harmony_object --harmony_rest_parameters --harmony_default_parameters
 
 "use strict"
-const server = require('http').createServer();
 const url = require('url');
 const express = require('express');
 const app = express();
+const server = require('http').Server(app);
 // const WebSocketServer = require('ws').Server;
 // const wss = new WebSocketServer({ server: server });
 const io = require('socket.io')(server);
+io.set( 'origins', '127.0.0.1:3000' );
 
 const _ = require('lodash');
 const uuid = require('uuid');
@@ -53,12 +54,12 @@ io.on('connection', function connection(socket) {
       message = JSON.parse(plain);
     } catch(e) {
       console.log('invalid command: %s', plain);
-      socket.emit('invalid message packet');
+      socket.send('invalid message packet');
       return;
     }
 
     if (!message.userId) {
-      socket.emit('need userId');
+      socket.send('need userId');
       return;
     }
 
@@ -70,13 +71,13 @@ io.on('connection', function connection(socket) {
       if (message.type === c.CREATE_GAME) {
         console.log('deprecated');
         const {state} = createGame(message.userId);
-        socket.emit(JSON.stringify(state));
+        socket.send(JSON.stringify(state));
         return;
 
       } else {
 
         if (!message.gameCode || !games[message.gameCode]) {
-          socket.emit('need gameCode to do game ops or game not found');
+          socket.send('need gameCode to do game ops or game not found');
           return;
         }
 
@@ -85,14 +86,14 @@ io.on('connection', function connection(socket) {
 
         newState.players.forEach( ({id}) => {
           const client = playerMap[id];
-          client.emit(JSON.stringify(newState));
+          client.send(JSON.stringify(newState));
         });
 
         return
       }
     } else {
       console.log('unknown command: %s', message.type);
-      socket.emit('unknown command');
+      socket.send('unknown command');
       return
     }
   });
@@ -104,5 +105,5 @@ app.post('/game', (req, res) => {
   res.json(state);
 });
 
-server.on('request', app);
+// server.on('request', app);
 server.listen(8080, function () { console.log('Listening on ' + server.address().port) });
