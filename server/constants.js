@@ -17,4 +17,7 @@ module.exports = keyMirror({
   VOTE_NO: null,
   DEVOUR: null,
   UPDATE_STATE: null,
+
+  WEREWOLF: null,
+  VILLAGER: null,
 });

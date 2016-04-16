@@ -1,9 +1,11 @@
 "use strict";
 const update = require('react-addons-update');
 const _ = require('lodash');
+const {without} = require('lodash/fp');
 const pi = require('pi');
 const c = require('./constants');
 const assign = require('lodash/assign');
+
 const initialGameState = {
   gameCode: null,
   phase: c.PHASE_LOBBY,
@@ -13,29 +15,6 @@ const initialGameState = {
 };
 
 const WEREWOLVES = 2;
-
-function joinGame(state, action, ownerPlayerId) {
-  const {playerId, name} = action;
-  if (state.phase !== c.PHASE_LOBBY) return state;
-  if (!(playerId in state.players)) {
-
-    const player = {
-      name,
-      ready: false,
-      online: false,
-      toEat: null,
-      role: null,
-      alive: true,
-      owner: playerId === ownerPlayerId,
-    };
-
-    return update(state, {
-      players: { [playerId]: {$set: player}}
-    });
-  }
-
-  return state;
-}
 
 function getRand(seed, len=10) {
   let rand = null;
@@ -55,7 +34,27 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
     switch(action.type) {
 
       case c.JOIN_GAME: {
-        return joinGame(state, action, ownerPlayerId);
+        const {playerId, name} = action;
+        if (state.phase !== c.PHASE_LOBBY) return state;
+        if (!(playerId in state.players)) {
+
+          const player = {
+            id: playerId,
+            name,
+            ready: false,
+            online: false,
+            toEat: null,
+            role: null,
+            alive: true,
+            owner: playerId === ownerPlayerId,
+          };
+
+          return update(state, {
+            players: { [playerId]: {$set: player}}
+          });
+        }
+
+        return state;
         break;
       }
 
@@ -74,7 +73,7 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
         let i = 0;
         const playersWithRoles = _.mapValues(state.players, (v, k) => {
           return assign({}, v, {
-            role: found.indexOf(i++) > -1 ? 'werewolf' : 'villager',
+            role: found.indexOf(i++) > -1 ? c.WEREWOLF : c.VILLAGER,
           });
         });
 
@@ -87,6 +86,7 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
       }
 
       case c.REVEAL_READY: {
+        if (state.phase !== c.PHASE_REVEAL) return state;
         const newState = update(state, {
           players: {
             [action.userId]: { ready: {$set: true} }
@@ -108,10 +108,14 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
       }
 
       case c.NOMINATE: {
-        const {nominateUserId, accuserUserId} = action;
         if (state.phase !== c.PHASE_DAY) return state;
+        const {nominatedUserId, accuserUserId} = action;
+        if (!nominatedUserId || !accuserUserId) {
+          throw new Error('missing stuff');
+        }
 
         return update(state, {
+          phase: {$set: c.PHASE_VOTE},
           nomination: {
             $set: {
               nominatedUserId: nominatedUserId,
@@ -124,31 +128,35 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
         break;
       }
 
-      // TODO prevent multiple votes / both
       case c.VOTE_YES: {
-        const {userId} = action;
         if (state.phase !== c.PHASE_VOTE) return state;
+        const {userId} = action;
+        if (state.nomination.yesVotes.indexOf(userId) > -1 ) return state;
+
+        const nominated = state.nomination.nominatedUserId;
+
+        if (userId === nominated) return state;
 
         const newState = update(state, {
-          nominate: {
-            yesVotes: {$push: [userId]}
+          nomination: {
+            yesVotes: {$push: [userId]},
+            noVotes: {$apply: without(userId)},
           }
         });
-        const nominated = newState.nominate.nominatedUserId;
 
-        if (newState.yesVotes.length > amount/2) {
+        if (newState.nomination.yesVotes.length > amount/2) {
           const newNewState = update(newState, {
             players: {
               [nominated]: {
                 alive: {$set: false},
               },
             },
-            nominate: {$set: null},
-            phase: c.PHASE_DAY,
+            nomination: {$set: null},
+            phase: {$set: c.PHASE_DAY},
           });
 
           const nextPhase =
-            _.any(werewolves(newNewState), {alive: true})
+            _.some(werewolves(newNewState), {alive: true})
             ? c.PHASE_NIGHT : c.PHASE_END;
 
           return update(newNewState, {
@@ -161,18 +169,20 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
       }
 
       case c.VOTE_NO: {
-        const {userId} = action;
         if (state.phase !== c.PHASE_VOTE) return state;
+        const {userId} = action;
+        if (state.nomination.noVotes.indexOf(userId) > -1 ) return state;
 
         const newState = update(state, {
-          nominate: {
-            noVotes: {$push: [userId]}
+          nomination: {
+            noVotes: {$push: [userId]},
+            yesVotes: {$set: without(userId)},
           }
         });
-        if (newState.noVotes.length > amount/2) {
+        if (newState.nomination.noVotes.length > amount/2) {
           return update(newState, {
-            nominate: {$set: null},
-            phase: c.PHASE_DAY,
+            nomination: {$set: null},
+            phase: {$set: c.PHASE_DAY},
           });
         }
 
@@ -181,31 +191,32 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
       }
 
       case c.DEVOUR: {
-        const {wolfUserId, victimUserId} = action;
         if (state.phase !== c.PHASE_NIGHT) return state;
-        if (state.players[wolfUserId].role !== 'werewolf') return state;
-        if (state.players[victimUserId].role !== 'villager') return state;
+
+        const {wolfUserId, victimUserId} = action;
+        if (state.players[wolfUserId].role !== c.WEREWOLF) return state;
+        if (state.players[victimUserId].role !== c.VILLAGER) return state;
 
         const newState = update(state, {
           players: {[wolfUserId]: {
-            toEat: {$set: victimUserId
-          }}}
+            toEat: {$set: victimUserId}
+          }}
         });
 
-        if (_.all(werewolves(newState), {toEat: victimUserId})) {
+        if (_.every(werewolves(newState), {toEat: victimUserId})) {
           const nextState = update(newState, {
             players: {[victimUserId]: {
               alive: {$set: false}
             }}
           });
-          if (_.all(villagers(nextState), {alive: false})) {
+          if (_.every(villagers(nextState), {alive: false})) {
             return update(nextState, {
-              phase: c.PHASE_END,
+              phase: {$set: c.PHASE_END},
             });
           }
 
           return update(nextState, {
-            phase: c.PHASE_DAY,
+            phase: {$set: c.PHASE_DAY},
           });
 
         } else {
@@ -223,5 +234,9 @@ module.exports = function game(gameCode, ownerPlayerId, seed) {
 }
 
 function werewolves(state) {
-  return _.find(state.players, {role: 'werewolf'});
+  return _.filter(state.players, {role: c.WEREWOLF});
+}
+
+function villagers(state) {
+  return _.filter(state.players, {role: c.VILLAGER});
 }
