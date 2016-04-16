@@ -8,7 +8,7 @@ const server = require('http').Server(app);
 // const WebSocketServer = require('ws').Server;
 // const wss = new WebSocketServer({ server: server });
 const io = require('socket.io')(server);
-io.set( 'origins', '127.0.0.1:3000' );
+io.set( 'origins', '*:*' );
 
 const _ = require('lodash');
 const uuid = require('uuid');
