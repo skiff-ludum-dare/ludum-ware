@@ -54,12 +54,12 @@ io.on('connection', function connection(socket) {
       message = JSON.parse(plain);
     } catch(e) {
       console.log('invalid command: %s', plain);
-      socket.send('invalid message packet');
+      socket.send(JSON.stringify({error: 'invalid message packet'}));
       return;
     }
 
     if (!message.userId) {
-      socket.send('need userId');
+      socket.send(JSON.stringify({error: 'need userId'}));
       return;
     }
 
@@ -77,7 +77,7 @@ io.on('connection', function connection(socket) {
       } else {
 
         if (!message.gameCode || !games[message.gameCode]) {
-          socket.send('need gameCode to do game ops or game not found');
+          socket.send(JSON.stringify({error: 'supply a gamecode or game not found'}));
           return;
         }
 
@@ -93,7 +93,7 @@ io.on('connection', function connection(socket) {
       }
     } else {
       console.log('unknown command: %s', message.type);
-      socket.send('unknown command');
+      socket.send(JSON.stringify({error: 'unknown command'}));
       return
     }
   });
