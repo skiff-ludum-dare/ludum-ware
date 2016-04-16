@@ -6,7 +6,7 @@
   "scripts": {
     "build": "nwb build",
     "clean": "nwb clean",
-    "start": "nwb serve --reload",
+    "start": "nwb serve --reload --host 0.0.0.0",
     "test": "nwb test",
     "test:watch": "nwb test --server"
   },
