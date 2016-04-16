@@ -1,12 +1,13 @@
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
-import React from 'react'
-import {render} from 'react-dom'
+import React from 'react';
+import {render} from 'react-dom';
 
 import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux'
-import ReduxThunk from 'redux-thunk'
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import createLogger from 'redux-logger';
 
 import {reducer} from './state';
 import App from './App'
@@ -14,7 +15,7 @@ import App from './App'
 
 const store = createStore(
   reducer,
-  applyMiddleware(ReduxThunk)
+  applyMiddleware(ReduxThunk, createLogger())
 );
 
 render(

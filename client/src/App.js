@@ -26,7 +26,7 @@ const Lobby = connect(
   state => ({
     gameCode: state.game.gameCode,
     players: state.game.players,
-    isOwner: _.findWhere(state.game.players, {id: state.playerId}).owner,
+    isOwner: _.findWhere(state.game.players, {id: state.userId}).owner,
 
   }),
   dispatch => bindActionCreators({onStart: startGame, onCancel: cancel}, dispatch),
@@ -35,7 +35,7 @@ const Lobby = connect(
 const Reveal = connect(
   state => ({
     role: 'villager'
-    //role: _.findWhere(state.game.players, {id: state.playerId}).role,
+    //role: _.findWhere(state.game.players, {id: state.userId}).role,
   }),
   dispatch => bindActionCreators({ onReady: revealReady }, dispatch),
 )(views.Reveal);
@@ -44,7 +44,7 @@ const Day = connect(
   state => ({
     type: 'day',
     players: state.game.players,
-    ownPlayerId: state.playerId,
+    ownPlayerId: state.userId,
   }),
   dispatch => bindActionCreators({ onSelect: nominate, onUnselect: () => {} }, dispatch),
 )(views.GameRound);
@@ -53,7 +53,7 @@ const Night = connect(
   state => ({
     type: 'night',
     players: state.game.players,
-    ownPlayerId: state.playerId,
+    ownPlayerId: state.userId,
   }),
   dispatch => bindActionCreators({ onSelect: chooseVictim, onUnselect: () => {} }, dispatch),
 )(views.GameRound);

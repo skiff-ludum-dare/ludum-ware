@@ -162,14 +162,6 @@ export const GameRound = React.createClass({
     onUnselect: React.PropTypes.func,
   },
 
-  select (playerId) {
-
-  },
-
-  unselect () {
-
-  },
-
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
     return (

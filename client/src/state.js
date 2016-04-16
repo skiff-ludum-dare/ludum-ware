@@ -1,8 +1,9 @@
 'use strict';
 import uuid from 'uuid';
-import WebSocket from 'ws';
+import io from 'socket.io-client';
 
 const API_CREATE_GAME = 'http://127.0.0.1:8080/game';
+const SOCKET_IO_ENDPOINT = 'http://127.0.0.1:8080';
 
 
 export const PAGE_MENU = "PAGE_MENU";
@@ -17,7 +18,8 @@ export const PAGE_END = "PAGE_END";
 
 const initialState = {
   page: PAGE_MENU,
-  playerId: uuid.v4(),
+  userId: uuid.v4(),
+  loading: false,
   game: {
     gameCode: "MYGAME",
     players: [
@@ -38,6 +40,8 @@ const SHOW_JOIN = 'SHOW_JOIN';
 
 
 const JOIN_GAME = "JOIN_GAME";
+const CONNECTING = "CONNECTING";
+const CONNECTED = "CONNECTED";
 const HOST_GAME = "HOST_GAME";
 const CANCEL = "CANCEL";
 const CHOOSE_VICTIM = "CHOOSE_VICTIM";
@@ -79,7 +83,8 @@ export function reducer(state=initialState, action) {
     break;
   }
 
-  case PAGE_HOST: {
+  case PAGE_HOST:
+  case PAGE_JOIN: {
     switch (action.type) {
     case CANCEL: {
       return {
@@ -89,11 +94,35 @@ export function reducer(state=initialState, action) {
     }
 
     case HOST_GAME: {
+      let { userId, playerName } = action;
       return {
         ...state,
+        loading: true,
+        userId,
+        playerName,
+      };
+    }
+
+    case JOIN_GAME: {
+      let { gameCode, userId, playerName } = action;
+      return {
+        ...state,
+        loading: false,
+        userId,
+        playerName,
+        gameCode,
+      };
+    }
+
+
+    case CONNECTED: {
+      return {
+        ...state,
+        loading: false,
         page: PAGE_LOBBY,
       };
     }
+
     }
     break;
   }
@@ -212,31 +241,64 @@ export function showJoin() {
   };
 }
 
+export function gameStateUpdate(data) {
+  console.log('GAME UPDATE', data);
+  return {
+    type: GAME_STATE_UPDATE,
+    game: JSON.parse(data),
+  }
+}
+
 export function joinGame(playerName, gameCode) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let {userId} = getState();
     dispatch({
       type: JOIN_GAME,
+      userId,
       gameCode,
       playerName,
     });
 
+    const socket = io(SOCKET_IO_ENDPOINT);
+    dispatch({
+      type: CONNECTING,
+      socket,
+    });
+    let connected = false;
+    socket.on('connect', () => {
+      socket.send(JSON.stringify({type: JOIN_GAME, playerName, gameCode, userId}));
+    });
+    socket.on('message', data => {
+      dispatch(gameStateUpdate(data));
+
+      if (!connected) {
+        connected = true;
+        dispatch({
+          type: CONNECTED,
+          socket,
+        });
+        console.log('CONNECT');
+      }
+    });
   };
 }
+
 
 export function hostGame(playerName) {
   const userId = uuid.v4();
   return dispatch => {
-    // dispatch({
-    //   type: HOST_GAME,
-    //   playerName,
-    // });
+    dispatch({
+      type: HOST_GAME,
+      playerName,
+      userId,
+    });
 
-    console.log('FETCH N SHIT');
     fetch(API_CREATE_GAME, {method: 'POST', body: JSON.stringify({userId})})
+      .then(r => r.json())
       .then(
         (data) => {
-          console.log(data);
-          dispatch(joinGame(data.gameCode));
+          // dispatch(gameStateUpdate(data));
+          dispatch(joinGame(playerName, data.gameCode));
         },
         (error) => {
           console.log('e', error);
