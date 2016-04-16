@@ -1,4 +1,10 @@
 'use strict';
+import uuid from 'uuid';
+import WebSocket from 'ws';
+
+const API_CREATE_GAME = 'http://127.0.0.1:8080/game';
+
+
 export const PAGE_MENU = "PAGE_MENU";
 export const PAGE_HOST = "PAGE_HOST";
 export const PAGE_JOIN = "PAGE_JOIN";
@@ -11,7 +17,7 @@ export const PAGE_END = "PAGE_END";
 
 const initialState = {
   page: PAGE_MENU,
-  playerId: "1",
+  playerId: uuid.v4(),
   game: {
     gameCode: "MYGAME",
     players: [
@@ -35,6 +41,8 @@ const JOIN_GAME = "JOIN_GAME";
 const HOST_GAME = "HOST_GAME";
 const CANCEL = "CANCEL";
 const CHOOSE_VICTIM = "CHOOSE_VICTIM";
+
+const ERROR = "ERROR";
 
 const START_GAME = "START_GAME";
 const REVEAL_READY = "REVEAL_READY";
@@ -189,6 +197,9 @@ export function reducer(state=initialState, action) {
   return state;
 }
 
+
+
+
 export function showHost() {
   return {
     type: SHOW_HOST,
@@ -202,18 +213,41 @@ export function showJoin() {
 }
 
 export function joinGame(playerName, gameCode) {
-  return {
-    type: JOIN_GAME,
-    gameCode,
-    playerName,
+  return dispatch => {
+    dispatch({
+      type: JOIN_GAME,
+      gameCode,
+      playerName,
+    });
+
   };
 }
 
 export function hostGame(playerName) {
-  return {
-    type: HOST_GAME,
-    playerName,
-  };
+  const userId = uuid.v4();
+  return dispatch => {
+    // dispatch({
+    //   type: HOST_GAME,
+    //   playerName,
+    // });
+
+    console.log('FETCH N SHIT');
+    fetch(API_CREATE_GAME, {method: 'POST', body: JSON.stringify({userId})})
+      .then(
+        (data) => {
+          console.log(data);
+          dispatch(joinGame(data.gameCode));
+        },
+        (error) => {
+          console.log('e', error);
+          dispatch({
+            type: ERROR,
+            originalType: HOST_GAME,
+            error,
+          });
+        });
+
+  }
 }
 
 export function cancel(playerName) {
@@ -243,7 +277,6 @@ export function chooseVictim(ownPlayerId, victimPlayerId) {
 }
 
 export function nominate(ownPlayerId, victimPlayerId) {
-  console.log('NOM');
   return {
     type: NOMINATE,
     ownPlayerId,

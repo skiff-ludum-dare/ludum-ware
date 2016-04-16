@@ -46,7 +46,7 @@ export const StartGame = React.createClass({
     return (
       <div>
         <h1>{ (type === 'host') ? 'Host Game' : 'Join Game' }</h1>
-        <input placeholder="Game code" value={gameCode} onChange={e => this.setState({gameCode: e.target.value})}/>
+        { (type === '!join') && <input placeholder="Game code" value={gameCode} onChange={e => this.setState({gameCode: e.target.value})}/> }
         <input placeholder="Your Name" value={name} onChange={e => this.setState({name: e.target.value})}/>
         <button onClick={() => onNext(name, gameCode)}>
           Go
