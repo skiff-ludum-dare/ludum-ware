@@ -259,6 +259,27 @@ button.primary::before {
   animation-iteration-count: infinite;
 }
 
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.2, 1.2, 1.2);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+button.primary, .pulse {
+  animation-duration: 2s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  animation-name: pulse;
+}
+
 @keyframes slideInRight {
   from {
     transform: translate3d(160%, 0, 0);
