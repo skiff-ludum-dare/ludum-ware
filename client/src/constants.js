@@ -18,8 +18,8 @@ exports.PLAYER_PRESENCE = "PLAYER_PRESENCE";
 exports.SELECT_VICTIM = "SELECT_VICTIM";
 exports.UNSELECT_VICTIM = "UNSELECT_VICTIM";
 
-exports.WEREWOLF = "WEREWOLF";
-exports.VILLAGER = "VILLAGER";
+exports.WEREWOLF = "Terrormorphs";
+exports.VILLAGER = "Humans";
 
 exports.PAGE_MENU = "PAGE_MENU";
 exports.PAGE_HOST = "PAGE_HOST";

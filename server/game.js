@@ -15,7 +15,6 @@ const initialGameState = {
   players: [],
 };
 
-const WEREWOLVES = 1;
 
 function getRand(seed, len=10) {
   const rand = pi(seed + len + 2).slice(-len);
@@ -33,7 +32,8 @@ function lobbyReducer(state, action) {
     if (action.userId !== state.ownerUserId) return state;
     // if (amount < 5) return state;
 
-    const wolves = reservoir(action.wereWolves || WEREWOLVES, _.partial(getRand, state.seed));
+    const werewolves = Math.floor(state.players.length / 2 - 1)
+    const wolves = reservoir(action.wereWolves || werewolves, _.partial(getRand, state.seed));
     state.players.forEach(p => {
       wolves.pushSome(p.id);
     });
@@ -146,7 +146,7 @@ function dayOrNightReducer(state, action) {
         if (villagersWin || wolvesWin) {
           state = update(state, {
             phase: {$set: c.PHASE_END},
-            winner: {$set: villagersWin ? c.VILLAGER: c.WEREWOLVES},
+            winner: {$set: villagersWin ? c.VILLAGER: c.WEREWOLF},
           });
         } else {
           state = update(markNotReady(state), {

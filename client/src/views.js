@@ -212,11 +212,11 @@ export const Reveal = React.createClass({
   displayName: 'Reveal',
 
   propTypes: {
-    role: React.PropTypes.oneOf([WEREWOLF, VILLAGER]),
-    onReady: React.PropTypes.func,
+    role: React.PropTypes.oneOf([WEREWOLF, VILLAGER]).isRequired,
+    onReady: React.PropTypes.func.isRequired,
   },
 
-  getInitialState () {
+  getInitialState() {
     return {
       show: false,
       hasShown: false,
@@ -286,11 +286,6 @@ export const Reveal = React.createClass({
 
 export const Dead = React.createClass({
   displayName: 'Dead',
-
-  propTypes: { },
-
-  componentDidMount() {
-  },
 
   render () {
     return (
@@ -394,8 +389,8 @@ export const GameEnd = React.createClass({
   displayName: 'GameEnd',
 
   propTypes: {
-    winningTeam: React.PropTypes.oneOf(["villagers", "wolves"]),
-    onFinish: React.PropTypes.func,
+    winningTeam: React.PropTypes.oneOf([WEREWOLF, VILLAGER]).isRequired,
+    onFinish: React.PropTypes.func.isRequired,
   },
 
   render () {
