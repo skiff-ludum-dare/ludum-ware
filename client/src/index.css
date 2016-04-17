@@ -351,13 +351,13 @@ button.primary::before {
 .phase-lobby {}
 
 .phase-lobby > .info {
-  flex: 1;
+  /* flex: 1; */
 }
 .phase-lobby > .roster {
   overflow-y: auto;
   margin-top: 15px;
   margin-bottom: 15px;
-  flex: 3;
+  /* flex: 3; */
 }
 .phase-lobby .roster-list {
   display: inline-block;
@@ -371,7 +371,7 @@ button.primary::before {
   margin-top: 0;
 }
 .phase-lobby > .actions {
-  flex: 1;
+  /* flex: 1; */
 }
 
 /* Reveal */
