@@ -124,32 +124,31 @@ hr {
   margin-top: 30px;
 }
 
-*::-webkit-input-placeholder{
+*::-webkit-input-placeholder {
   color: white;
   text-transform: lowercase;
   opacity: 1;
 }
 
-*:-moz-placeholder{
+*:-moz-placeholder {
   color: white;
   text-transform: lowercase;
   opacity: 1;
 }
 
-*::-moz-placeholder{
+*::-moz-placeholder {
   color: white;
   text-transform: lowercase;
   opacity: 1;
 }
 
-*:-ms-input-placeholder{
+*:-ms-input-placeholder {
   color: white;
   text-transform: lowercase;
 }
 
 *[placeholder] {
   color: white;
-  text-transform: lowercase;
   opacity: 1;
 }
 
@@ -251,6 +250,23 @@ button.primary::before {
 
 .slide-out-left {
   animation-name: slideOutLeft;
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -99.9%, 0);
+  }
+}
+
+.slide-out-up {
+  animation-name: slideOutUp;
+  animation-duration: 120s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
 }
 
 /*
@@ -397,6 +413,10 @@ button.primary::before {
 
 .game-code-input {
   text-transform: uppercase;
+}
+
+.thanks > small {
+  display: block;
 }
 
 .copyright {
