@@ -100,7 +100,7 @@ function revealReducer(state, action) {
 
 function dayOrNightReducer(state, action) {
   switch (action.type) {
-  case c.UNSELECT_VICTIM:
+  case UNSELECT_VICTIM:
     return {
       ...state,
       game: {
@@ -109,7 +109,7 @@ function dayOrNightReducer(state, action) {
       }
     };
 
-  case c.SELECT_VICTIM:
+  case SELECT_VICTIM:
     return {
       ...state,
       game: {

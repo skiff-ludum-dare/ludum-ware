@@ -46,6 +46,7 @@ export function gameStateUpdate(data) {
 }
 
 export function joinGame(playerName, gameCode) {
+  if (!playerName || !gameCode) return;
   return (dispatch, getState) => {
     let {userId} = getState();
     dispatch({type: JOIN_GAME, playerName});
@@ -64,6 +65,7 @@ export function joinGame(playerName, gameCode) {
 
 
 export function hostGame(playerName) {
+  if (!playerName) return;
   return (dispatch, getState) => {
     let {userId} = getState();
     dispatch({
@@ -99,13 +101,15 @@ export function revealReady() {
 }
 
 export function selectVictim(victimUserId) {
+  console.log('SELECT VICTIM');
   return message({
     type: SELECT_VICTIM,
-    victimerUserId,
+    victimUserId,
   })
 }
 
 export function unselectVictim() {
+  console.log('UNSELECT VICTIM');
   return message({
     type: UNSELECT_VICTIM,
   })

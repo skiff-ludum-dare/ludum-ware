@@ -255,10 +255,6 @@ export const GameRound = React.createClass({
     onUnselect: React.PropTypes.func,
   },
 
-  componentDidMount() {
-
-  },
-
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
     return (
@@ -286,34 +282,6 @@ export const GameRound = React.createClass({
     );
   }
 });
-
-// export const Vote = React.createClass({
-//   displayName: 'Vote',
-
-//   propTypes: {
-//     nominatedUser: React.PropTypes.object,
-//     accuserUser: React.PropTypes.object,
-//     onVoteYes: React.PropTypes.func,
-//     onVoteNo: React.PropTypes.func,
-//   },
-
-//   render () {
-//     const { nominatedUser, accuserUser, onVoteYes, onVoteNo } = this.props;
-//     return (
-//       <div className="phase phase-vote">
-//         <h2>{ accuserUser.name } wants to lynch { nominatedUser.name }</h2>
-//         <button
-//           onMouseDown={onVoteYes}
-//           onTouchStart={onVoteYes}
-//         >Yes, hang them high</button>
-//         <button
-//           onMouseDown={onVoteNo}
-//           onTouchStart={onVoteNo}
-//         >No, let them go</button>
-//       </div>
-//     );
-//   }
-// });
 
 export const GameEnd = React.createClass({
   displayName: 'GameEnd',
