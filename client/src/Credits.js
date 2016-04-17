@@ -6,8 +6,8 @@ export default (props) => {
         <div className="developers">
           <h2 className="offset">Developers (alphabetically)</h2>
           <h4>Dave Gurnell</h4>
-          <h4>Thomas Parslow</h4>
           <h4>Simon Elliott</h4>
+          <h4>Thomas Parslow</h4>
           <h4>Yann Eves</h4>
         </div>
         <div className="button" onClick={ props.onClose }>Close</div>
