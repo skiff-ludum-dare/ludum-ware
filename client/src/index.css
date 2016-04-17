@@ -17,7 +17,6 @@
 }
 
 aside#starfield {
-  overflow: hidden;
   background-color: black;
 }
 
@@ -26,7 +25,7 @@ aside#starfield {
  *  --
  */
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
   color: purple;
   background: -webkit-linear-gradient(purple, hotpink);
   background: -moz-linear-gradient(purple, hotpink);
@@ -37,6 +36,10 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
   text-fill-color: transparent;
+}
+
+h3, h4, h5, h6, .highlight {
+  color: gold;
 }
 
 h1.offset, h2.offset, h3.offset, h4.offset, h5.offset, h6.offset {

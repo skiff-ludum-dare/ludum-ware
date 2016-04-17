@@ -139,7 +139,7 @@ export const Lobby = React.createClass({
         <div className="roster">
           <ol className="roster-list">
             { players.map(({id, name}) => (
-              <li key={id}>{ name }</li>
+              <li className="highlight" key={id}>{ name }</li>
             )) }
             { (new Array(MIN_PLAYERS - players.length)).fill(null).map(() => (
               <li>&lt;waiting&gt;</li>
