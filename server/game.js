@@ -165,6 +165,27 @@ function dayOrNightReducer(state, action) {
   return state;
 }
 
+function endReducer(state, action) {
+  switch(action.type) {
+  case c.READY: {
+    state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
+    if (_.every(living(state), p => p.ready)) {
+      return _.extend({}, state, {
+        phase: c.PHASE_LOBBY,
+        showNarrative: false,
+        round: null,
+        players: state.players.map(p => _.extend({}, p, {
+          ready: false,
+          alive: true,
+          victimUserId: null,
+        })),
+      });
+    }
+  }
+  }
+  return state;
+}
+
 module.exports = function game(gameCode, ownerUserId, seed) {
   const initialState = assign({}, initialGameState, {gameCode, ownerUserId, seed});
 
@@ -205,6 +226,8 @@ module.exports = function game(gameCode, ownerUserId, seed) {
     case c.PHASE_DAY:
     case c.PHASE_NIGHT:
       return dayOrNightReducer(state, action);
+    case c.PHASE_END:
+      return endReducer(state, action);
     }
 
     return state;

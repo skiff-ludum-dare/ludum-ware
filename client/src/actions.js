@@ -7,7 +7,7 @@ import {
   PHASE_LOBBY, PHASE_REVEAL,
   ERROR,
   SHOW_HOST, SHOW_JOIN,
-  GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, CHOOSE_VICTIM,
+  GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, CHOOSE_VICTIM, DISCONNECT
 } from './constants';
 
 import * as api from './api';
@@ -88,9 +88,14 @@ export function hostGame(playerName) {
   }
 }
 
-export function cancel(playerName) {
-  return {
-    type: CANCEL,
+export function cancel() {
+  return {type: CANCEL};
+}
+
+export function disconnect() {
+  return (dispatch, setState) => {
+    api.disconnect();
+    dispatch({type: DISCONNECT});
   };
 }
 

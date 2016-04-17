@@ -129,11 +129,10 @@ export const StartGame = React.createClass({
             className="primary"
             onClick={() => onNext(name, gameCode)}
           >Go</button>
-          <button
-            type="reset"
-            onClick={onCancel}
-          >Exit</button>
         </form>
+        <button
+          onClick={onCancel}
+        >Exit</button>
       </div>
     );
   }
