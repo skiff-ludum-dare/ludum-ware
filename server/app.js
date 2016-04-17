@@ -79,9 +79,11 @@ function createGame(userId) {
 }
 
 function notifyPlayers(state) {
+  const plain = JSON.stringify(state);
+  console.log('sending: %s', plain);
   state.players.forEach(({id}) => {
     const client = socketMap[playerMap[id]];
-    client.send(JSON.stringify(state));
+    client.send(plain);
   });
 }
 

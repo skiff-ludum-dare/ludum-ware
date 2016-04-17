@@ -389,18 +389,38 @@ export const GameEnd = React.createClass({
 
   propTypes: {
     winningTeam: React.PropTypes.oneOf([WEREWOLF, VILLAGER]).isRequired,
+    isWinner: React.PropTypes.bool.isRequired,
     onFinish: React.PropTypes.func.isRequired,
   },
 
   render () {
-    const { winningTeam, onFinish } = this.props;
+    const { winningTeam, isWinner, onFinish } = this.props;
+
     return (
-      <div className="phase phase-end">
+      <div className={ classNames("phase phase-end", {"winner": isWinner}) }>
+
+       { winningTeam === VILLAGER
+         ?
+          <div className="character">
+            <img
+              className="center-block img-responsive"
+              src="images/station.png"
+            />
+          </div>
+         :
+          <div className="character">
+            <img
+              className="center-block img-responsive"
+              src="images/station_ruined.png"
+            />
+          </div>
+        }
+
         <div className="info">
-          <h2 className="offset">{ winningTeam } win</h2>
+          <h2 className="offset">{ isWinner ? "You've won!" : winningTeam } win</h2>
         </div>
         <div className="actions">
-          <button onClick={onFinish}>Done</button>
+          <button onClick={onFinish}>Back to Lobby</button>
         </div>
       </div>
     );

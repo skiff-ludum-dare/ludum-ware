@@ -76,7 +76,7 @@ const GameRound = connect(
 
 const GameEnd = connect(
   state => ({
-    winningTeam: state.winner,
+    winningTeam: state.game.winner,
   }),
   dispatch => bindActionCreators({onFinish: ready}, dispatch),
 )(views.GameEnd);
