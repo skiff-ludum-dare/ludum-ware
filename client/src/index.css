@@ -216,12 +216,24 @@ button.primary::before {
 
 /* Round */
 .phase-round {}
+.phase-round > .info {
+  flex: 1;
+}
+.phase-round > .survivors {
+  flex: 6;
+}
 
 /* Vote */
 .phase-vote {}
 
 /* End */
 .phase-end {}
+.phase-end > .info {
+  flex: 6;
+}
+.phase-end > .actions {
+  flex: 1;
+}
 
 /*
  *  Miscellaneous

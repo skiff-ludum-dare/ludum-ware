@@ -254,20 +254,25 @@ export const GameRound = React.createClass({
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
     return (
       <div className="phase phase-round">
-        <h2>{ type }</h2>
-        <ul>
-          { players.map(({name, alive, id}) => (
-            <li
-               key={id}
-               className={ id === ownPlayerId ? 'highlight' : '' }
-               onMouseDown={() => onSelect(id)}
-               onMouseUp={() => onUnselect(id)}
-               onTouchStart={() => onSelect(id)}
-               onTouchEnd={() => onUnselect(id)}
-               onTouchCancel={() => onUnselect(id)}
-              >{ name }</li>
-          )) }
-        </ul>
+        <div className="info">
+          <h2 className="offset">{ type }</h2>
+        </div>
+
+        <div className="survivors">
+          <ul>
+            { players.map(({name, alive, id}) => (
+              <li
+                 key={id}
+                 className={ id === ownPlayerId ? 'highlight' : '' }
+                 onMouseDown={() => onSelect(id)}
+                 onMouseUp={() => onUnselect(id)}
+                 onTouchStart={() => onSelect(id)}
+                 onTouchEnd={() => onUnselect(id)}
+                 onTouchCancel={() => onUnselect(id)}
+                >{ name }</li>
+            )) }
+          </ul>
+        </div>
       </div>
     );
   }
@@ -288,8 +293,14 @@ export const Vote = React.createClass({
     return (
       <div className="phase phase-vote">
         <h2>{ accuserUser.name } wants to lynch { nominatedUser.name }</h2>
-        <button onClick={onVoteYes}>Yes, hang them high</button>
-        <button onClick={onVoteNo}>No, let them go</button>
+        <button
+          onMouseDown={onVoteYes}
+          onTouchStart={onVoteYes}
+        >Yes, hang them high</button>
+        <button
+          onMouseDown={onVoteNo}
+          onTouchStart={onVoteNo}
+        >No, let them go</button>
       </div>
     );
   }
@@ -307,8 +318,12 @@ export const GameEnd = React.createClass({
     const { winningTeam, onFinish } = this.props;
     return (
       <div className="phase phase-end">
-        <h2>{ winningTeam } wins</h2>
-        <button onClick={onFinish}>Done</button>
+        <div className="info">
+          <h2 className="offset">{ winningTeam } wins</h2>
+        </div>
+        <div className="actions">
+          <button onClick={onFinish}>Done</button>
+        </div>
       </div>
     );
   }
