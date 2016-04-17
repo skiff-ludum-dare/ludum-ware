@@ -89,7 +89,7 @@ function dayOrNightReducer(state, action) {
   const isNight = (state.phase === c.PHASE_NIGHT);
   let {votes, targets, votesNeeded} = voteInfo(state);
 
-  state = {...state, votesNeeded};
+  state = _.extend({}, state, {votesNeeded});
 
   switch(action.type) {
   case c.UNSELECT_VICTIM: {
