@@ -15,7 +15,7 @@ const initialGameState = {
   players: [],
 };
 
-const WEREWOLVES = 2;
+const WEREWOLVES = 1;
 
 function getRand(seed, len=10) {
   const rand = pi(seed + len + 2).slice(-len);
@@ -23,6 +23,7 @@ function getRand(seed, len=10) {
 }
 
 function markNotReady(state) {
+  console.log('NOT READY', _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))}));
   return _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))});
 }
 
@@ -96,7 +97,7 @@ function dayOrNightReducer(state, action) {
     if (action.type === c.READY) {
       state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
       if (_.every(living(state), p => p.ready)) {
-        return _.extend({}, state, {showNarrative: false});
+        return _.extend({}, markNotReady(state), {showNarrative: false});
       }
     }
     return state;
@@ -137,13 +138,15 @@ function dayOrNightReducer(state, action) {
         const villagersWin = werewolves(state).length === 0;
         const wolvesWin = werewolves(state).length >= villagers(state).length;
 
+        console.log('werewolves', werewolves(state), werewolves(state).length);
+        console.log('villagers', villagers(state), villagers(state).length);
         console.log('WIN', villagersWin, wolvesWin);
 
         // Move to next phase
         if (villagersWin || wolvesWin) {
           state = update(state, {
             phase: {$set: c.PHASE_END},
-            winner: {$set: villagersWin ? "villagers" : "wolves"},
+            winner: {$set: villagersWin ? c.VILLAGER: c.WEREWOLVES},
           });
         } else {
           state = update(markNotReady(state), {

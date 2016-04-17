@@ -31,9 +31,11 @@ export const Menu = React.createClass({
 
   componentDidMount() {
     window.setTimeout(() => {
+      const {astronautSrc, astronautAlt} = this.state;
+
       this.setState({
-        astronautSrc: 'images/ship.png',
-        astronautAlt: 'Splattered Astronaut'
+        astronautSrc: astronautSrc.replace('ejected', 'ejected_splatter'),
+        astronautAlt: astronautAlt.replace('Ejected', 'Splattered')
       });
     }, GLOBAL_ANIMATION_SPEED * .75)
   },
