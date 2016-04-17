@@ -1,6 +1,8 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 
+import {IntroSound} from './Sound';
+
 function supportsMultiTouch() {
   return window.navigator.maxTouchPoints > 1;
 }
@@ -17,6 +19,7 @@ export const Menu = React.createClass({
     const {onJoin, onHost} = this.props;
     return (
       <div className="phase phase-menu">
+        <IntroSound/>
         <aside className="spaceship"></aside>
         <div className="actions">
           <h1>Terrormorph!</h1>
