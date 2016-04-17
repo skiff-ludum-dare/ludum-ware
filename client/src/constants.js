@@ -38,3 +38,5 @@ exports.CONNECTING = "CONNECTING";
 exports.CONNECTED = "CONNECTED";
 exports.HOST_GAME = "HOST_GAME";
 exports.CANCEL = "CANCEL";
+
+exports.KICK = "KICK";

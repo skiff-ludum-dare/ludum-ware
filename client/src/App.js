@@ -14,7 +14,7 @@ import {
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
-  startGame, ready, selectVictim, unselectVictim, disconnect
+  startGame, ready, selectVictim, unselectVictim, disconnect, kick
 } from './actions';
 import {MIN_PLAYERS} from './config';
 
@@ -37,7 +37,6 @@ const Lobby = connect(
   state => {
     const isOwner = _.findWhere(state.game.players, {id: state.userId}).owner;
     const players = state.game.players;
-    console.log(players, MIN_PLAYERS);
     return {
       gameCode: state.game.gameCode,
       players,
@@ -46,7 +45,7 @@ const Lobby = connect(
       minPlayers: MIN_PLAYERS,
     };
   },
-  dispatch => bindActionCreators({onStart: startGame, onCancel: disconnect}, dispatch),
+  dispatch => bindActionCreators({onStart: startGame, onCancel: disconnect, onKick: kick}, dispatch),
 )(views.Lobby);
 
 const Reveal = connect(
@@ -63,7 +62,7 @@ const GameRound = connect(
       type: (state.game.phase === PHASE_DAY) ? 'day' : 'night',
       votesNeeded: state.game.votesNeeded,
       players: state.game.players.map(p => {
-        const votes = _.where(state.game.players, otherPlayer => otherPlayer.victimUserId === p.id).length;
+        const votes = _.filter(state.game.players, otherPlayer => otherPlayer.victimUserId === p.id).length;
         return {
           ...p,
           killVotes: votes,
@@ -90,6 +89,7 @@ const Narrative = connect(
     deadPlayers: _.where(state.game.players, {alive: false}).length,
     lastVictim: _.findWhere(state.game.players, {id: state.game.lastVictimUserId}),
     round: state.game.round,
+    phase: state.game.phase,
     seed: state.game.seed,
   }),
   dispatch => bindActionCreators({ onReady: ready }, dispatch),

@@ -6,7 +6,7 @@ import {
   CREATE_GAME, START_GAME, JOIN_GAME, READY, SELECT_VICTIM, UNSELECT_VICTIM, UPDATE_STATE,
   PHASE_LOBBY, PHASE_REVEAL,
   ERROR,
-  SHOW_HOST, SHOW_JOIN,
+  SHOW_HOST, SHOW_JOIN, KICK,
   GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, CHOOSE_VICTIM, DISCONNECT
 } from './constants';
 
@@ -116,5 +116,9 @@ export function selectVictim(victimUserId) {
 
 export function unselectVictim() {
   console.log('UNSELECT VICTIM');
-  // return message(UNSELECT_VICTIM);
+  return message(UNSELECT_VICTIM);
+}
+
+export function kick(userId) {
+  return message(KICK);
 }
