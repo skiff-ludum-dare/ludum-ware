@@ -55,17 +55,17 @@ function revealReducer(state, action) {
   case c.READY: {
     const {userId} = action;
     const idx = playerIndex(state, userId);
-    console.log('REVEAL READY', userId, idx);
-    console.log(_.map(state.players, 'ready'));
+    // console.log('REVEAL READY', userId, idx);
+    // console.log(_.map(state.players, 'ready'));
     const newState = update(state, {
       players: {
         [idx]: { ready: {$set: true} }
       },
     });
-    console.log(_.map(newState.players, 'ready'));
+    // console.log(_.map(newState.players, 'ready'));
 
     if (_.every(newState.players, {ready: true})) {
-      console.log('ALL READY');
+      // console.log('ALL READY');
       //all ready
       return update(newState, {
         round: {$set: 1},
@@ -94,12 +94,12 @@ function voteInfo(state) {
 function dayOrNightReducer(state, action) {
   if (state.showNarrative) {
     if (action.type === c.READY) {
-      console.log('MARK READY', action.userId);
-      console.log(_.map(state.players, 'ready'));
+      // console.log('MARK READY', action.userId);
+      // console.log(_.map(state.players, 'ready'));
       state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
-      console.log(_.map(state.players, 'ready'));
+      // console.log(_.map(state.players, 'ready'));
       if (_.every(living(state), p => p.ready)) {
-        console.log('EVERYONE IS READY');
+        // console.log('EVERYONE IS READY');
         return update(state, {
           showNarrative: {$set: false},
           players: {$set: state.players.map(p => _.extend({}, p, {ready: false}))},
@@ -116,10 +116,14 @@ function dayOrNightReducer(state, action) {
 
   switch(action.type) {
   case c.UNSELECT_VICTIM: {
-    const pidx = playerIndex(state, action.userId);
-    return update(state, {
-      players: {[pidx]: { victimUserId: {$set: null} }}
-    });
+    if (state.phase === c.PHASE_DAY) {
+      const pidx = playerIndex(state, action.userId);
+      return update(state, {
+        players: {[pidx]: { victimUserId: {$set: null} }}
+      });
+    } else {
+      return state;
+    }
   }
   case c.SELECT_VICTIM: {
     const {victimUserId, userId} = action;
@@ -133,7 +137,11 @@ function dayOrNightReducer(state, action) {
     // Recaluclate voters and targets
     let {voters, targets, votesNeeded} = voteInfo(state);
 
-    if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) {
+    // console.log('VICTIMS', _.map(state.players, 'victimUserId'));
+    // console.log(_.every(living(state), p => p.victimUserId != null));
+    // console.log(state.phase);
+
+    if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId}) && (state.phase === c.PHASE_DAY || _.every(living(state), p => p.victimUserId != null))) {
       if (_.filter(voters, {victimUserId}).length >= votesNeeded) {
         state = update(state, {
           lastVictimUserId: {$set: victimUserId},
@@ -230,9 +238,15 @@ module.exports = function game(gameCode, ownerUserId, seed) {
         const index = playerIndex(state, kickUserId);
         if (index < 0) return state;
 
-        return update(state, {
+        // // console.log('KICK', index);
+
+        state = update(state, {
           players: {$splice: [[index, 1]]},
         });
+
+        // console.log(state);
+
+        return state;
 
         break;
       }

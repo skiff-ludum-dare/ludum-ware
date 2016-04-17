@@ -138,6 +138,8 @@ const App = React.createClass({
       Content = pages[page];
     }
 
+    console.log(waiting);
+
     return <article>
       <Sound/>
       <Starfield/>

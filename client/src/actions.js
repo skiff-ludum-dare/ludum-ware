@@ -108,17 +108,17 @@ export function ready() {
 }
 
 export function selectVictim(victimUserId) {
-  console.log('SELECT VICTIM');
+  // console.log('SELECT VICTIM');
   return message(SELECT_VICTIM, {
     victimUserId,
   })
 }
 
 export function unselectVictim() {
-  console.log('UNSELECT VICTIM');
+  // console.log('UNSELECT VICTIM');
   return message(UNSELECT_VICTIM);
 }
 
-export function kick(userId) {
-  return message(KICK);
+export function kick(kickUserId) {
+  return message(KICK, {kickUserId});
 }

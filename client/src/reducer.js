@@ -104,8 +104,6 @@ function revealReducer(state, action) {
 }
 
 function dayOrNightReducer(state, action) {
-
-
   if (state.game.showNarrative) {
     if (action.type === READY) {
       return {
@@ -113,17 +111,11 @@ function dayOrNightReducer(state, action) {
         waiting: true,
       };
     }
-  } else {
-    state = {
-        ...state,
-      waiting: false,
-    };
   }
 
   switch (action.type) {
-
-  case UNSELECT_VICTIM:
-    return {
+  case SELECT_VICTIM:
+    state = {
       ...state,
       game: {
         ...state.game,
@@ -131,7 +123,13 @@ function dayOrNightReducer(state, action) {
       }
     };
 
-  case SELECT_VICTIM:
+    if (state.game.phase === PHASE_NIGHT) {
+      state = {...state, waiting: true};
+    }
+
+    return state;
+
+  case UNSELECT_VICTIM:
     return {
       ...state,
       game: {
@@ -159,7 +157,7 @@ function endReducer(state, action) {
 export default function reducer(state=initialState, action) {
 
   if (action.type === GAME_STATE_UPDATE) {
-    if (!state.game || action.game.phase !== state.game.phase) {
+    if (!state.game || action.game.phase !== state.game.phase || action.game.showNarrative !== state.game.showNarrative) {
       state = {...state, waiting: false};
     }
     state = {
