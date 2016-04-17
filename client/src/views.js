@@ -107,7 +107,7 @@ export const Lobby = React.createClass({
   propTypes: {
     gameCode: React.PropTypes.string,
     players: React.PropTypes.arrayOf(React.PropTypes.object),
-
+    ownPlayerId: React.PropTypes.string,
     isOwner: React.PropTypes.bool,
 
     onStart: React.PropTypes.func,
@@ -139,7 +139,10 @@ export const Lobby = React.createClass({
         <div className="roster">
           <ol className="roster-list">
             { players.map(({id, name}) => (
-              <li className="highlight" key={id}>{ name }</li>
+              <li
+                className={ id === ownPlayerId ? 'highlight' : '' }
+                key={id}
+              >{ name }</li>
             )) }
             { (new Array(MIN_PLAYERS - players.length)).fill(null).map(() => (
               <li>&lt;waiting&gt;</li>
@@ -203,19 +206,30 @@ export const Reveal = React.createClass({
   render () {
     const { role, onReady } = this.props;
     const { show, hasShown } = this.state;
-    const normal = <div>Normal Identity</div>;
-    const secret = <div>{role}</div>;
-    const instruction = supportsMultiTouch() ? 'Press two fingers to reveal' : 'Click and hold to reveal';
+    const normal = <p>&lt;hidden&gt;</p>;
+    const secret = <p className={role}>{role.toUpperCase()}</p>;
+    const instruction = supportsMultiTouch() ? 'two-finger press' : 'click and hold';
     return (
       <div className="phase phase-reveal" ref="reveal">
-        <h2>Reveal <small>({instruction})</small></h2>
-        { show ? secret : normal }
-        { hasShown && (
-          <button onClick={onReady}>
-            Ready
-          </button>
-          )
-        }
+        <div className="info">
+          <h2 className="offset">Who are you really...?</h2>
+          <h2><small>&#91;{instruction}&#93;</small></h2>
+        </div>
+
+        <div className="character highlight">
+          { show ? secret : normal }
+        </div>
+
+        <div className="actions">
+          { hasShown && (
+            <button
+              type="button"
+              className="primary"
+              onClick={onReady}
+            >Ready</button>
+            )
+          }
+        </div>
       </div>
     );
   }
@@ -232,25 +246,33 @@ export const GameRound = React.createClass({
     onUnselect: React.PropTypes.func,
   },
 
+  componentDidMount() {
+
+  },
+
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
     return (
       <div className="phase phase-round">
-        <h2>{ type }</h2>
-        <ul>
-          { players.map(({name, alive, id}) => (
-            <li
-               key={id}
-               onClick={() => onSelect(id)}
+        <div className="info">
+          <h2 className="offset">{ type }</h2>
+        </div>
 
-               onMouseDown={() => onSelect(id)}
-               onMouseUp={() => onUnselect(id)}
-               onTouchStart={() => onSelect(id)}
-               onTouchEnd={() => onUnselect(id)}
-               onTouchCancel={() => onUnselect(id)}
-              >{ name }</li>
-          )) }
-        </ul>
+        <div className="survivors">
+          <ul>
+            { players.map(({name, alive, id}) => (
+              <li
+                 key={id}
+                 className={ id === ownPlayerId ? 'highlight' : '' }
+                 onMouseDown={() => onSelect(id)}
+                 onMouseUp={() => onUnselect(id)}
+                 onTouchStart={() => onSelect(id)}
+                 onTouchEnd={() => onUnselect(id)}
+                 onTouchCancel={() => onUnselect(id)}
+                >{ name }</li>
+            )) }
+          </ul>
+        </div>
       </div>
     );
   }
@@ -271,8 +293,14 @@ export const Vote = React.createClass({
     return (
       <div className="phase phase-vote">
         <h2>{ accuserUser.name } wants to lynch { nominatedUser.name }</h2>
-        <button onClick={onVoteYes}>Yes, hang them high</button>
-        <button onClick={onVoteNo}>No, let them go</button>
+        <button
+          onMouseDown={onVoteYes}
+          onTouchStart={onVoteYes}
+        >Yes, hang them high</button>
+        <button
+          onMouseDown={onVoteNo}
+          onTouchStart={onVoteNo}
+        >No, let them go</button>
       </div>
     );
   }
@@ -290,8 +318,12 @@ export const GameEnd = React.createClass({
     const { winningTeam, onFinish } = this.props;
     return (
       <div className="phase phase-end">
-        <h2>{ winningTeam } wins</h2>
-        <button onClick={onFinish}>Done</button>
+        <div className="info">
+          <h2 className="offset">{ winningTeam } wins</h2>
+        </div>
+        <div className="actions">
+          <button onClick={onFinish}>Done</button>
+        </div>
       </div>
     );
   }

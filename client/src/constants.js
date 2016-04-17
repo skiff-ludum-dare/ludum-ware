@@ -1,47 +1,42 @@
-const keyMirror = require('key-mirror');
+exports.PHASE_LOBBY = "PHASE_LOBBY";
+exports.PHASE_REVEAL = "PHASE_REVEAL";
+exports.PHASE_DAY = "PHASE_DAY";
+exports.PHASE_VOTE = "PHASE_VOTE";
+exports.PHASE_NIGHT = "PHASE_NIGHT";
+exports.PHASE_END = "PHASE_END";
 
-module.exports = keyMirror({
-  PHASE_LOBBY: null,
-  PHASE_REVEAL: null,
-  PHASE_DAY: null,
-  PHASE_VOTE: null,
-  PHASE_NIGHT: null,
-  PHASE_END: null,
+exports.CREATE_GAME = "CREATE_GAME";
+exports.START_GAME = "START_GAME";
+exports.JOIN_GAME = "JOIN_GAME";
+exports.REVEAL_READY = "REVEAL_READY";
+exports.NOMINATE = "NOMINATE";
+exports.VOTE_YES = "VOTE_YES";
+exports.VOTE_NO = "VOTE_NO";
+exports.DEVOUR = "DEVOUR";
+exports.UPDATE_STATE = "UPDATE_STATE";
+exports.PLAYER_PRESENCE = "PLAYER_PRESENCE";
 
-  CREATE_GAME: null,
-  START_GAME: null,
-  JOIN_GAME: null,
-  REVEAL_READY: null,
-  NOMINATE: null,
-  VOTE_YES: null,
-  VOTE_NO: null,
-  DEVOUR: null,
-  UPDATE_STATE: null,
+exports.WEREWOLF = "WEREWOLF";
+exports.VILLAGER = "VILLAGER";
 
-  WEREWOLF: null,
-  VILLAGER: null,
+exports.PAGE_MENU = "PAGE_MENU";
+exports.PAGE_HOST = "PAGE_HOST";
+exports.PAGE_JOIN  = "PAGE_JOIN";
+exports.PAGE_LOBBY = "PAGE_LOBBY";
+exports.PAGE_REVEAL = "PAGE_REVEAL";
+exports.PAGE_NIGHT = "PAGE_NIGHT";
+exports.PAGE_VOTE = "PAGE_VOTE";
+exports.PAGE_DAY = "PAGE_DAY";
+exports.PAGE_END = "PAGE_END";
 
-  PAGE_MENU: null,
-  PAGE_HOST: null,
-  PAGE_JOIN : null,
-  PAGE_LOBBY: null,
-  PAGE_REVEAL: null,
-  PAGE_NIGHT: null,
-  PAGE_VOTE: null,
-  PAGE_DAY: null,
-  PAGE_END: null,
+exports.ERROR = "ERROR";
 
-  ERROR: null,
+exports.SHOW_HOST = "SHOW_HOST";
+exports.SHOW_JOIN = "SHOW_JOIN";
 
-  SHOW_HOST: null,
-  SHOW_JOIN: null,
-
-  GAME_STATE_UPDATE: null,
-  JOIN_GAME: null,
-  CONNECTING: null,
-  CONNECTED: null,
-  HOST_GAME: null,
-  CANCEL: null,
-  CHOOSE_VICTIM: null,
-
-});
+exports.GAME_STATE_UPDATE = "GAME_STATE_UPDATE";
+exports.CONNECTING = "CONNECTING";
+exports.CONNECTED = "CONNECTED";
+exports.HOST_GAME = "HOST_GAME";
+exports.CANCEL = "CANCEL";
+exports.CHOOSE_VICTIM = "CHOOSE_VICTIM";

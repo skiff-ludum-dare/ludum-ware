@@ -191,15 +191,49 @@ button.primary::before {
 
 /* Reveal */
 .phase-reveal {}
+.phase-reveal > .info {
+  flex: 2;
+}
+.phase-reveal > .character {
+  flex: 3;
+}
+.phase-reveal > .character > p {
+  font-size: 44px;
+  margin-right: 15px;
+  margin-left: 15px;
+  padding: 16px;
+  border: 4px dashed yellow;
+}
+.phase-reveal > .character > p.villager {
+  color: aquamarine;
+}
+.phase-reveal > .character > p.wolf {
+  color: red;
+}
+.phase-reveal > .actions {
+  flex: 1;
+}
 
 /* Round */
 .phase-round {}
+.phase-round > .info {
+  flex: 1;
+}
+.phase-round > .survivors {
+  flex: 6;
+}
 
 /* Vote */
 .phase-vote {}
 
 /* End */
 .phase-end {}
+.phase-end > .info {
+  flex: 6;
+}
+.phase-end > .actions {
+  flex: 1;
+}
 
 /*
  *  Miscellaneous

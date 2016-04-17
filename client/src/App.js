@@ -12,7 +12,7 @@ import {
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
   startGame, revealReady, chooseVictim, nominate, voteYes, voteNo
-} from './state';
+} from './actions';
 
 const Menu = connect(
   state => ({}),
@@ -33,6 +33,7 @@ const Lobby = connect(
   state => ({
     gameCode: state.game.gameCode,
     players: state.game.players,
+    ownPlayerId: state.userId,
     isOwner: _.findWhere(state.game.players, {id: state.userId}).owner,
 
   }),
