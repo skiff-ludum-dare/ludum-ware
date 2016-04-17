@@ -23,7 +23,7 @@ function getRand(seed, len=10) {
 }
 
 function markNotReady(state) {
-  console.log('NOT READY', _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))}));
+  // console.log('NOT READY', _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))}));
   return _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))});
 }
 
@@ -138,10 +138,10 @@ function dayOrNightReducer(state, action) {
         const villagersWin = werewolves(state).length === 0;
         const wolvesWin = werewolves(state).length >= villagers(state).length;
 
-        console.log('werewolves', werewolves(state), werewolves(state).length);
-        console.log('villagers', villagers(state), villagers(state).length);
-        console.log('WIN', villagersWin, wolvesWin);
-
+        // console.log('werewolves', werewolves(state), werewolves(state).length);
+        // console.log('villagers', villagers(state), villagers(state).length);
+        // console.log('WIN', villagersWin, wolvesWin);
+        //
         // Move to next phase
         if (villagersWin || wolvesWin) {
           state = update(state, {
