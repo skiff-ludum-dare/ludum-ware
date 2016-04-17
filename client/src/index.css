@@ -275,6 +275,7 @@ button.primary::before {
 
 .mute-all {
  text-align: center;
+ text-indent: 0;
  width: 100%;
  height: 100%;
  padding-right: 0;
@@ -285,10 +286,6 @@ button.primary::before {
 }
 .mute-all:focus {
   outline: none;
-}
-.mute-all > .fa {
-  left: -17px;
-  position: relative;
 }
 
 .copyright {
