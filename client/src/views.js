@@ -474,7 +474,7 @@ export const GameEnd = React.createClass({
         <div className="info">
           { winningTeam === VILLAGER
           ?
-          <h2 className="offset">The crew of the SS-LUDUM has survivied.</h2>
+          <h2 className="offset">The crew of the SS-LUDUM has survived.</h2>
           :
           <h2 className="offset">Non-human life forms are now the only life form.</h2>
           }
