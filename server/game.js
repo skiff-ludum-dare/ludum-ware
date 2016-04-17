@@ -85,14 +85,13 @@ module.exports = function game(gameCode, ownerUserId, seed) {
           players: {
             [idx]: { ready: {$set: true} }
           },
-          phase: {$set: c.PHASE_DAY},
         });
 
         if (_.every(newState.players, {ready: true})) {
           //all ready
           return update(newState, {
             nomination: {$set: null},
-            phase: {$set: c.PHASE_VOTE},
+            phase: {$set: c.PHASE_DAY},
           });
         } else {
           return newState;
@@ -101,123 +100,123 @@ module.exports = function game(gameCode, ownerUserId, seed) {
         break;
       }
 
-      case c.NOMINATE: {
-        if (state.phase !== c.PHASE_DAY) return state;
-        const {nominatedUserId, accuserUserId} = action;
-        if (!nominatedUserId || !accuserUserId) {
-          console.error("missing nominate stuff");
-          return state;
-        }
+      // case c.NOMINATE: {
+      //   if (state.phase !== c.PHASE_DAY) return state;
+      //   const {nominatedUserId, accuserUserId} = action;
+      //   if (!nominatedUserId || !accuserUserId) {
+      //     console.error("missing nominate stuff");
+      //     return state;
+      //   }
 
-        return update(state, {
-          phase: {$set: c.PHASE_VOTE},
-          nomination: {
-            $set: {
-              nominatedUserId: nominatedUserId,
-              accuserUserId: accuserUserId,
-              yesVotes: [accuserUserId],
-              noVotes: [],
-            }
-          }
-        });
-        break;
-      }
+      //   return update(state, {
+      //     phase: {$set: c.PHASE_VOTE},
+      //     nomination: {
+      //       $set: {
+      //         nominatedUserId: nominatedUserId,
+      //         accuserUserId: accuserUserId,
+      //         yesVotes: [accuserUserId],
+      //         noVotes: [],
+      //       }
+      //     }
+      //   });
+      //   break;
+      // }
 
-      case c.VOTE_YES: {
-        if (state.phase !== c.PHASE_VOTE) return state;
-        const {userId} = action;
-        if (state.nomination.yesVotes.indexOf(userId) > -1 ) return state;
+      // case c.VOTE_YES: {
+      //   if (state.phase !== c.PHASE_VOTE) return state;
+      //   const {userId} = action;
+      //   if (state.nomination.yesVotes.indexOf(userId) > -1 ) return state;
 
-        const nominated = state.nomination.nominatedUserId;
+      //   const nominated = state.nomination.nominatedUserId;
 
-        if (userId === nominated) return state;
+      //   if (userId === nominated) return state;
 
-        const newState = update(state, {
-          nomination: {
-            yesVotes: {$push: [userId]},
-            noVotes: {$apply: without(userId)},
-          }
-        });
+      //   const newState = update(state, {
+      //     nomination: {
+      //       yesVotes: {$push: [userId]},
+      //       noVotes: {$apply: without(userId)},
+      //     }
+      //   });
 
-        if (newState.nomination.yesVotes.length > amount/2) {
-          const idx = playerIndex(state, nominated);
-          if (idx == -1) return state;
+      //   if (newState.nomination.yesVotes.length > amount/2) {
+      //     const idx = playerIndex(state, nominated);
+      //     if (idx == -1) return state;
 
-          const newNewState = update(newState, {
-            players: {[idx]: {alive: {$set: false}}},
-            nomination: {$set: null},
-            phase: {$set: c.PHASE_DAY},
-          });
+      //     const newNewState = update(newState, {
+      //       players: {[idx]: {alive: {$set: false}}},
+      //       nomination: {$set: null},
+      //       phase: {$set: c.PHASE_DAY},
+      //     });
 
-          const nextPhase =
-            _.some(werewolves(newNewState), {alive: true})
-            ? c.PHASE_NIGHT : c.PHASE_END;
+      //     const nextPhase =
+      //       _.some(werewolves(newNewState), {alive: true})
+      //       ? c.PHASE_NIGHT : c.PHASE_END;
 
-          return update(newNewState, {
-            phase: {$set: nextPhase},
-          });
-        }
+      //     return update(newNewState, {
+      //       phase: {$set: nextPhase},
+      //     });
+      //   }
 
-        return newState;
-        break;
-      }
+      //   return newState;
+      //   break;
+      // }
 
-      case c.VOTE_NO: {
-        if (state.phase !== c.PHASE_VOTE) return state;
-        const {userId} = action;
-        if (state.nomination.noVotes.indexOf(userId) > -1 ) return state;
+      // case c.VOTE_NO: {
+      //   if (state.phase !== c.PHASE_VOTE) return state;
+      //   const {userId} = action;
+      //   if (state.nomination.noVotes.indexOf(userId) > -1 ) return state;
 
-        const newState = update(state, {
-          nomination: {
-            noVotes: {$push: [userId]},
-            yesVotes: {$set: without(userId)},
-          }
-        });
-        if (newState.nomination.noVotes.length > amount/2) {
-          return update(newState, {
-            nomination: {$set: null},
-            phase: {$set: c.PHASE_DAY},
-          });
-        }
+      //   const newState = update(state, {
+      //     nomination: {
+      //       noVotes: {$push: [userId]},
+      //       yesVotes: {$set: without(userId)},
+      //     }
+      //   });
+      //   if (newState.nomination.noVotes.length > amount/2) {
+      //     return update(newState, {
+      //       nomination: {$set: null},
+      //       phase: {$set: c.PHASE_DAY},
+      //     });
+      //   }
 
-        return newState;
-        break;
-      }
+      //   return newState;
+      //   break;
+      // }
 
-      case c.DEVOUR: {
-        if (state.phase !== c.PHASE_NIGHT) return state;
+      // case c.DEVOUR: {
+      //   if (state.phase !== c.PHASE_NIGHT) return state;
 
-        const {wolfUserId, victimUserId} = action;
-        const widx = playerIndex(state, wolfUserId);
-        const vidx = playerIndex(state, victimUserId);
+      //   const {wolfUserId, victimUserId} = action;
+      //   const widx = playerIndex(state, wolfUserId);
+      //   const vidx = playerIndex(state, victimUserId);
 
-        if (state.players[widx].role !== c.WEREWOLF) return state;
-        if (state.players[vidx].role !== c.VILLAGER) return state;
+      //   if (state.players[widx].role !== c.WEREWOLF) return state;
+      //   if (state.players[vidx].role !== c.VILLAGER) return state;
 
-        const newState = update(state, {
-          players: {[widx]: { toEat: {$set: victimUserId} }}
-        });
+      //   const newState = update(state, {
+      //     players: {[widx]: { toEat: {$set: victimUserId} }}
+      //   });
 
-        if (_.every(werewolves(newState), {toEat: victimUserId})) {
-          const nextState = update(newState, {
-            players: {[vidx]: {alive: {$set: false}}}
-          });
+      //   if (_.every(werewolves(newState), {toEat: victimUserId})) {
+      //     const nextState = update(newState, {
+      //       players: {[vidx]: {alive: {$set: false}}}
+      //     });
 
-          if (_.every(villagers(nextState), {alive: false})) {
-            return update(nextState, {
-              phase: {$set: c.PHASE_END},
-            });
-          }
+      //     if (_.every(villagers(nextState), {alive: false})) {
+      //       return update(nextState, {
+      //         phase: {$set: c.PHASE_END},
+      //       });
+      //     }
 
-          return update(nextState, {
-            phase: {$set: c.PHASE_DAY},
-          });
+      //     return update(nextState, {
+      //       phase: {$set: c.PHASE_DAY},
+      //     });
 
-        } else {
-          return newState;
-        }
-        break;
-      }
+      //   } else {
+      //     return newState;
+      //   }
+      //   break;
+      // }
 
       default:
         return state;

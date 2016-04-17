@@ -1,9 +1,9 @@
 'use strict';
 import uuid from 'uuid';
 import {
-  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY, PAGE_REVEAL, PAGE_NIGHT, PAGE_VOTE, PAGE_DAY, PAGE_END,
+  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
   CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, NOMINATE, VOTE_YES, VOTE_NO, DEVOUR, UPDATE_STATE,
-  PHASE_LOBBY, PHASE_REVEAL,
+  PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END,
   ERROR,
   SHOW_HOST, SHOW_JOIN,
   GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, CHOOSE_VICTIM,
@@ -56,28 +56,22 @@ function startGameReducer(state, action) {
       page: PAGE_MENU,
     }
   }
-
-  case HOST_GAME: {
-    let { userId, playerName } = action;
-    return {
-        ...state,
-      loading: true,
-    };
-  }
-
+  case HOST_GAME:
   case JOIN_GAME: {
-    let { gameCode, userId, playerName } = action;
-    return {
-        ...state,
-      loading: true,
-    };
-  }
-
-  case GAME_STATE_UPDATE: {
-    return {
-        ...state,
-      loading: false,
-      page: PAGE_LOBBY,
+    let {playerName} = action;
+    if (action.complete) {
+      return {
+          ...state,
+        waiting: false,
+        playerName,
+        page: PAGE_GAME,
+      }
+    } else {
+      return {
+          ...state,
+        playerName,
+        waiting: true,
+      };
     }
   }
   }
@@ -94,18 +88,10 @@ function lobbyReducer(state, action) {
   }
 
   case START_GAME: {
-    if (action.status == "request") {
-      return {
-          ...state,
-        waiting: true,
-      };
-    } else if (action.status === 'response') {
-      return {
-          ...state,
-        waiting: false,
-        page: PAGE_REVEAL,
-      }
-    }
+    return {
+        ...state,
+      waiting: true,
+    };
   }
   }
   return state;
@@ -117,16 +103,6 @@ function revealReducer(state, action) {
     return {
         ...state,
       waiting: true,
-    }
-  }
-
-  case GAME_STATE_UPDATE: {
-    if (state.game.phase === PHASE_DAY) {
-      return {
-          ...state,
-        waiting: false,
-        page: PAGE_DAY,
-      }
     }
   }
   }
@@ -157,29 +133,31 @@ function nightReducer(state, action) {
   return state;
 }
 
-function voteReducer(state, action) {
-  switch (action.type) {
-  case VOTE_YES: {
-    return {
-        ...state,
-      page: PAGE_NIGHT,
-    }
-  }
+// function voteReducer(state, action) {
+//   switch (action.type) {
+//   case VOTE_YES: {
+//     return {
+//         ...state,
+//       page: PAGE_NIGHT,
+//     }
+//   }
 
-  case VOTE_NO: {
-    return {
-        ...state,
-      page: PAGE_END,
-    }
-  }
-  }
-  return state;
-}
+//   case VOTE_NO: {
+//     return {
+//         ...state,
+//       page: PAGE_END,
+//     }
+//   }
+//   }
+//   return state;
+// }
 
 export default function reducer(state=initialState, action) {
 
   if (action.type === GAME_STATE_UPDATE) {
-
+    if (!state.game || action.game.phase !== state.game.phase) {
+      state = {...state, waiting: false};
+    }
     state = {
       ...state,
       game: action.game,
@@ -194,20 +172,23 @@ export default function reducer(state=initialState, action) {
   case PAGE_JOIN:
     return startGameReducer(state, action);
 
-  case PAGE_LOBBY:
-    return lobbyReducer(state, action);
+  case PAGE_GAME:
+    if (state.game) {
+      switch (state.game.phase) {
+      case PHASE_LOBBY:
+        return lobbyReducer(state, action);
 
-  case PAGE_REVEAL:
-    return revealReducer(state, action);
+      case PHASE_REVEAL:
+        return revealReducer(state, action);
 
-  case PAGE_NIGHT:
-    return nightReducer(state, action);
+      case PHASE_NIGHT:
+        return nightReducer(state, action);
 
-  case PAGE_DAY:
-    return dayReducer(state, action);
+      case PHASE_DAY:
+        return dayReducer(state, action);
+      }
+    }
 
-  case PAGE_VOTE:
-    return voteReducer(state, action);
   }
 
   return state;

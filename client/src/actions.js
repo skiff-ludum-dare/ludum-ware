@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import _ from 'underscore';
 
 import {
-  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY, PAGE_REVEAL, PAGE_NIGHT, PAGE_VOTE, PAGE_DAY, PAGE_END,
+  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
   CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, NOMINATE, VOTE_YES, VOTE_NO, DEVOUR, UPDATE_STATE,
   PHASE_LOBBY, PHASE_REVEAL,
   ERROR,
@@ -16,10 +16,10 @@ import * as api from './api';
 
 function message(type, message={}) {
   return (dispatch, getState) => {
-    let {userId, game} = getState();
+    let {userId, playerName, game} = getState();
     if (game) {
       dispatch({...message, type});
-      api.sendMessage(userId, game.gameCode, type, message);
+      api.sendMessage(userId, game.gameCode, playerName, type, message);
     } else {
       console.error("Tried to send a message without a game", type, message);
     }
@@ -48,12 +48,12 @@ export function gameStateUpdate(data) {
 export function joinGame(playerName, gameCode) {
   return (dispatch, getState) => {
     let {userId} = getState();
-    dispatch({type: JOIN_GAME, status: 'request'});
+    dispatch({type: JOIN_GAME, playerName});
     api.joinGame(userId, playerName, gameCode)
       .then(
         gameState => {
           gameStateUpdate(gameState);
-          dispatch({type: JOIN_GAME, status: 'response'});
+          dispatch({type: JOIN_GAME, playerName, complete: true})
         },
         error => {
           dispatch({type: ERROR, originalType: JOIN_GAME, error});
@@ -68,14 +68,14 @@ export function hostGame(playerName) {
     let {userId} = getState();
     dispatch({
       type: HOST_GAME,
-      status: 'request',
+      playerName,
     });
 
     api.hostGame(userId, playerName)
       .then(
         gameState => {
           gameStateUpdate(gameState);
-          dispatch({type: HOST_GAME, playerName, userId, status: 'response'});
+          dispatch({type: HOST_GAME, playerName, complete: true});
         },
         error => {
           dispatch({type: ERROR, originalType: HOST_GAME, error});
@@ -91,15 +91,11 @@ export function cancel(playerName) {
 }
 
 export function startGame() {
-  return (dispatch, getState) => {
-    dispatch(message(START_GAME));
-  };
+  return message(START_GAME);
 }
 
 export function revealReady() {
-  return {
-    type: REVEAL_READY,
-  };
+  return message(REVEAL_READY);
 }
 
 export function chooseVictim(ownPlayerId, victimPlayerId) {

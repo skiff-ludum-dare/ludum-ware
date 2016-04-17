@@ -6,8 +6,8 @@ import _ from 'underscore';
 import * as views from './views';
 import {Starfield} from './Starfield';
 import {
-  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_LOBBY,
-  PAGE_REVEAL, PAGE_NIGHT, PAGE_DAY, PAGE_VOTE, PAGE_END
+  PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
+  PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
@@ -72,13 +72,13 @@ const Night = connect(
   dispatch => bindActionCreators({ onSelect: chooseVictim, onUnselect: () => {} }, dispatch),
 )(views.GameRound);
 
-const Vote = connect(
-  state => ({
-    nominatedUser: _.findWhere(state.game.players, {id: state.game.nomination.nominatedUserId}),
-    accuserUser: _.findWhere(state.game.players, {id: state.game.nomination.accuserUserId}),
-  }),
-  dispatch => bindActionCreators({ onVoteYes: voteYes, onVoteNo: voteNo }, dispatch),
-)(views.Vote);
+// const Vote = connect(
+//   state => ({
+//     nominatedUser: _.findWhere(state.game.players, {id: state.game.nomination.nominatedUserId}),
+//     accuserUser: _.findWhere(state.game.players, {id: state.game.nomination.accuserUserId}),
+//   }),
+//   dispatch => bindActionCreators({ onVoteYes: voteYes, onVoteNo: voteNo }, dispatch),
+// )(views.Vote);
 
 const GameEnd = connect(
   state => ({
@@ -91,13 +91,16 @@ const pages = {
   [PAGE_MENU]: Menu,
   [PAGE_HOST]: Host,
   [PAGE_JOIN]: Join,
-  [PAGE_LOBBY]: Lobby,
-  [PAGE_REVEAL]: Reveal,
-  [PAGE_DAY]: Day,
-  [PAGE_NIGHT]: Night,
-  [PAGE_VOTE]: Vote,
-  [PAGE_END]: GameEnd,
 };
+
+const phases = {
+  [PHASE_LOBBY]: Lobby,
+  [PHASE_REVEAL]: Reveal,
+  [PHASE_DAY]: Day,
+  [PHASE_NIGHT]: Night,
+  // [PHASE_VOTE]: Vote,
+  [PHASE_END]: GameEnd,
+}
 
 const App = React.createClass({
   displayName: 'App',
@@ -106,9 +109,10 @@ const App = React.createClass({
   },
 
   render () {
-    const { page, waiting } = this.props;
+    const { page, game, waiting } = this.props;
     console.log(page);
-    const Page = pages[page];
+    const Page = (page === PAGE_GAME && game) ? phases[game.phase] : pages[page];
+    console.log(game && game.phase, page);
 
     return <article>
       <Starfield/>

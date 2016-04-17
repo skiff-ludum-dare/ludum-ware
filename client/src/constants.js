@@ -1,7 +1,7 @@
 exports.PHASE_LOBBY = "PHASE_LOBBY";
 exports.PHASE_REVEAL = "PHASE_REVEAL";
 exports.PHASE_DAY = "PHASE_DAY";
-exports.PHASE_VOTE = "PHASE_VOTE";
+//exports.PHASE_VOTE = "PHASE_VOTE";
 exports.PHASE_NIGHT = "PHASE_NIGHT";
 exports.PHASE_END = "PHASE_END";
 
@@ -22,12 +22,13 @@ exports.VILLAGER = "VILLAGER";
 exports.PAGE_MENU = "PAGE_MENU";
 exports.PAGE_HOST = "PAGE_HOST";
 exports.PAGE_JOIN  = "PAGE_JOIN";
-exports.PAGE_LOBBY = "PAGE_LOBBY";
-exports.PAGE_REVEAL = "PAGE_REVEAL";
-exports.PAGE_NIGHT = "PAGE_NIGHT";
-exports.PAGE_VOTE = "PAGE_VOTE";
-exports.PAGE_DAY = "PAGE_DAY";
-exports.PAGE_END = "PAGE_END";
+exports.PAGE_GAME = "PAGE_GAME";
+
+// exports.PAGE_REVEAL = "PAGE_REVEAL";
+// exports.PAGE_NIGHT = "PAGE_NIGHT";
+// exports.PAGE_VOTE = "PAGE_VOTE";
+// exports.PAGE_DAY = "PAGE_DAY";
+// exports.PAGE_END = "PAGE_END";
 
 exports.ERROR = "ERROR";
 
