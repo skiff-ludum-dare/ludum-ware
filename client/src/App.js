@@ -13,7 +13,7 @@ import {
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
-  startGame, revealReady, selectVictim, unselectVictim
+  startGame, ready, selectVictim, unselectVictim
 } from './actions';
 import {MIN_PLAYERS} from './config';
 
@@ -52,7 +52,7 @@ const Reveal = connect(
   state => ({
     role: _.findWhere(state.game.players, {id: state.userId}).role,
   }),
-  dispatch => bindActionCreators({ onReady: revealReady }, dispatch),
+  dispatch => bindActionCreators({ onReady: ready }, dispatch),
 )(views.Reveal);
 
 const GameRound = connect(
@@ -81,6 +81,18 @@ const GameEnd = connect(
   dispatch => bindActionCreators({onFinish: cancel}, dispatch),
 )(views.GameEnd);
 
+const Narrative = connect(
+  state => ({
+    survivingPlayers: _.where(state.game.players, {alive: true}).length,
+    deadPlayers: _.where(state.game.players, {alive: false}).length,
+    lastVictim: _.findWhere(state.game.players, {id: state.game.lastVictimUserId}),
+    round: state.game.round,
+    seed: state.game.seed,
+  }),
+  dispatch => bindActionCreators({ onReady: ready }, dispatch),
+)(views.Narrative);
+
+
 const pages = {
   [PAGE_MENU]: Menu,
   [PAGE_HOST]: Host,
@@ -91,8 +103,7 @@ const phases = {
   [PHASE_LOBBY]: Lobby,
   [PHASE_REVEAL]: Reveal,
   [PHASE_DAY]: GameRound,
-  [PHASE_NIGHT]: DayOrNight,
-  // [PHASE_VOTE]: Vote,
+  [PHASE_NIGHT]: GameRound,
   [PHASE_END]: GameEnd,
 }
 
@@ -104,15 +115,22 @@ const App = React.createClass({
 
   render () {
     const { page, game, waiting } = this.props;
-    console.log(page);
-    const Page = (page === PAGE_GAME && game) ? phases[game.phase] : pages[page];
-    console.log(game && game.phase, page);
+    let Content;
+    if (page === PAGE_GAME && game) {
+      if (game.showNarrative) {
+        Content = Narrative;
+      } else {
+        Content = phases[game.phase];
+      }
+    } else {
+      Content = pages[page];
+    }
 
     return <article>
       <Sound/>
       <Starfield/>
       <main id="page">
-        <Page waiting={waiting}/>
+        <Content waiting={waiting}/>
       </main>
       {waiting && <Waiter/>}
     </article>;

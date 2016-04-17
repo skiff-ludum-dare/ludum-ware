@@ -10,9 +10,9 @@ const reservoir = require('reservoir');
 const initialGameState = {
   gameCode: null,
   phase: c.PHASE_LOBBY,
+  showNarrative: false,
   round: null,
   players: [],
-  nomination: null,
 };
 
 const WEREWOLVES = 2;
@@ -20,6 +20,10 @@ const WEREWOLVES = 2;
 function getRand(seed, len=10) {
   const rand = pi(seed + len + 2).slice(-len);
   return Number("0." +rand);
+}
+
+function markNotReady(state) {
+  return _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))});
 }
 
 function lobbyReducer(state, action) {
@@ -39,20 +43,20 @@ function lobbyReducer(state, action) {
       });
     });
 
-    return update(state, {
-      players: {$set: playersWithRoles},
-      phase: {$set: c.PHASE_REVEAL},
-    });
+    return update(markNotReady(state), {
+        players: {$set: playersWithRoles},
+        phase: {$set: c.PHASE_REVEAL},
+      });
 
-    break;
-  }
-  }
-  return state;
+      break;
+    }
+    }
+    return state;
 }
 
 function revealReducer(state, action) {
   switch(action.type) {
-  case c.REVEAL_READY: {
+  case c.READY: {
     const {userId} = action;
     const idx = playerIndex(state, userId);
     const newState = update(state, {
@@ -63,8 +67,10 @@ function revealReducer(state, action) {
 
     if (_.every(newState.players, {ready: true})) {
       //all ready
-      return update(newState, {
+      return update(markNotReady(newState), {
+        round: {$set: 1},
         phase: {$set: c.PHASE_DAY},
+        showNarrative: {$set: true},
         players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
       });
     } else {
@@ -82,12 +88,22 @@ function voteInfo(state) {
   const voters = isNight ? werewolves(state) : living(state);
   const targets = isNight ? villagers(state) : living(state);
   const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
-  return {votes, targets, votesNeeded};
+  return {voters, targets, votesNeeded};
 }
 
 function dayOrNightReducer(state, action) {
+  if (state.showNarrative) {
+    if (action.type === c.READY) {
+      state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
+      if (_.every(living(state), p => p.ready)) {
+        return _.extend({}, state, {showNarrative: false});
+      }
+    }
+    return state;
+  }
+
   const isNight = (state.phase === c.PHASE_NIGHT);
-  let {votes, targets, votesNeeded} = voteInfo(state);
+  let {voters, targets, votesNeeded} = voteInfo(state);
 
   state = _.extend({}, state, {votesNeeded});
 
@@ -108,14 +124,14 @@ function dayOrNightReducer(state, action) {
     });
 
     // Recaluclate voters and targets
-    let {votes, targets, votesNeeded} = voteInfo(state);
+    let {voters, targets, votesNeeded} = voteInfo(state);
 
     if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) {
       console.log('VALID SELECT');
 
       if (_.filter(voters, {victimUserId}).length >= votesNeeded) {
-        console.log('DIE', victimUserId);
         state = update(state, {
+          lastVictimUserId: {$set: victimUserId},
           players: {[vidx]: { alive: {$set: false} }}
         });
 
@@ -132,8 +148,10 @@ function dayOrNightReducer(state, action) {
             winner: {$set: villagersWin ? "villagers" : "wolves"},
           });
         } else {
-          state = update(state, {
+          state = update(markNotReady(state), {
+            round: {$set: isNight ? state.round + 1 : state.round },
             phase: {$set: isNight ? c.PHASE_DAY : c.PHASE_NIGHT},
+            showNarrative: {$set: true},
             players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
           });
         }
@@ -154,10 +172,10 @@ module.exports = function game(gameCode, ownerUserId, seed) {
 
     switch(action.type) {
 
-      case c.JOIN_GAME: {
-        const {userId, playerName} = action;
-        if (state.phase !== c.PHASE_LOBBY) return state;
-        if (state.players.indexOf(userId) > -1) return state;
+    case c.JOIN_GAME: {
+      const {userId, playerName} = action;
+      if (state.phase !== c.PHASE_LOBBY) return state;
+      if (state.players.indexOf(userId) > -1) return state;
 
         const player = {
           id: userId,

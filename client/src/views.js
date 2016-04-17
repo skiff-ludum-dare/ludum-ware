@@ -1,6 +1,7 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 import {WEREWOLF, VILLAGER} from './constants';
+import classNames from 'classnames';
 
 import {IntroSound} from './Sound';
 
@@ -21,7 +22,10 @@ export const Menu = React.createClass({
     return (
       <div className="phase phase-menu">
         <IntroSound/>
-        <aside className="spaceship"></aside>
+        <aside className="spaceship">
+          <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
+          <img className="center-block img-responsive slide-in-right animated" src="images/ship.png" alt="Space Ship" />
+        </aside>
         <div className="actions">
           <h1>Terrormorph!</h1>
           <button
@@ -119,13 +123,12 @@ export const Lobby = React.createClass({
 
   render () {
     const { gameCode, minPlayers, players, onStart, onCancel, canStart, ownPlayerId } = this.props;
-    console.log(players);
     return (
       <div className="phase phase-lobby">
         <div className="info">
           <form noValidate>
             <div className="form-group">
-              <input
+              Game Code: <input
                 type="text"
                 className="form-control"
                 defaultValue={gameCode}
@@ -270,7 +273,7 @@ export const GameRound = React.createClass({
             { players.map(({name, alive, id}) => (
               <li
                  key={id}
-                 className={ id === ownPlayerId ? 'highlight' : '' }
+                 className={classNames({highlight: id === ownPlayerId, alive, dead: !alive})}
                  onMouseDown={() => onSelect(id)}
                  onMouseUp={() => onUnselect(id)}
                  onTouchStart={() => onSelect(id)}
@@ -279,6 +282,40 @@ export const GameRound = React.createClass({
                 >{ name }</li>
             )) }
           </ul>
+        </div>
+      </div>
+    );
+  }
+});
+
+export const Narrative = React.createClass({
+  displayName: 'Narrative',
+
+  propTypes: {
+    survivingPlayers: React.PropTypes.number,
+    deadPlayers: React.PropTypes.number,
+    lastVictim: React.PropTypes.object,
+    round: React.PropTypes.number,
+    seed: React.PropTypes.number,
+
+    onReady: React.PropTypes.func,
+  },
+
+  render () {
+    let { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed } = this.props;
+    return (
+      <div className="phase phase-narrative">
+        <div className="info">
+          <h2 className="offset">Narrative n shit...?</h2>
+          <h2><small>Stuff is like... happening</small></h2>
+        </div>
+
+        <div className="actions">
+          <button
+            type="button"
+            className="primary"
+            onClick={onReady}
+          >Ready</button>
         </div>
       </div>
     );
