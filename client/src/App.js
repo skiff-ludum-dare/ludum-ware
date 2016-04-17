@@ -9,7 +9,8 @@ import {Starfield} from './Starfield';
 import {Waiter} from './Waiter';
 import {
   PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
-  PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END
+  PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END,
+  VILLAGER, WEREWOLF,
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
@@ -51,6 +52,7 @@ const Lobby = connect(
 const Reveal = connect(
   state => ({
     role: _.findWhere(state.game.players, {id: state.userId}).role,
+    index: _.findIndex(_.where(state.game.players, {role: VILLAGER}), {id: state.userId}),
   }),
   dispatch => bindActionCreators({ onReady: ready }, dispatch),
 )(views.Reveal);

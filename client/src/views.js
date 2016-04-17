@@ -245,7 +245,7 @@ export const Reveal = React.createClass({
   },
 
   render () {
-    const { role, onReady } = this.props;
+    const { role, onReady, index } = this.props;
     const { show, hasShown } = this.state;
     const instruction = supportsMultiTouch() ? 'two-finger press' : 'click and hold';
     return (
@@ -263,7 +263,7 @@ export const Reveal = React.createClass({
           />
           <img
             className={`center-block img-responsive img-reveal img-reveal-${show ? 'opaque' : 'transparent'}`}
-            src={`images/astronaut_${role === WEREWOLF ? 'terror' : 'human'}.png`}
+            src={`images/astronaut_${role === WEREWOLF ? 'terror' : 'human' + (index % 4)}.png`}
             alt="Astronaut Revealed"
           />
         </div>
@@ -313,35 +313,47 @@ export const GameRound = React.createClass({
     type: React.PropTypes.oneOf(["day", "night"]),
     players: React.PropTypes.arrayOf(React.PropTypes.object),
     ownPlayerId: React.PropTypes.string,
+
+    votesNeeded: React.PropTypes.number,
+    victimUserId: React.PropTypes.string,
+
     onSelect: React.PropTypes.func,
     onUnselect: React.PropTypes.func,
   },
 
   render () {
-    const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
+    const { type, players, ownPlayerId, votesNeeded, victimUserId, onSelect, onUnselect } = this.props;
 
     return (
       <div className="phase phase-round">
         <div className="info">
           <h2 className="offset">{ type }</h2>
+          <small>
+            <span className="highlight">{votesNeeded} votes for majority</span><br />
+            <span>&#91;{`${supportsMultiTouch() ? 'press' : 'click'} and hold to vote`}&#93;</span>
+          </small>
         </div>
 
         <div className="survivors">
-          <ul>
-            { players.map(({name, alive, id}) => {
+          <ul className="survivors-list">
+            { players.map(({name, alive, killVotes, id}) => {
+              let cssClasses = classNames({ 'highlight': id === ownPlayerId, 'accused': id === victimUserId })
               return(
                 alive ?
                 <li
                   key={id}
-                  className={ id === ownPlayerId ? 'highlight' : '' }
+                  className={cssClasses}
                   onMouseDown={() => onSelect(id)}
                   onMouseUp={() => onUnselect(id)}
                   onTouchStart={() => onSelect(id)}
                   onTouchEnd={() => onUnselect(id)}
                   onTouchCancel={() => onUnselect(id)}
-                >{ name }</li>
+                >
+                  <span>{ name }</span>
+                  { killVotes && <span className="danger votes">{killVotes}</span> }
+                </li>
                 :
-                <li className="dead" key={id}>{ name }</li>);
+                <li className="danger dead" key={id}>{ name }</li>);
             }) }
           </ul>
         </div>
