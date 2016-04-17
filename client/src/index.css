@@ -5,10 +5,28 @@
  *  --
  */
 
-#page, aside#starfield, aside#waiting {
+.button {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#page, aside#starfield, aside#waiting, aside#credits {
   font-family: 'Press Start 2P', monospace;
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
+}
+
+aside#credits {
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.8);
+  overflow-y: scroll;
+}
+
+aside#credits {
+}
+
+aside#credits div {
+  line-height: 24px;
 }
 
 #page {
@@ -108,26 +126,41 @@ hr {
 
 *::-webkit-input-placeholder{
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
 *:-moz-placeholder{
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
 *::-moz-placeholder{
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
 *:-ms-input-placeholder{
   color: white;
+  text-transform: lowercase;
 }
 
 *[placeholder] {
   color: white;
   opacity: 1;
+}
+
+.form-control-label {
+  display: inline-block;
+  margin-top: 1em;
+  margin-bottom: 0;
+}
+
+.form-control-label + .form-control {
+  display: inline-block;
+  margin-top: .25em;
 }
 
 button {
@@ -169,8 +202,8 @@ button.primary::before {
 
 .img-reveal {
   transition: opacity .33s ease-in-out;
+  margin-top: -288px;
   position: relative;
-  top: -288px;
 }
 
 .img-reveal-transparent {
@@ -211,12 +244,29 @@ button.primary::before {
   }
 
   to {
-    transform: translate3d(-160%, -80%, 0);
+    transform: translate3d(-80%, -40%, 0);
   }
 }
 
 .slide-out-left {
   animation-name: slideOutLeft;
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -99.9%, 0);
+  }
+}
+
+.slide-out-up {
+  animation-name: slideOutUp;
+  animation-duration: 120s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
 }
 
 /*
@@ -295,6 +345,7 @@ button.primary::before {
 }
 .phase-reveal > .character {
   flex: 6;
+  position: relative;
 }
 .phase-reveal > .actions {
   flex: 1;
@@ -307,6 +358,7 @@ button.primary::before {
 }
 .phase-dead > .character {
   flex: 6;
+  position: relative;
 }
 .phase-dead > .actions {
   flex: 1;
@@ -357,6 +409,14 @@ button.primary::before {
 }
 .mute-all:focus {
   outline: none;
+}
+
+.game-code-input {
+  text-transform: uppercase;
+}
+
+.thanks > small {
+  display: block;
 }
 
 .copyright {

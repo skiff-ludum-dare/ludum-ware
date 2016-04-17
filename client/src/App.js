@@ -92,6 +92,7 @@ const Narrative = connect(
   dispatch => bindActionCreators({ onReady: ready }, dispatch),
 )(views.Narrative);
 
+const Dead = views.Dead;
 
 const pages = {
   [PAGE_MENU]: Menu,
@@ -114,10 +115,18 @@ const App = React.createClass({
   },
 
   render () {
-    const { page, game, waiting } = this.props;
+    const { page, game, waiting, userId } = this.props;
     let Content;
     if (page === PAGE_GAME && game) {
-      if (game.showNarrative) {
+      const player = _.find(game.players, {id: userId});
+      if (game.phase !== PHASE_END && !player.alive) {
+        if (game.showNarrative && game.lastVictimUserId === userId) {
+          // Show the narrative screen just after you die, build suspense!
+          Content = Narrative;
+        } else {
+          Content = Dead;
+        }
+      } else if (game.showNarrative) {
         Content = Narrative;
       } else {
         Content = phases[game.phase];

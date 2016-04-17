@@ -14,8 +14,8 @@ export const Sound = React.createClass({
   },
 
   componentDidMount() {
-    window.Howler.mute(this.state.muted);
     this.setVolume.call(this, 'engine', ENGINE_VOL);
+    setTimeout(() => window.Howler.mute(this.state.muted));
   },
 
   setVolume(ref, vol) {

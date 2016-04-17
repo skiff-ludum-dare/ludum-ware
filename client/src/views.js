@@ -1,7 +1,8 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 import classNames from 'classnames';
-import _ from 'underscore';
+import Credits from './Credits';
+
 
 import {GLOBAL_ANIMATION_SPEED} from './config';
 import {WEREWOLF, VILLAGER} from './constants';
@@ -18,6 +19,7 @@ export const Menu = React.createClass({
   getInitialState() {
     return {
       astronautSrc: 'images/ejected.png',
+      showCredits: false,
       astronautAlt: 'Ejected Astronaut'
     };
   },
@@ -29,19 +31,25 @@ export const Menu = React.createClass({
 
   componentDidMount() {
     window.setTimeout(() => {
+      const {astronautSrc, astronautAlt} = this.state;
+
       this.setState({
-        astronautSrc: 'images/ship.png',
-        astronautAlt: 'Splattered Astronaut'
+        astronautSrc: astronautSrc.replace('ejected', 'ejected_splatter'),
+        astronautAlt: astronautAlt.replace('Ejected', 'Splattered')
       });
-    }, GLOBAL_ANIMATION_SPEED * .75)
+    }, GLOBAL_ANIMATION_SPEED * .5)
   },
 
   render () {
     const {onJoin, onHost} = this.props;
     const {astronautSrc, astronautAlt} = this.state;
+    const toggleCredits = () => {
+      this.setState({showCredits: !this.state.showCredits});
+    };
 
     return (
       <div className="phase phase-menu">
+        { this.state.showCredits ? <Credits onClose={ toggleCredits } /> : null }
         <IntroSound/>
         <aside className="spaceship">
           <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
@@ -58,7 +66,7 @@ export const Menu = React.createClass({
         </div>
         <div className="copyright">
           <hr className="hidden-xs" />
-          <small>&copy; 2016 Classique TM</small>
+          <small className="button" onClick={ toggleCredits }>Credits</small>
         </div>
       </div>
     );
@@ -99,6 +107,7 @@ export const StartGame = React.createClass({
               placeholder="Enter name"
               value={name}
               onChange={e => this.setState({name: e.target.value})}
+              maxLength={25}
               required
             />
           </div>
@@ -106,10 +115,11 @@ export const StartGame = React.createClass({
             <div className="form-group">
               <input
                 type="text"
-                className="form-control"
+                className="form-control game-code-input"
                 placeholder="Enter code"
                 value={gameCode}
                 onChange={e => this.setState({gameCode: e.target.value})}
+                maxLength={4}
                 required
               />
             </div>
@@ -150,7 +160,10 @@ export const Lobby = React.createClass({
         <div className="info">
           <form noValidate>
             <div className="form-group">
-              Game Code: <input
+              <label className="form-control-label">
+                <small>Game Code:</small>
+              </label>
+              <input
                 type="text"
                 className="form-control"
                 defaultValue={gameCode}
@@ -312,11 +325,6 @@ export const GameRound = React.createClass({
 
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
-
-    const player = _.find(players, {id: ownPlayerId});
-    if (!player.alive) {
-      return <Dead {...this.props } />
-    }
 
     return (
       <div className="phase phase-round">
