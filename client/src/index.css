@@ -124,25 +124,25 @@ hr {
   margin-top: 30px;
 }
 
-*::-webkit-input-placeholder{
+*::-webkit-input-placeholder {
   color: white;
   text-transform: lowercase;
   opacity: 1;
 }
 
-*:-moz-placeholder{
+*:-moz-placeholder {
   color: white;
   text-transform: lowercase;
   opacity: 1;
 }
 
-*::-moz-placeholder{
+*::-moz-placeholder {
   color: white;
   text-transform: lowercase;
   opacity: 1;
 }
 
-*:-ms-input-placeholder{
+*:-ms-input-placeholder {
   color: white;
   text-transform: lowercase;
 }

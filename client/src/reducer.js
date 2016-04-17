@@ -6,7 +6,7 @@ import {
   PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END,
   ERROR,
   SHOW_HOST, SHOW_JOIN,
-  GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL,
+  GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL, DISCONNECT
 } from './constants';
 
 // let userId = localStorage.getItem('userId');
@@ -74,7 +74,7 @@ function startGameReducer(state, action) {
 
 function lobbyReducer(state, action) {
   switch (action.type) {
-  case CANCEL: {
+  case DISCONNECT: {
     return {
         ...state,
       page: PAGE_MENU,
@@ -143,24 +143,18 @@ function dayOrNightReducer(state, action) {
   return state;
 }
 
-// function voteReducer(state, action) {
-//   switch (action.type) {
-//   case VOTE_YES: {
-//     return {
-//         ...state,
-//       page: PAGE_NIGHT,
-//     }
-//   }
+function endReducer(state, action) {
+  switch (action.type) {
+  case READY: {
+    return {
+        ...state,
+      waiting: true,
+    }
+  }
+  }
+  return state;
+}
 
-//   case VOTE_NO: {
-//     return {
-//         ...state,
-//       page: PAGE_END,
-//     }
-//   }
-//   }
-//   return state;
-// }
 
 export default function reducer(state=initialState, action) {
 
@@ -194,6 +188,9 @@ export default function reducer(state=initialState, action) {
       case PHASE_NIGHT:
       case PHASE_DAY:
         return dayOrNightReducer(state, action);
+
+      case PHASE_END:
+        return endReducer(state, action);
       }
     }
 
