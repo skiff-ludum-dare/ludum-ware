@@ -105,7 +105,8 @@ module.exports = function game(gameCode, ownerUserId, seed) {
         if (state.phase !== c.PHASE_DAY) return state;
         const {nominatedUserId, accuserUserId} = action;
         if (!nominatedUserId || !accuserUserId) {
-          throw new Error('missing stuff');
+          console.error("missing nominate stuff");
+          return state;
         }
 
         return update(state, {
