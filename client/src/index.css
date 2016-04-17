@@ -12,6 +12,10 @@ body {
   user-select: none;
 }
 
+.developers {
+    padding-top: 500px;
+}
+
 .button {
   cursor: pointer;
   text-decoration: underline;
