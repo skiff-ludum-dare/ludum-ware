@@ -363,6 +363,7 @@ button.primary::before {
   display: inline-block;
   margin-right: auto;
   margin-left: auto;
+  padding: 0;
 }
 .phase-lobby .roster-list li {
   margin-top: 15px;
@@ -416,6 +417,7 @@ button.primary::before {
   list-style: none;
   margin-right: auto;
   margin-left: auto;
+  padding: 0;
 }
 .phase-round .survivors-list li {
   margin-top: 15px;
