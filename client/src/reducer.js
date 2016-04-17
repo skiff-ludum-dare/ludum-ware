@@ -67,8 +67,6 @@ function startGameReducer(state, action) {
     return {
         ...state,
       loading: true,
-      userId,
-      playerName,
     };
   }
 
@@ -76,11 +74,16 @@ function startGameReducer(state, action) {
     let { gameCode, userId, playerName } = action;
     return {
         ...state,
-      loading: false,
-      userId,
-      playerName,
-      gameCode,
+      loading: true,
     };
+  }
+
+  case GAME_STATE_UPDATE: {
+    return {
+        ...state,
+      loading: false,
+      page: PAGE_LOBBY,
+    }
   }
   }
   return state;
@@ -170,7 +173,7 @@ export default function reducer(state=initialState, action) {
       meh.page = pmap[action.game.phase];
     }
 
-    return {
+    state = {
       ...state,
       ...meh,
       game: action.game,

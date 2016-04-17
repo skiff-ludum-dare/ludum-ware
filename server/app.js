@@ -84,6 +84,7 @@ io.on('connection', function connection(socket) {
         const {update, state} = games[message.gameCode];
         const newState = update(message);
 
+        console.log('Sending:', newState);
         newState.players.forEach( ({id}) => {
           const client = playerMap[id];
           client.send(JSON.stringify(newState));

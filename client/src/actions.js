@@ -13,7 +13,6 @@ import {
 
 import * as api from './api';
 
-api.serverEvents.on('gameState', gameStateUpdate);
 
 function message(type, message={}) {
   return (dispatch, getState) => {
@@ -40,7 +39,7 @@ export function showJoin() {
 export function gameStateUpdate(data) {
   return {
     type: GAME_STATE_UPDATE,
-    game: JSON.parse(data),
+    game: data,
   }
 }
 
@@ -67,8 +66,6 @@ export function hostGame(playerName) {
     let {userId} = getState();
     dispatch({
       type: HOST_GAME,
-      playerName,
-      userId,
       status: 'request',
     });
 
@@ -79,7 +76,7 @@ export function hostGame(playerName) {
           dispatch({type: HOST_GAME, playerName, userId, status: 'response'});
         },
         error => {
-          dispatch({type: ERROR, originalType: HOST_NAME, error});
+          dispatch({type: ERROR, originalType: HOST_GAME, error});
         }
       )
   }

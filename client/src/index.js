@@ -17,11 +17,17 @@ import createLogger from 'redux-logger';
 
 import reducer from './reducer';
 import App from './App'
+import {serverEvents} from './api';
+import {gameStateUpdate} from './actions';
 
 const store = createStore(
   reducer,
   applyMiddleware(ReduxThunk, createLogger())
 );
+
+serverEvents.on('gameState', gameState => {
+  store.dispatch(gameStateUpdate(gameState));
+});
 
 render(
     <Provider store={store}>

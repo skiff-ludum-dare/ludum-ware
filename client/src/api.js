@@ -28,9 +28,7 @@ export function joinGame(userId, playerName, gameCode) {
   queue = [];
   sendMessage(userId, gameCode, JOIN_GAME, {playerName});
   return new Promise((resolve, reject) => {
-    serverEvents.once('gameState', gameState => {
-      resolve(gameState);
-    });
+    serverEvents.once('gameState', resolve);
   });
 }
 
@@ -45,13 +43,16 @@ export function sendMessage(userId, gameCode, type, message={}) {
     queue.push(payload);
     connecting = true;
     socket = io(SOCKET_IO_ENDPOINT);
+    console.log('>QUEUE', queue);
     socket.on('connect', () => {
+      console.log('QUEUE', queue);
       queue.map(m => socket.send(JSON.stringify(m)));
+      queue = [];
     })
     socket.on('message', gameState => {
-      serverEvents.emit('gameState', gameState);
+      console.log('MESSAGE', gameState);
+      serverEvents.emit('gameState', JSON.parse(gameState));
     });
-    queue = [];
   } else if (connecting) {
     queue.push(payload);
   } else {
