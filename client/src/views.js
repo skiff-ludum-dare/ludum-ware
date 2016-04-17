@@ -5,7 +5,7 @@ import Credits from './Credits';
 import Fireworks from './Fireworks';
 
 import {GLOBAL_ANIMATION_SPEED} from './config';
-import {WEREWOLF, VILLAGER} from './constants';
+import {WEREWOLF, VILLAGER, PHASE_DAY, PHASE_NIGHT} from './constants';
 
 import {IntroSound} from './Sound';
 
@@ -359,18 +359,41 @@ export const Narrative = React.createClass({
     lastVictim: React.PropTypes.object,
     round: React.PropTypes.number,
     seed: React.PropTypes.number,
+    phase: React.PropTypes.string,
 
     onReady: React.PropTypes.func,
   },
 
   render () {
-    let { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed } = this.props;
+    const { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed, phase } = this.props;
+    let content;
+    if (round === 1 && phase === PHASE_DAY) {
+      content = (
+        <div className="info">
+          <h2 className="offset">One of the crew is now a terrormorph</h2>
+          <h2><small>As a group choose a crew member to eject from the airlock, choose wisely!</small></h2>
+        </div>
+      );
+    } else if (phase === PHASE_DAY) {
+      content = (
+        <div className="info">
+          <h2 className="offset">The crew awake to discover {lastVictim.name} torn to pices</h2>
+          <h2><small>The Terrormorph still walks among you, you must kill another crew member</small></h2>
+        </div>
+      );
+    } else {
+      content = (
+        <div className="info">
+          <h2 className="offset">The crew decide to put {lastVictim.name} out the airlock then retire for the night</h2>
+          <h2 className="offset">But they choose badly, terror stalks its prey</h2>
+          <h2><small>All crew must secretly select another person. Only the terrormorph will kill though.</small></h2>
+        </div>
+      );
+    }
+
     return (
       <div className="phase phase-narrative">
-        <div className="info">
-          <h2 className="offset">Narrative n shit...?</h2>
-          <h2><small>Stuff is like... happening</small></h2>
-        </div>
+        { content }
 
         <div className="actions">
           <button

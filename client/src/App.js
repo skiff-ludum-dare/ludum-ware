@@ -88,6 +88,7 @@ const Narrative = connect(
     deadPlayers: _.where(state.game.players, {alive: false}).length,
     lastVictim: _.findWhere(state.game.players, {id: state.game.lastVictimUserId}),
     round: state.game.round,
+    phase: state.game.phase,
     seed: state.game.seed,
   }),
   dispatch => bindActionCreators({ onReady: ready }, dispatch),
