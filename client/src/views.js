@@ -1,8 +1,6 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 
-import {AudioService} from './audio';
-
 function supportsMultiTouch() {
   return window.navigator.maxTouchPoints > 1;
 }
