@@ -1,6 +1,8 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 
+const MIN_PLAYERS = 5;
+
 function supportsMultiTouch() {
   return window.navigator.maxTouchPoints > 1
 }
@@ -16,14 +18,20 @@ export const Menu = React.createClass({
   render () {
     const {onJoin, onHost} = this.props;
     return (
-      <div>
-        <h1>Terrormorph</h1>
-        <button onClick={onHost}>
-         Host
-        </button>
-        <button onClick={onJoin}>
-         Join
-        </button>
+      <div className="phase phase-menu">
+        <aside className="spaceship"></aside>
+        <div className="actions">
+          <h1>Terrormorph!</h1>
+          <button
+            className="primary"
+            onClick={onHost}
+          >Host</button>
+          <button onClick={onJoin}>Join</button>
+        </div>
+        <div className="copyright">
+          <hr className="hidden-xs" />
+          <small>&copy; 2016 Classique TM</small>
+        </div>
       </div>
     );
   }
@@ -45,20 +53,49 @@ export const StartGame = React.createClass({
     };
   },
 
+  handleSubmit(e) {
+    e.preventDefault();
+  },
+
   render () {
     const { type, onNext, onCancel } = this.props;
     const { name, gameCode } = this.state;
     return (
-      <div>
-        <h1>{ (type === 'host') ? 'Host Game' : 'Join Game' }</h1>
-        { (type === 'join') && <input placeholder="Game code" value={gameCode} onChange={e => this.setState({gameCode: e.target.value})}/> }
-        <input placeholder="Your Name" value={name} onChange={e => this.setState({name: e.target.value})}/>
-        <button onClick={() => onNext(name, gameCode)}>
-          Go
-        </button>
-        <button onClick={onCancel}>
-         Cancel
-        </button>
+      <div className="phase phase-start">
+        <h2 className="offset">Welcome aboard the SS-LUDUM!</h2>
+        <form onSubmit={this.handleSubmit} noValidate>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter name"
+              value={name}
+              onChange={e => this.setState({name: e.target.value})}
+              required
+            />
+          </div>
+          { type === 'join' && (
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter code"
+                value={gameCode}
+                onChange={e => this.setState({gameCode: e.target.value})}
+                required
+              />
+            </div>
+          )}
+          <button
+            type="submit"
+            className="primary"
+            onClick={() => onNext(name, gameCode)}
+          >Go</button>
+          <button
+            type="reset"
+            onClick={onCancel}
+          >Exit</button>
+        </form>
       </div>
     );
   }
@@ -80,26 +117,47 @@ export const Lobby = React.createClass({
   render () {
     const { gameCode, players, onStart, onCancel, isOwner } = this.props;
     return (
-      <div>
-        <h1>Lobby</h1>
+      <div className="phase phase-lobby">
+        <div className="info">
+          <form noValidate>
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                defaultValue={gameCode}
+                readOnly
+              />
+            </div>
+          </form>
+          <h2>Flight roster:</h2>
+          <small>{players.length < MIN_PLAYERS && (
+            `Minimum of ${MIN_PLAYERS} players required.`
+          )}
+          &nbsp;</small>
+        </div>
 
-        <h2>{ gameCode }</h2>
+        <div className="roster">
+          <ol className="roster-list">
+            { players.map(({id, name}) => (
+              <li key={id}>{ name }</li>
+            )) }
+            { (new Array(MIN_PLAYERS - players.length)).fill(null).map(() => (
+              <li>&lt;waiting&gt;</li>
+            )) }
+          </ol>
+        </div>
 
-        <ul>
-          { players.map(({id, name}) => (
-            <li key={id}>{ name }</li>
-          )) }
-        </ul>
-
-        { isOwner && (
-            <button onClick={onStart}>
-              Start Game
-            </button>
-          )
-        }
-        <button onClick={onCancel}>
-         Cancel
-        </button>
+        <div className="actions">
+          <hr className="hidden-xs" />
+          { isOwner && (
+              <button
+                className="primary"
+                onClick={onStart}
+              >Ready</button>
+            )
+          }
+          <button onClick={onCancel}>Exit</button>
+        </div>
       </div>
     );
   }
@@ -149,11 +207,9 @@ export const Reveal = React.createClass({
     const secret = <div>{role}</div>;
     const instruction = supportsMultiTouch() ? 'Press two fingers to reveal' : 'Click and hold to reveal';
     return (
-      <div>
-        <div ref="reveal">
-          <h1>Reveal <small>({instruction})</small></h1>
-          { show ? secret : normal }
-        </div>
+      <div className="phase phase-reveal" ref="reveal">
+        <h2>Reveal <small>({instruction})</small></h2>
+        { show ? secret : normal }
         { hasShown && (
           <button onClick={onReady}>
             Ready
@@ -179,8 +235,8 @@ export const GameRound = React.createClass({
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
     return (
-      <div>
-        <h1>{ type }</h1>
+      <div className="phase phase-round">
+        <h2>{ type }</h2>
         <ul>
           { players.map(({name, alive, id}) => (
             <li
@@ -213,8 +269,8 @@ export const Vote = React.createClass({
   render () {
     const { nominatedUser, accuserUser, onVoteYes, onVoteNo } = this.props;
     return (
-      <div>
-        <h1>{ accuserUser.name } wants to lynch { nominatedUser.name }</h1>
+      <div className="phase phase-vote">
+        <h2>{ accuserUser.name } wants to lynch { nominatedUser.name }</h2>
         <button onClick={onVoteYes}>Yes, hang them high</button>
         <button onClick={onVoteNo}>No, let them go</button>
       </div>
@@ -233,8 +289,8 @@ export const GameEnd = React.createClass({
   render () {
     const { winningTeam, onFinish } = this.props;
     return (
-      <div>
-        <h1>{ winningTeam } wins</h1>
+      <div className="phase phase-end">
+        <h2>{ winningTeam } wins</h2>
         <button onClick={onFinish}>Done</button>
       </div>
     );

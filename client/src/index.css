@@ -1,4 +1,12 @@
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+/*
+ *  Layout
+ *  --
+ */
+
 #page, aside#starfield {
+  font-family: 'Press Start 2P', monospace;
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
 }
@@ -10,4 +18,386 @@
 
 aside#starfield {
   overflow: hidden;
+  background-color: black;
 }
+
+/*
+ *  Forms & Typography
+ *  --
+ */
+
+h1, h2, h3, h4, h5, h6 {
+  color: purple;
+  background: -webkit-linear-gradient(purple, hotpink);
+  background: -moz-linear-gradient(purple, hotpink);
+  background: linear-gradient(purple, hotpink);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
+h1.offset, h2.offset, h3.offset, h4.offset, h5.offset, h6.offset {
+  margin-top: 90px;
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+hr {
+  max-width: 33%;
+  margin: 30px auto 15px;
+  border-color: hotpink;
+  box-shadow: 0 4px white;
+}
+
+.form-group {
+  margin: 0 15px 30px;
+}
+
+.form-control {
+  color: white;
+  display: block;
+  text-align: center;
+  width: 100%;
+  height: 40px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: 1px solid purple;
+  background-color: transparent;
+}
+
+.form-control:first-of-type {
+  margin-top: 30px;
+}
+
+*::-webkit-input-placeholder{
+  color: white;
+  opacity: 1;
+}
+
+*:-moz-placeholder{
+  color: white;
+  opacity: 1;
+}
+
+*::-moz-placeholder{
+  color: white;
+  opacity: 1;
+}
+
+*:-ms-input-placeholder{
+  color: white;
+}
+
+*[placeholder] {
+  color: white;
+  opacity: 1;
+}
+
+button {
+  cursor: pointer;
+  display: block;
+  color: white;
+  text-align: center;
+  text-indent: .9em;
+  width: 100%;
+  height: 40px;
+  padding-right: .9em;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+button:hover, button:focus {
+  text-shadow: 0 4px rgba(255, 255, 255, .33);
+}
+
+button.primary {
+  text-indent: 0;
+}
+
+button.primary::before {
+  content: '\25b6';
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  top: -.225em;
+  left: -.45em;
+}
+
+/*
+ *  Game Phases (States)
+ *  --
+ */
+
+.phase {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Menu */
+.phase-menu {}
+
+.phase-menu > .spaceship {
+  flex: 9;
+}
+
+.phase-menu > .actions {
+  flex: 6;
+}
+
+.phase-menu > .copyright {
+  flex: 1;
+}
+
+/* Start */
+.phase-start {}
+
+/* Lobby */
+.phase-lobby {}
+
+.phase-lobby > .info {
+  flex: 1;
+}
+.phase-lobby > .roster {
+  overflow-y: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  flex: 3;
+}
+.phase-lobby .roster-list {
+  display: inline-block;
+  margin-right: auto;
+  margin-left: auto;
+}
+.phase-lobby .roster-list li {
+  margin-top: 15px;
+}
+.phase-lobby > .roster li:first-of-type {
+  margin-top: 0;
+}
+.phase-lobby > .actions {
+  flex: 1;
+}
+
+/* Reveal */
+.phase-reveal {}
+
+/* Round */
+.phase-round {}
+
+/* Vote */
+.phase-vote {}
+
+/* End */
+.phase-end {}
+
+/*
+ *  Miscellaneous
+ *  --
+ */
+
+.copyright {
+  width: 100%;
+  padding-bottom: 30px;
+  position: absolute;
+  bottom: 0;
+}
+
+ /*
+ *  Responsive Helpers
+ *  --
+ */
+
+ .hide {
+   display: none !important;
+ }
+ .show {
+   display: block !important;
+ }
+ .invisible {
+   visibility: hidden;
+ }
+ .text-hide {
+   font: 0/0 a;
+   color: transparent;
+   text-shadow: none;
+   background-color: transparent;
+   border: 0;
+ }
+ .hidden {
+   display: none !important;
+ }
+ .affix {
+   position: fixed;
+ }
+ @-ms-viewport {
+   width: device-width;
+ }
+ .visible-xs,
+ .visible-sm,
+ .visible-md,
+ .visible-lg {
+   display: none !important;
+ }
+ .visible-xs-block,
+ .visible-xs-inline,
+ .visible-xs-inline-block,
+ .visible-sm-block,
+ .visible-sm-inline,
+ .visible-sm-inline-block,
+ .visible-md-block,
+ .visible-md-inline,
+ .visible-md-inline-block,
+ .visible-lg-block,
+ .visible-lg-inline,
+ .visible-lg-inline-block {
+   display: none !important;
+ }
+ @media (max-width: 767px) {
+   .visible-xs {
+     display: block !important;
+   }
+   table.visible-xs {
+     display: table !important;
+   }
+   tr.visible-xs {
+     display: table-row !important;
+   }
+   th.visible-xs,
+   td.visible-xs {
+     display: table-cell !important;
+   }
+ }
+ @media (max-width: 767px) {
+   .visible-xs-block {
+     display: block !important;
+   }
+ }
+ @media (max-width: 767px) {
+   .visible-xs-inline {
+     display: inline !important;
+   }
+ }
+ @media (max-width: 767px) {
+   .visible-xs-inline-block {
+     display: inline-block !important;
+   }
+ }
+ @media (min-width: 768px) and (max-width: 991px) {
+   .visible-sm {
+     display: block !important;
+   }
+   table.visible-sm {
+     display: table !important;
+   }
+   tr.visible-sm {
+     display: table-row !important;
+   }
+   th.visible-sm,
+   td.visible-sm {
+     display: table-cell !important;
+   }
+ }
+ @media (min-width: 768px) and (max-width: 991px) {
+   .visible-sm-block {
+     display: block !important;
+   }
+ }
+ @media (min-width: 768px) and (max-width: 991px) {
+   .visible-sm-inline {
+     display: inline !important;
+   }
+ }
+ @media (min-width: 768px) and (max-width: 991px) {
+   .visible-sm-inline-block {
+     display: inline-block !important;
+   }
+ }
+ @media (min-width: 992px) and (max-width: 1199px) {
+   .visible-md {
+     display: block !important;
+   }
+   table.visible-md {
+     display: table !important;
+   }
+   tr.visible-md {
+     display: table-row !important;
+   }
+   th.visible-md,
+   td.visible-md {
+     display: table-cell !important;
+   }
+ }
+ @media (min-width: 992px) and (max-width: 1199px) {
+   .visible-md-block {
+     display: block !important;
+   }
+ }
+ @media (min-width: 992px) and (max-width: 1199px) {
+   .visible-md-inline {
+     display: inline !important;
+   }
+ }
+ @media (min-width: 992px) and (max-width: 1199px) {
+   .visible-md-inline-block {
+     display: inline-block !important;
+   }
+ }
+ @media (min-width: 1200px) {
+   .visible-lg {
+     display: block !important;
+   }
+   table.visible-lg {
+     display: table !important;
+   }
+   tr.visible-lg {
+     display: table-row !important;
+   }
+   th.visible-lg,
+   td.visible-lg {
+     display: table-cell !important;
+   }
+ }
+ @media (min-width: 1200px) {
+   .visible-lg-block {
+     display: block !important;
+   }
+ }
+ @media (min-width: 1200px) {
+   .visible-lg-inline {
+     display: inline !important;
+   }
+ }
+ @media (min-width: 1200px) {
+   .visible-lg-inline-block {
+     display: inline-block !important;
+   }
+ }
+ @media (max-width: 767px) {
+   .hidden-xs {
+     display: none !important;
+   }
+ }
+ @media (min-width: 768px) and (max-width: 991px) {
+   .hidden-sm {
+     display: none !important;
+   }
+ }
+ @media (min-width: 992px) and (max-width: 1199px) {
+   .hidden-md {
+     display: none !important;
+   }
+ }
+ @media (min-width: 1200px) {
+   .hidden-lg {
+     display: none !important;
+   }
+ }
+
