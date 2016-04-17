@@ -1,7 +1,8 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 import classNames from 'classnames';
-import _ from 'underscore';
+import Credits from './Credits';
+
 
 import {GLOBAL_ANIMATION_SPEED} from './config';
 import {WEREWOLF, VILLAGER} from './constants';
@@ -18,6 +19,7 @@ export const Menu = React.createClass({
   getInitialState() {
     return {
       astronautSrc: 'images/ejected.png',
+      showCredits: false,
       astronautAlt: 'Ejected Astronaut'
     };
   },
@@ -39,9 +41,13 @@ export const Menu = React.createClass({
   render () {
     const {onJoin, onHost} = this.props;
     const {astronautSrc, astronautAlt} = this.state;
+    const toggleCredits = () => {
+      this.setState({showCredits: !this.state.showCredits});
+    };
 
     return (
       <div className="phase phase-menu">
+        { this.state.showCredits ? <Credits onClose={ toggleCredits } /> : null }
         <IntroSound/>
         <aside className="spaceship">
           <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
@@ -58,7 +64,7 @@ export const Menu = React.createClass({
         </div>
         <div className="copyright">
           <hr className="hidden-xs" />
-          <small>&copy; 2016 Classique TM</small>
+          <small className="button" onClick={ toggleCredits }>Credits</small>
         </div>
       </div>
     );

@@ -5,10 +5,28 @@
  *  --
  */
 
-#page, aside#starfield, aside#waiting {
+.button {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#page, aside#starfield, aside#waiting, aside#credits {
   font-family: 'Press Start 2P', monospace;
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
+}
+
+aside#credits {
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.8);
+  overflow-y: scroll;
+}
+
+aside#credits {
+}
+
+aside#credits div {
+  line-height: 24px;
 }
 
 #page {
