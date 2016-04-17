@@ -103,7 +103,6 @@ function revealReducer(state, action) {
   return state;
 }
 
-
 function dayOrNightReducer(state, action) {
   switch (action.type) {
   case UNSELECT_VICTIM:

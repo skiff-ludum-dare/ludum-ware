@@ -93,9 +93,9 @@ function voteInfo(state) {
 
 function dayOrNightReducer(state, action) {
   if (state.showNarrative) {
-    if (acton.type === c.READY) {
+    if (action.type === c.READY) {
       state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
-      if (_.all(living(state), p => p.ready)) {
+      if (_.every(living(state), p => p.ready)) {
         return _.extend({}, state, {showNarrative: false});
       }
     }
@@ -115,9 +115,9 @@ function dayOrNightReducer(state, action) {
     });
   }
   case c.SELECT_VICTIM: {
-    const {victimUserId} = action;;
+    const {victimUserId, userId} = action;
     const vidx = playerIndex(state, victimUserId);
-    const pidx = playerIndex(state, action.userId);
+    const pidx = playerIndex(state, userId);
 
     state = update(state, {
       players: {[pidx]: { victimUserId: {$set: victimUserId} }}
@@ -127,8 +127,6 @@ function dayOrNightReducer(state, action) {
     let {voters, targets, votesNeeded} = voteInfo(state);
 
     if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) {
-      console.log('VALID SELECT');
-
       if (_.filter(voters, {victimUserId}).length >= votesNeeded) {
         state = update(state, {
           lastVictimUserId: {$set: victimUserId},
@@ -172,10 +170,10 @@ module.exports = function game(gameCode, ownerUserId, seed) {
 
     switch(action.type) {
 
-    case c.JOIN_GAME: {
-      const {userId, playerName} = action;
-      if (state.phase !== c.PHASE_LOBBY) return state;
-      if (state.players.indexOf(userId) > -1) return state;
+      case c.JOIN_GAME: {
+        const {userId, playerName} = action;
+        if (state.phase !== c.PHASE_LOBBY) return state;
+        if (_.find(state.players, {id:userId})) return state;
 
         const player = {
           id: userId,

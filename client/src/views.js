@@ -2,6 +2,7 @@ import React from 'react';
 import Hammer from 'hammerjs';
 import {WEREWOLF, VILLAGER} from './constants';
 import classNames from 'classnames';
+import _ from 'underscore';
 
 import {IntroSound} from './Sound';
 
@@ -246,6 +247,34 @@ export const Reveal = React.createClass({
   }
 });
 
+export const Dead = React.createClass({
+  displayName: 'Dead',
+
+  propTypes: { },
+
+  componentDidMount() {
+  },
+
+  render () {
+    return (
+      <div className="phase phase-dead">
+        <div className="info">
+          <h2 className="offset">You are DEAD!</h2>
+        </div>
+
+        <div className="character">
+          <img
+            className="center-block img-responsive"
+            src="images/astronaut_dead.png"
+            alt="Dead Astronaut"
+          />
+        </div>
+
+      </div>
+    );
+  }
+});
+
 export const GameRound = React.createClass({
   displayName: 'GameRound',
 
@@ -259,6 +288,12 @@ export const GameRound = React.createClass({
 
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
+
+    const player = _.find(players, {id: ownPlayerId});
+    if (!player.alive) {
+      return <Dead {...props } />
+    }
+
     return (
       <div className="phase phase-round">
         <div className="info">
@@ -267,17 +302,21 @@ export const GameRound = React.createClass({
 
         <div className="survivors">
           <ul>
-            { players.map(({name, alive, id}) => (
-              <li
-                 key={id}
-                 className={classNames({highlight: id === ownPlayerId, alive, dead: !alive})}
-                 onMouseDown={() => onSelect(id)}
-                 onMouseUp={() => onUnselect(id)}
-                 onTouchStart={() => onSelect(id)}
-                 onTouchEnd={() => onUnselect(id)}
-                 onTouchCancel={() => onUnselect(id)}
+            { players.map(({name, alive, id}) => {
+              return(
+                alive ?
+                <li
+                  key={id}
+                  className={ id === ownPlayerId ? 'highlight' : '' }
+                  onMouseDown={() => onSelect(id)}
+                  onMouseUp={() => onUnselect(id)}
+                  onTouchStart={() => onSelect(id)}
+                  onTouchEnd={() => onUnselect(id)}
+                  onTouchCancel={() => onUnselect(id)}
                 >{ name }</li>
-            )) }
+                :
+                <li className="dead" key={id}>{ name }</li>);
+            }) }
           </ul>
         </div>
       </div>

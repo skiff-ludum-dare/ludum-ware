@@ -51,13 +51,12 @@ process.on('SIGINT', () => {
 });
 
 function hydrateGame(src) {
-  if (!src.options) { throw new Error("delete your gamestate.json"); }
-  const {code, userId, seed} = src.options;
+  if (!src.code || src.options) { throw new Error("delete your gamestate.json"); }
+  const {code, userId, seed} = src.state;
   const reducer = game(code, userId, seed);
   const state = reducer(undefined, src.state || {});
 
   return games[code] = {
-    options: {code, userId, seed},
     update: (action) => {
       if (!playerMap[userId]) {
         //change presence
@@ -76,9 +75,7 @@ function hydrateGame(src) {
 function createGame(userId) {
   const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
   const seed = _.random(1, 1000);
-  return hydrateGame({
-    options: {code, userId, seed},
-  });
+  return hydrateGame({state: {code, userId, seed}});
 }
 
 function notifyPlayers(state) {

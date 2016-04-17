@@ -11,10 +11,12 @@ describe('gameState', function() {
   it('initial state', () => {
     assert.deepEqual(initialState, {
       gameCode: 'TEST',
+      seed: 50,
+      ownerUserId: "test",
       phase: c.PHASE_LOBBY,
       round: null,
       players: [],
-      nomination: null,
+      showNarrative: false,
     });
   });
 
@@ -67,57 +69,55 @@ describe('gameState', function() {
     }).players[0].online, false);
   });
 
-  const revealState = reducer(readyState, {
-    type: c.REVEAL_READY,
-    userId: 'p3',
-  });
+  const revealReadyState = _.reduce(_.range(6), (state, userId) => {
+    return reducer(state, {
+      type: c.REVEAL_READY,
+      userId: 'p' + userId,
+    });
+  }, readyState);
 
   it(c.REVEAL_READY, () => {
-    assert.equal(revealState.players[3].ready, true);
+    assert.equal(revealReadyState.players[0].ready, true);
+    assert.equal(revealReadyState.phase, c.PHASE_DAY);
   });
 
-  const nominateState = reducer(revealState, {
-    type: c.NOMINATE,
-    nominatedUserId: 'p3',
-    accuserUserId: 'p4',
-  });
+  const gameState = clearNarrative(revealReadyState);
 
-  const lynchedState = _.reduce(_.range(3), (state, userId) => {
+  const lynchedState = _.reduce(_.range(4), (state, userId) => {
     return reducer(state, {
-      type: c.VOTE_YES,
+      type: c.SELECT_VICTIM,
+      victimUserId: 'p2',
       userId: 'p' + userId,
     });
-  }, nominateState);
+  }, gameState);
 
-  it(c.VOTE_YES, () => {
-    assert.equal(lynchedState.players[3].alive, false);
+  it(c.SELECT_VICTIM, () => {
+    assert.equal(lynchedState.players[2].alive, false);
     assert.equal(lynchedState.phase, c.PHASE_NIGHT);
-  });
-
-  const savedState = _.reduce(_.range(3), (state, userId) => {
-    return reducer(state, {
-      type: c.VOTE_NO,
-      userId: 'p' + userId,
-    });
-  }, nominateState);
-
-  it(c.VOTE_NO, () => {
-    assert.equal(savedState.players[3].alive, true);
   });
 
   const werewolves = _.filter(lynchedState.players, {role: c.WEREWOLF});
 
   const devouredState = _.reduce(werewolves, (state, player) => {
     return reducer(state, {
-      type: c.DEVOUR,
-      wolfUserId: player.id,
+      type: c.SELECT_VICTIM,
       victimUserId: 'p1',
+      userId: player.id,
     });
-  }, lynchedState);
+  }, clearNarrative(lynchedState));
 
   it(c.DEVOUR, () => {
     assert.equal(devouredState.players[1].alive, false);
-    assert.equal(devouredState.phase, c.PHASE_DAY);
+    assert.equal(devouredState.phase, c.PHASE_END);
   });
 
 });
+
+function clearNarrative(state) {
+  return _.reduce(_.range(6), (state, userId) => {
+    return reducer(state, {
+      type: c.READY,
+      userId: 'p' + userId,
+    });
+  }, state);
+}

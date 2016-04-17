@@ -63,6 +63,10 @@ h3, h4, h5, h6, .highlight {
   color: gold;
 }
 
+.dead {
+  text-decoration: line-through;
+}
+
 h1.offset, h2.offset, h3.offset, h4.offset, h5.offset, h6.offset {
   margin-top: 90px;
 }
