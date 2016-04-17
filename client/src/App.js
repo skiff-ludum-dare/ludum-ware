@@ -56,21 +56,22 @@ const Reveal = connect(
 )(views.Reveal);
 
 const DayOrNight = connect(
-  state => ({
-    type: (state.game.phase === PHASE_DAY) ? 'day' : 'night',
-    players: state.game.players,
-    ownPlayerId: state.userId,
-  }),
+  state => {
+    return {
+      type: (state.game.phase === PHASE_DAY) ? 'day' : 'night',
+      votesNeeded: state.game.votesNeeded,
+      players: state.game.players.map(p => {
+        const votes = _.where(state.game.players, otherPlayer => otherPlayer.victimUserId === p.id).length;
+        return {
+          ...p,
+          killVotes: votes,
+        }
+      }),
+      ownPlayerId: state.userId,
+    };
+  },
   dispatch => bindActionCreators({ onSelect: selectVictim, onUnselect: unselectVictim }, dispatch),
 )(views.GameRound);
-
-// const Vote = connect(
-//   state => ({
-//     nominatedUser: _.findWhere(state.game.players, {id: state.game.nomination.nominatedUserId}),
-//     accuserUser: _.findWhere(state.game.players, {id: state.game.nomination.accuserUserId}),
-//   }),
-//   dispatch => bindActionCreators({ onVoteYes: voteYes, onVoteNo: voteNo }, dispatch),
-// )(views.Vote);
 
 const GameEnd = connect(
   state => ({

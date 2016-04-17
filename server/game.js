@@ -77,7 +77,20 @@ function revealReducer(state, action) {
   return state;
 }
 
+function voteInfo(state) {
+  const isNight = (state.phase === c.PHASE_NIGHT);
+  const voters = isNight ? werewolves(state) : living(state);
+  const targets = isNight ? villagers(state) : living(state);
+  const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
+  return {votes, targets, votesNeeded};
+}
+
 function dayOrNightReducer(state, action) {
+  const isNight = (state.phase === c.PHASE_NIGHT);
+  let {votes, targets, votesNeeded} = voteInfo(state);
+
+  state = {...state, votesNeeded};
+
   switch(action.type) {
   case c.UNSELECT_VICTIM: {
     const pidx = playerIndex(state, action.userId);
@@ -94,11 +107,8 @@ function dayOrNightReducer(state, action) {
       players: {[pidx]: { victimUserId: {$set: victimUserId} }}
     });
 
-    const isNight = (state.phase === c.PHASE_NIGHT);
-    const voters = isNight ? werewolves(state) : living(state);
-    const targets = isNight ? villagers(state) : living(state);
-    const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
-
+    // Recaluclate voters and targets
+    let {votes, targets, votesNeeded} = voteInfo(state);
 
     if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) {
       console.log('VALID SELECT');
