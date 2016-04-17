@@ -167,6 +167,9 @@ module.exports = function game(gameCode, ownerUserId, seed) {
       return lobbyReducer(state, action);
     case c.PHASE_REVEAL:
       return revealReducer(state, action);
+    case c.PHASE_DAY:
+    case c.PHASE_NIGHT:
+      return dayOrNightReducer(state, action);
     }
 
     return state;

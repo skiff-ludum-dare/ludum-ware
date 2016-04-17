@@ -12,7 +12,7 @@ import {
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
-  startGame, revealReady, chooseVictim, nominate, voteYes, voteNo
+  startGame, revealReady, selectVictim, unselectVictim
 } from './actions';
 import {MIN_PLAYERS} from './config';
 
@@ -61,7 +61,7 @@ const Day = connect(
     players: state.game.players,
     ownPlayerId: state.userId,
   }),
-  dispatch => bindActionCreators({ onSelect: nominate, onUnselect: () => {} }, dispatch),
+  dispatch => bindActionCreators({ onSelect: selectVictim, onUnselect: unselectVictim }, dispatch),
 )(views.GameRound);
 
 const Night = connect(
@@ -70,7 +70,7 @@ const Night = connect(
     players: state.game.players,
     ownPlayerId: state.userId,
   }),
-  dispatch => bindActionCreators({ onSelect: chooseVictim, onUnselect: () => {} }, dispatch),
+  dispatch => bindActionCreators({ onSelect: selectVictim, onUnselect: unselectVictim }, dispatch),
 )(views.GameRound);
 
 // const Vote = connect(

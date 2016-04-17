@@ -4,7 +4,7 @@ import _ from 'underscore';
 
 import {
   PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
-  CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, NOMINATE, VOTE_YES, VOTE_NO, DEVOUR, UPDATE_STATE,
+  CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, SELECT_VICTIM, UNSELECT_VICTIM, UPDATE_STATE,
   PHASE_LOBBY, PHASE_REVEAL,
   ERROR,
   SHOW_HOST, SHOW_JOIN,
@@ -98,30 +98,15 @@ export function revealReady() {
   return message(REVEAL_READY);
 }
 
-export function chooseVictim(ownPlayerId, victimPlayerId) {
-  return {
-    type: CHOOSE_VICTIM,
-    ownPlayerId,
-    victimPlayerId,
-  };
+export function selectVictim(victimUserId) {
+  return message({
+    type: SELECT_VICTIM,
+    victimerUserId,
+  })
 }
 
-export function nominate(ownPlayerId, victimPlayerId) {
-  return {
-    type: NOMINATE,
-    ownPlayerId,
-    victimPlayerId,
-  };
-}
-
-export function voteYes() {
-  return {
-    type: VOTE_YES,
-  };
-}
-
-export function voteNo() {
-  return {
-    type: VOTE_NO,
-  };
+export function unselectVictim() {
+  return message({
+    type: UNSELECT_VICTIM,
+  })
 }
