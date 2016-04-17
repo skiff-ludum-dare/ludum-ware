@@ -1,4 +1,4 @@
-'meuse strict';
+'use strict';
 import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -13,7 +13,7 @@ import {
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
-  startGame, ready, selectVictim, unselectVictim
+  startGame, ready, selectVictim, unselectVictim, disconnect
 } from './actions';
 import {MIN_PLAYERS} from './config';
 
@@ -45,7 +45,7 @@ const Lobby = connect(
       minPlayers: MIN_PLAYERS,
     };
   },
-  dispatch => bindActionCreators({onStart: startGame, onCancel: cancel}, dispatch),
+  dispatch => bindActionCreators({onStart: startGame, onCancel: disconnect}, dispatch),
 )(views.Lobby);
 
 const Reveal = connect(
@@ -78,7 +78,7 @@ const GameEnd = connect(
   state => ({
     winningTeam: 'villagers',
   }),
-  dispatch => bindActionCreators({onFinish: cancel}, dispatch),
+  dispatch => bindActionCreators({onFinish: ready}, dispatch),
 )(views.GameEnd);
 
 const Narrative = connect(

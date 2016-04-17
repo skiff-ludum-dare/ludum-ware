@@ -40,6 +40,7 @@ function messageReceived(message) {
   serverEvents.emit('gameState', JSON.parse(message));
 }
 
+
 export function sendMessage(userId, gameCode, playerName, type, message={}) {
   const payload = {
     ...message,
@@ -62,5 +63,13 @@ export function sendMessage(userId, gameCode, playerName, type, message={}) {
   } else {
     console.log('Sending');
     socket.send(JSON.stringify(payload));
+  }
+}
+
+export function disconnect() {
+  if (socket) {
+    socket.disconnect();
+    connecting = false;
+    socket = null;
   }
 }
