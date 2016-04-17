@@ -82,7 +82,7 @@ function voteInfo(state) {
   const voters = isNight ? werewolves(state) : living(state);
   const targets = isNight ? villagers(state) : living(state);
   const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
-  return {votes, targets, votesNeeded};
+  return {voters, targets, votesNeeded};
 }
 
 function dayOrNightReducer(state, action) {
