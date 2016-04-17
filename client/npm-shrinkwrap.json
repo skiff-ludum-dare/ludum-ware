@@ -1,0 +1,21 @@
+{
+  "name": "terrormorph",
+  "version": "1.0.0",
+  "dependencies": {
+    "react-json-tree": {
+      "version": "0.6.4",
+      "from": "react-json-tree@>=0.6.2 <0.6.5",
+      "resolved": "https://registry.npmjs.org/react-json-tree/-/react-json-tree-0.6.4.tgz",
+      "dependencies": {
+        "babel-runtime": {
+          "version": "6.6.1",
+          "from": "babel-runtime@>=6.3.13 <7.0.0"
+        },
+        "core-js": {
+          "version": "2.2.2",
+          "from": "core-js@>=2.1.0 <3.0.0"
+        }
+      }
+    }
+  }
+}
