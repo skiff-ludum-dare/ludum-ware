@@ -102,15 +102,12 @@ export function revealReady() {
 
 export function selectVictim(victimUserId) {
   console.log('SELECT VICTIM');
-  return message({
-    type: SELECT_VICTIM,
+  return message(SELECT_VICTIM, {
     victimUserId,
   })
 }
 
 export function unselectVictim() {
   console.log('UNSELECT VICTIM');
-  return message({
-    type: UNSELECT_VICTIM,
-  })
+  return message(UNSELECT_VICTIM);
 }
