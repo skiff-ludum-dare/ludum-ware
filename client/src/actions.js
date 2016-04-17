@@ -20,6 +20,8 @@ function message(type, message={}) {
     if (game) {
       dispatch({...message, type});
       api.sendMessage(userId, game.gameCode, type, message);
+    } else {
+      console.error("Tried to send a message without a game", type, message);
     }
   };
 }
@@ -91,7 +93,6 @@ export function cancel(playerName) {
 export function startGame() {
   return (dispatch, getState) => {
     dispatch(message(START_GAME));
-    // dispatch({ type: START_GAME, });
   };
 }
 

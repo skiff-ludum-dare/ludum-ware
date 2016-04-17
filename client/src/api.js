@@ -39,7 +39,9 @@ export function sendMessage(userId, gameCode, type, message={}) {
     userId,
     gameCode,
   };
+  console.log('SEND API MESSAGE', payload);
   if (!socket) {
+    console.log('Add to queue (1)');
     queue.push(payload);
     connecting = true;
     socket = io(SOCKET_IO_ENDPOINT);
@@ -48,14 +50,17 @@ export function sendMessage(userId, gameCode, type, message={}) {
       console.log('QUEUE', queue);
       queue.map(m => socket.send(JSON.stringify(m)));
       queue = [];
+      connecting = false;
     })
     socket.on('message', gameState => {
       console.log('MESSAGE', gameState);
       serverEvents.emit('gameState', JSON.parse(gameState));
     });
   } else if (connecting) {
+    console.log('Add to queue (2)');
     queue.push(payload);
   } else {
+    console.log('Send right away');
     socket.send(JSON.stringify(payload));
   }
 }

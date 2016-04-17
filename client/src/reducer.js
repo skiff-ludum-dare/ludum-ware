@@ -29,11 +29,6 @@ const initialState = {
   },
 };
 
-const pmap = {
-  [PHASE_LOBBY]: PAGE_LOBBY,
-  [PHASE_REVEAL]: PAGE_REVEAL,
-};
-
 function menuReducer(state, action) {
   switch (action.type) {
   case SHOW_HOST: {
@@ -101,7 +96,17 @@ function lobbyReducer(state, action) {
   case START_GAME: {
     return {
         ...state,
-      page: PAGE_REVEAL,
+      loading: true,
+    }
+  }
+
+  case GAME_STATE_UPDATE: {
+    if (state.game.phase === PHASE_REVEAL) {
+      return {
+          ...state,
+        loading: false,
+        page: PAGE_REVEAL,
+      }
     }
   }
   }
@@ -167,15 +172,8 @@ export default function reducer(state=initialState, action) {
 
   if (action.type === GAME_STATE_UPDATE) {
 
-    //hack
-    const meh ={};
-    if (action.game.phase !== state.game.phase && pmap[action.game.phase]) {
-      meh.page = pmap[action.game.phase];
-    }
-
     state = {
       ...state,
-      ...meh,
       game: action.game,
     };
   }
