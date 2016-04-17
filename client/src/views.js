@@ -37,7 +37,7 @@ export const Menu = React.createClass({
         astronautSrc: astronautSrc.replace('ejected', 'ejected_splatter'),
         astronautAlt: astronautAlt.replace('Ejected', 'Splattered')
       });
-    }, GLOBAL_ANIMATION_SPEED * .75)
+    }, GLOBAL_ANIMATION_SPEED * .5)
   },
 
   render () {
@@ -158,7 +158,10 @@ export const Lobby = React.createClass({
         <div className="info">
           <form noValidate>
             <div className="form-group">
-              Game Code: <input
+              <label className="form-control-label">
+                <small>Game Code:</small>
+              </label>
+              <input
                 type="text"
                 className="form-control"
                 defaultValue={gameCode}

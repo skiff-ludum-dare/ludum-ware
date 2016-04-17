@@ -148,6 +148,17 @@ hr {
   opacity: 1;
 }
 
+.form-control-label {
+  display: inline-block;
+  margin-top: 1em;
+  margin-bottom: 0;
+}
+
+.form-control-label + .form-control {
+  display: inline-block;
+  margin-top: .25em;
+}
+
 button {
   cursor: pointer;
   display: block;
@@ -187,8 +198,8 @@ button.primary::before {
 
 .img-reveal {
   transition: opacity .33s ease-in-out;
+  margin-top: -288px;
   position: relative;
-  top: -288px;
 }
 
 .img-reveal-transparent {
@@ -229,7 +240,7 @@ button.primary::before {
   }
 
   to {
-    transform: translate3d(-160%, -80%, 0);
+    transform: translate3d(-80%, -40%, 0);
   }
 }
 
@@ -313,6 +324,7 @@ button.primary::before {
 }
 .phase-reveal > .character {
   flex: 6;
+  position: relative;
 }
 .phase-reveal > .actions {
   flex: 1;
@@ -325,6 +337,7 @@ button.primary::before {
 }
 .phase-dead > .character {
   flex: 6;
+  position: relative;
 }
 .phase-dead > .actions {
   flex: 1;
