@@ -339,7 +339,9 @@ export const GameRound = React.createClass({
         <div className="info">
           <h2 className="offset">{ type.toUpperCase() }</h2>
           <small>
-            <span className="highlight">{votesNeeded} votes for majority</span><br />
+            {(type === "day") && <span>You must select a crew mate to kill, as a group<br /></span>}
+            {(type === "night") && <span className="highlight">All must select a crew mate, but only the biomorph will kill<br /></span>}
+            {(type === "day") && <span className="highlight">{votesNeeded} votes for majority<br /></span>}
             <span>&#91;{`${supportsMultiTouch() ? 'press' : 'click'} and hold to vote`}&#93;</span>
           </small>
         </div>
