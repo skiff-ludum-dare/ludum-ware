@@ -22,7 +22,10 @@ export const Menu = React.createClass({
     return (
       <div className="phase phase-menu">
         <IntroSound/>
-        <aside className="spaceship"></aside>
+        <aside className="spaceship">
+          <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
+          <img className="center-block img-responsive slide-in-right animated" src="images/ship.png" alt="Space Ship" />
+        </aside>
         <div className="actions">
           <h1>Terrormorph!</h1>
           <button
