@@ -81,8 +81,32 @@ h3, h4, h5, h6, .highlight {
   color: gold;
 }
 
+.danger {
+  color: red;
+}
+
 .dead {
   text-decoration: line-through;
+}
+
+.accused {
+  text-shadow: 1px 1px 8px red;
+}
+.accused::before {
+  content: '\f0da';
+  display: inline-block;
+  vertical-align: middle;
+  font-family: 'FontAwesome', monospace;
+  font-size: 1.6em;
+  position: relative;
+  top: -.125em;
+  left: -.3em;
+}
+
+.votes {
+  margin-left: 1em;
+  padding: .3em;
+  border: 2px dashed red;
 }
 
 h1.offset, h2.offset, h3.offset, h4.offset, h5.offset, h6.offset {
@@ -370,13 +394,22 @@ button.primary::before {
   flex: 1;
 }
 .phase-round > .survivors {
+  overflow-y: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
   flex: 6;
 }
-
-.phase-round > .survivors li.dead {
-    text-decoration: line-through;
-    opacity: 0.2;
-    color: red;
+.phase-round .survivors-list {
+  display: inline-block;
+  list-style: none;
+  margin-right: auto;
+  margin-left: auto;
+}
+.phase-round .survivors-list li {
+  margin-top: 15px;
+}
+.phase-round > .survivors li:first-of-type {
+  margin-top: 0;
 }
 
 /* Vote */
