@@ -126,25 +126,30 @@ hr {
 
 *::-webkit-input-placeholder{
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
 *:-moz-placeholder{
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
 *::-moz-placeholder{
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
 *:-ms-input-placeholder{
   color: white;
+  text-transform: lowercase;
 }
 
 *[placeholder] {
   color: white;
+  text-transform: lowercase;
   opacity: 1;
 }
 
@@ -388,6 +393,10 @@ button.primary::before {
 }
 .mute-all:focus {
   outline: none;
+}
+
+.game-code-input {
+  text-transform: uppercase;
 }
 
 .copyright {

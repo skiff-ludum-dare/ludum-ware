@@ -107,6 +107,7 @@ export const StartGame = React.createClass({
               placeholder="Enter name"
               value={name}
               onChange={e => this.setState({name: e.target.value})}
+              maxLength={25}
               required
             />
           </div>
@@ -114,10 +115,11 @@ export const StartGame = React.createClass({
             <div className="form-group">
               <input
                 type="text"
-                className="form-control"
+                className="form-control game-code-input"
                 placeholder="Enter code"
                 value={gameCode}
                 onChange={e => this.setState({gameCode: e.target.value})}
+                maxLength={4}
                 required
               />
             </div>
