@@ -107,7 +107,7 @@ export const Lobby = React.createClass({
   propTypes: {
     gameCode: React.PropTypes.string,
     players: React.PropTypes.arrayOf(React.PropTypes.object),
-
+    ownPlayerId: React.PropTypes.string,
     isOwner: React.PropTypes.bool,
 
     onStart: React.PropTypes.func,
@@ -139,7 +139,10 @@ export const Lobby = React.createClass({
         <div className="roster">
           <ol className="roster-list">
             { players.map(({id, name}) => (
-              <li className="highlight" key={id}>{ name }</li>
+              <li
+                className={ id === ownPlayerId ? 'highlight' : '' }
+                key={id}
+              >{ name }</li>
             )) }
             { (new Array(MIN_PLAYERS - players.length)).fill(null).map(() => (
               <li>&lt;waiting&gt;</li>
@@ -243,6 +246,10 @@ export const GameRound = React.createClass({
     onUnselect: React.PropTypes.func,
   },
 
+  componentDidMount() {
+
+  },
+
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
     return (
@@ -252,8 +259,7 @@ export const GameRound = React.createClass({
           { players.map(({name, alive, id}) => (
             <li
                key={id}
-               onClick={() => onSelect(id)}
-
+               className={ id === ownPlayerId ? 'highlight' : '' }
                onMouseDown={() => onSelect(id)}
                onMouseUp={() => onUnselect(id)}
                onTouchStart={() => onSelect(id)}
