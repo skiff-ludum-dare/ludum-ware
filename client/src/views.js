@@ -350,7 +350,7 @@ export const GameRound = React.createClass({
                   onTouchCancel={() => onUnselect(id)}
                 >
                   <span>{ name }</span>
-                  { killVotes && <span className="danger votes">{killVotes}</span> }
+                  { (killVotes > 0) && <span className="danger votes">{killVotes}</span> }
                 </li>
                 :
                 <li className="danger dead" key={id}>{ name }</li>);

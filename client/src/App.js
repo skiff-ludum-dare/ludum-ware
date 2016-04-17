@@ -63,7 +63,7 @@ const GameRound = connect(
       type: (state.game.phase === PHASE_DAY) ? 'day' : 'night',
       votesNeeded: state.game.votesNeeded,
       players: state.game.players.map(p => {
-        const votes = _.where(state.game.players, otherPlayer => otherPlayer.victimUserId === p.id).length;
+        const votes = _.filter(state.game.players, otherPlayer => otherPlayer.victimUserId === p.id).length;
         return {
           ...p,
           killVotes: votes,
