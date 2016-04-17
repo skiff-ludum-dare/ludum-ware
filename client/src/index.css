@@ -136,6 +136,25 @@ button.primary::before {
 }
 
 /*
+ *  Game Art & Animation
+ *  --
+ */
+
+.img-reveal {
+  transition: opacity .33s ease-in-out;
+  position: relative;
+  top: -288px;
+}
+
+.img-reveal-transparent {
+  opacity: 0;
+}
+
+.img-reveal-opaque {
+  opacity: 1;
+}
+
+/*
  *  Game Phases (States)
  *  --
  */
@@ -199,20 +218,7 @@ button.primary::before {
   flex: 2;
 }
 .phase-reveal > .character {
-  flex: 3;
-}
-.phase-reveal > .character > p {
-  font-size: 44px;
-  margin-right: 15px;
-  margin-left: 15px;
-  padding: 16px;
-  border: 4px dashed yellow;
-}
-.phase-reveal > .character > p.villager {
-  color: aquamarine;
-}
-.phase-reveal > .character > p.wolf {
-  color: red;
+  flex: 6;
 }
 .phase-reveal > .actions {
   flex: 1;

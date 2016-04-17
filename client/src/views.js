@@ -1,8 +1,10 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 
+import {AudioService} from './audio';
+
 function supportsMultiTouch() {
-  return window.navigator.maxTouchPoints > 1
+  return window.navigator.maxTouchPoints > 1;
 }
 
 export const Menu = React.createClass({
@@ -205,8 +207,6 @@ export const Reveal = React.createClass({
   render () {
     const { role, onReady } = this.props;
     const { show, hasShown } = this.state;
-    const normal = <p>&lt;hidden&gt;</p>;
-    const secret = <p className={role}>{role.toUpperCase()}</p>;
     const instruction = supportsMultiTouch() ? 'two-finger press' : 'click and hold';
     return (
       <div className="phase phase-reveal" ref="reveal">
@@ -215,9 +215,17 @@ export const Reveal = React.createClass({
           <h2><small>&#91;{instruction}&#93;</small></h2>
         </div>
 
-        <div className="character highlight">
-          { show ? secret : normal }
-          <img className="center-block img-responsive" src="images/astronaut.png" alt="Astronaut" />
+        <div className="character">
+          <img
+            className="center-block img-responsive"
+            src="images/astronaut.png"
+            alt="Astronaut"
+          />
+          <img
+            className={`center-block img-responsive img-reveal img-reveal-${show ? 'opaque' : 'transparent'}`}
+            src={`images/astronaut_${role === 'wolf' ? 'terror' : 'human'}.png`}
+            alt="Astronaut Revealed"
+          />
         </div>
 
         <div className="actions">
