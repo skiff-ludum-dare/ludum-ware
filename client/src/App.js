@@ -90,6 +90,9 @@ const GameEnd = connect(
 
 const Narrative = connect(
   state => ({
+    survivingPlayers: _.where(state.game.players, {alive: true}),
+    deadPlayers: _.where(state.game.players, {alive: false}),
+    // lastVictim:
   }),
   dispatch => bindActionCreators({onFinish: cancel}, dispatch),
 )(views.Narrative);

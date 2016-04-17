@@ -94,9 +94,9 @@ function lobbyReducer(state, action) {
   function dayOrNightReducer(state, action) {
     if (state.showNarrative) {
       if (acton.type === c.READY) {
-        state = {...state, players: state.players.map(p => (p.id === action.userId) ? {...p, ready: true} : p)};
+        state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? {...p, ready: true} : p)});
         if (_.all(living(state), p => p.ready)) {
-          return {...state, showNarrative: false};
+          return _.extend({}, state, {showNarrative: false});
         }
       }
     }
@@ -132,8 +132,8 @@ function lobbyReducer(state, action) {
       console.log('VALID SELECT');
 
       if (_.filter(voters, {victimUserId}).length >= votesNeeded) {
-        console.log('DIE', victimUserId);
         state = update(state, {
+          lastVictimUserId: {$set: victimUserId},
           players: {[vidx]: { alive: {$set: false} }}
         });
 
