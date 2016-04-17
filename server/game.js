@@ -20,12 +20,6 @@ function getRand(seed, len=10) {
   const rand = pi(seed + len + 2).slice(-len);
   return Number("0." +rand);
 }
-
-function markNotReady(state) {
-  // console.log('NOT READY', _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))}));
-  return _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))});
-}
-
 function lobbyReducer(state, action) {
   switch(action.type) {
   case c.START_GAME: {
@@ -41,10 +35,11 @@ function lobbyReducer(state, action) {
     const playersWithRoles = state.players.map(v => {
       return assign({}, v, {
         role: wolves.indexOf(v.id) > -1 ? c.WEREWOLF : c.VILLAGER,
+        ready: false,
       });
     });
 
-    return update(markNotReady(state), {
+    return update(state, {
         players: {$set: playersWithRoles},
         phase: {$set: c.PHASE_REVEAL},
       });
@@ -60,19 +55,23 @@ function revealReducer(state, action) {
   case c.READY: {
     const {userId} = action;
     const idx = playerIndex(state, userId);
+    console.log('REVEAL READY', userId, idx);
+    console.log(_.map(state.players, 'ready'));
     const newState = update(state, {
       players: {
         [idx]: { ready: {$set: true} }
       },
     });
+    console.log(_.map(newState.players, 'ready'));
 
     if (_.every(newState.players, {ready: true})) {
+      console.log('ALL READY');
       //all ready
-      return update(markNotReady(newState), {
+      return update(newState, {
         round: {$set: 1},
         phase: {$set: c.PHASE_DAY},
         showNarrative: {$set: true},
-        players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
+        players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null, ready: false}))},
       });
     } else {
       return newState;
@@ -95,9 +94,16 @@ function voteInfo(state) {
 function dayOrNightReducer(state, action) {
   if (state.showNarrative) {
     if (action.type === c.READY) {
+      console.log('MARK READY', action.userId);
+      console.log(_.map(state.players, 'ready'));
       state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
+      console.log(_.map(state.players, 'ready'));
       if (_.every(living(state), p => p.ready)) {
-        return _.extend({}, markNotReady(state), {showNarrative: false});
+        console.log('EVERYONE IS READY');
+        return update(state, {
+          showNarrative: {$set: false},
+          players: {$set: state.players.map(p => _.extend({}, p, {ready: false}))},
+        });
       }
     }
     return state;
@@ -149,11 +155,11 @@ function dayOrNightReducer(state, action) {
             winner: {$set: villagersWin ? c.VILLAGER: c.WEREWOLF},
           });
         } else {
-          state = update(markNotReady(state), {
+          state = update(state, {
             round: {$set: isNight ? state.round + 1 : state.round },
             phase: {$set: isNight ? c.PHASE_DAY : c.PHASE_NIGHT},
             showNarrative: {$set: true},
-            players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
+            players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null, ready: false}))},
           });
         }
       }
@@ -169,11 +175,12 @@ function endReducer(state, action) {
   switch(action.type) {
   case c.READY: {
     state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
-    if (_.every(living(state), p => p.ready)) {
+    if (_.every(state.players, p => p.ready)) {
       return _.extend({}, state, {
         phase: c.PHASE_LOBBY,
         showNarrative: false,
         round: null,
+        seed: state.seed + 1,
         players: state.players.map(p => _.extend({}, p, {
           ready: false,
           alive: true,
