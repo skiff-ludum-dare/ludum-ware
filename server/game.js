@@ -80,7 +80,7 @@ function revealReducer(state, action) {
 function dayOrNightReducer(state, action) {
   switch(action.type) {
   case c.UNSELECT_VICTIM: {
-    const pidx = playerIndex(state, state.userId);
+    const pidx = playerIndex(state, action.userId);
     return update(state, {
       players: {[pidx]: { victimUserId: {$set: null} }}
     });
@@ -88,19 +88,23 @@ function dayOrNightReducer(state, action) {
   case c.SELECT_VICTIM: {
     const {victimUserId} = action;;
     const vidx = playerIndex(state, victimUserId);
-    const pidx = playerIndex(state, state.userId);
-    const isNight = (state.phase === c.PHASE_NIGHT);
-    let voters = isNight ? werewolves(state) : living(state);
-    let targets = isNight ? villagers(state) : living(state);
-    let votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
+    const pidx = playerIndex(state, action.userId);
 
     state = update(state, {
       players: {[pidx]: { victimUserId: {$set: victimUserId} }}
     });
 
-    if (_.findWhere(voters, {id: state.userId}) && _.findWhere(targets, {id: victimUserId})) {
+    const isNight = (state.phase === c.PHASE_NIGHT);
+    const voters = isNight ? werewolves(state) : living(state);
+    const targets = isNight ? villagers(state) : living(state);
+    const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
 
-      if (_.where(voters, {victimUserId, alive: true}).length >= votesNeeded) {
+
+    if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) {
+      console.log('VALID SELECT');
+
+      if (_.filter(voters, {victimUserId}).length >= votesNeeded) {
+        console.log('DIE', victimUserId);
         state = update(state, {
           players: {[vidx]: { alive: {$set: false} }}
         });
@@ -108,6 +112,8 @@ function dayOrNightReducer(state, action) {
         // Check for win/lose
         const villagersWin = werewolves(state).length === 0;
         const wolvesWin = werewolves(state).length >= villagers(state).length;
+
+        console.log('WIN', villagersWin, wolvesWin);
 
         // Move to next phase
         if (villagersWin || wolvesWin) {

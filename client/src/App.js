@@ -1,4 +1,4 @@
-'use strict';
+'meuse strict';
 import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -49,8 +49,7 @@ const Lobby = connect(
 
 const Reveal = connect(
   state => ({
-    role: 'villager'
-    //role: _.findWhere(state.game.players, {id: state.userId}).role,
+    role: _.findWhere(state.game.players, {id: state.userId}).role,
   }),
   dispatch => bindActionCreators({ onReady: revealReady }, dispatch),
 )(views.Reveal);
