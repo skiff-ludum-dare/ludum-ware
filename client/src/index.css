@@ -247,6 +247,18 @@ button.primary::before {
   flex: 1;
 }
 
+/* Dead */
+.phase-dead {}
+.phase-dead > .info {
+  flex: 2;
+}
+.phase-dead > .character {
+  flex: 6;
+}
+.phase-dead > .actions {
+  flex: 1;
+}
+
 /* Round */
 .phase-round {}
 .phase-round > .info {
