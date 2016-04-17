@@ -81,13 +81,6 @@ const GameEnd = connect(
   dispatch => bindActionCreators({onFinish: cancel}, dispatch),
 )(views.GameEnd);
 
-  // - survivingPlayers
-  // - deadPlayers
-  // - lastDeath (full player object)
-  // - round (number, starting at 1, increments every DAY)
-  // - seed (number)
-  // - phase: PHASE_DAY/PHASE_NIGHT
-
 const Narrative = connect(
   state => ({
     survivingPlayers: _.where(state.game.players, {alive: true}),

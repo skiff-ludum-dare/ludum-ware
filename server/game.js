@@ -93,7 +93,7 @@ function voteInfo(state) {
 
 function dayOrNightReducer(state, action) {
   if (state.showNarrative) {
-    if (acton.type === c.READY) {
+    if (action.type === c.READY) {
       state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
       if (_.all(living(state), p => p.ready)) {
         return _.extend({}, state, {showNarrative: false});
