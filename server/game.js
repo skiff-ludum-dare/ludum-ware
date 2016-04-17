@@ -142,35 +142,36 @@ function dayOrNightReducer(state, action) {
     // console.log(_.every(living(state), p => p.victimUserId != null));
     // console.log(state.phase);
 
-    if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId}) && (state.phase === c.PHASE_DAY || _.every(living(state), p => p.victimUserId != null))) {
-      if (_.filter(voters, {victimUserId}).length >= votesNeeded) {
+
+    if (
+        (state.phase === c.PHASE_DAY && _.filter(voters, {victimUserId}).length >= votesNeeded && _.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) ||
+        (state.phase === c.PHASE_NIGHT &&  _.every(living(state), p => p.victimUserId != null))) {
+      state = update(state, {
+        lastVictimUserId: {$set: victimUserId},
+        players: {[vidx]: { alive: {$set: false} }}
+      });
+
+      // Check for win/lose
+      const villagersWin = werewolves(state).length === 0;
+      const wolvesWin = werewolves(state).length >= villagers(state).length;
+
+      // console.log('werewolves', werewolves(state), werewolves(state).length);
+      // console.log('villagers', villagers(state), villagers(state).length);
+      // console.log('WIN', villagersWin, wolvesWin);
+      //
+      // Move to next phase
+      if (villagersWin || wolvesWin) {
         state = update(state, {
-          lastVictimUserId: {$set: victimUserId},
-          players: {[vidx]: { alive: {$set: false} }}
+          phase: {$set: c.PHASE_END},
+          winner: {$set: villagersWin ? c.VILLAGER: c.WEREWOLF},
         });
-
-        // Check for win/lose
-        const villagersWin = werewolves(state).length === 0;
-        const wolvesWin = werewolves(state).length >= villagers(state).length;
-
-        // console.log('werewolves', werewolves(state), werewolves(state).length);
-        // console.log('villagers', villagers(state), villagers(state).length);
-        // console.log('WIN', villagersWin, wolvesWin);
-        //
-        // Move to next phase
-        if (villagersWin || wolvesWin) {
-          state = update(state, {
-            phase: {$set: c.PHASE_END},
-            winner: {$set: villagersWin ? c.VILLAGER: c.WEREWOLF},
-          });
-        } else {
-          state = update(state, {
-            round: {$set: isNight ? state.round + 1 : state.round },
-            phase: {$set: isNight ? c.PHASE_DAY : c.PHASE_NIGHT},
-            showNarrative: {$set: true},
-            players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null, ready: false}))},
-          });
-        }
+      } else {
+        state = update(state, {
+          round: {$set: isNight ? state.round + 1 : state.round },
+          phase: {$set: isNight ? c.PHASE_DAY : c.PHASE_NIGHT},
+          showNarrative: {$set: true},
+          players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null, ready: false}))},
+        });
       }
     }
 
