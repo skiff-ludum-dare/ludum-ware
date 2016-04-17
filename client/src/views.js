@@ -417,10 +417,10 @@ export const GameEnd = React.createClass({
         }
 
         <div className="info">
-          <h2 className="offset">{ isWinner ? "You've won!" : winningTeam } win</h2>
+          <h2 className="offset">{ isWinner ? "You've won!" : winningTeam + " won"}</h2>
         </div>
         <div className="actions">
-          <button onClick={onFinish}>Back to Lobby</button>
+          <button onClick={onFinish}>Ready</button>
         </div>
       </div>
     );

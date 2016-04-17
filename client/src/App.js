@@ -77,7 +77,7 @@ const GameRound = connect(
 const GameEnd = connect(
   state => ({
     winningTeam: state.game.winner,
-    isWinner: _.find(state.game.players, {id: state.userId}),
+    isWinner: _.find(state.game.players, {id: state.userId}).role === state.game.winner,
   }),
   dispatch => bindActionCreators({onFinish: ready}, dispatch),
 )(views.GameEnd);
