@@ -299,7 +299,7 @@ export const Dead = React.createClass({
       <div className="phase phase-dead">
         <div className="info">
           <h2 className="offset">
-            <small>&#8220;Where did your head go?&#8221;</small>
+            <small>&#8220;Where did your head go?&#8221;</small><br />
             <span>You are DEAD!</span>
           </h2>
         </div>
