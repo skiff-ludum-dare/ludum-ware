@@ -9,10 +9,15 @@ import {
   GAME_STATE_UPDATE, CONNECTING, CONNECTED, HOST_GAME, CANCEL,
 } from './constants';
 
+let userId = localStorage.getItem('userId');
+if (!userId) {
+  userId = uuid.v4();
+  localStorage.setItem('userId', userId);
+}
 
 const initialState = {
   page: PAGE_MENU,
-  userId: uuid.v4(),
+  userId,
   loading: false,
   game: null,
 };
