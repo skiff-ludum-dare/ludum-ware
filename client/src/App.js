@@ -14,7 +14,7 @@ import {
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
-  startGame, ready, selectVictim, unselectVictim, disconnect
+  startGame, ready, selectVictim, unselectVictim, disconnect, kick
 } from './actions';
 import {MIN_PLAYERS} from './config';
 
@@ -37,7 +37,6 @@ const Lobby = connect(
   state => {
     const isOwner = _.findWhere(state.game.players, {id: state.userId}).owner;
     const players = state.game.players;
-    console.log(players, MIN_PLAYERS);
     return {
       gameCode: state.game.gameCode,
       players,
@@ -46,7 +45,7 @@ const Lobby = connect(
       minPlayers: MIN_PLAYERS,
     };
   },
-  dispatch => bindActionCreators({onStart: startGame, onCancel: disconnect}, dispatch),
+  dispatch => bindActionCreators({onStart: startGame, onCancel: disconnect, onKick: kick}, dispatch),
 )(views.Lobby);
 
 const Reveal = connect(
