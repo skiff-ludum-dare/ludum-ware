@@ -217,6 +217,7 @@ export const Reveal = React.createClass({
 
         <div className="character highlight">
           { show ? secret : normal }
+          <img className="center-block img-responsive" src="images/astronaut.png" alt="Astronaut" />
         </div>
 
         <div className="actions">
