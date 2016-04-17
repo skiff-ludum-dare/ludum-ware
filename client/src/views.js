@@ -151,10 +151,12 @@ export const Lobby = React.createClass({
     onStart: React.PropTypes.func,
     onCancel: React.PropTypes.func,
     onKick: React.PropTypes.func,
+    canKick: React.PropTypes.bool.isRequired,
   },
 
   render () {
-    const { gameCode, minPlayers, players, onStart, onCancel, onKick, canStart, ownPlayerId } = this.props;
+    const { gameCode, minPlayers, players, onStart,
+      onCancel, canKick, onKick, canStart, ownPlayerId } = this.props;
     return (
       <div className="phase phase-lobby">
         <div className="info">
@@ -184,7 +186,11 @@ export const Lobby = React.createClass({
               <li
                 className={ id === ownPlayerId ? 'highlight' : '' }
                 key={id}
-              >{ name } (<a onClick={() => onKick(id)}>kick</a>)</li>
+              >
+                { name }
+                {canKick ? <span> (<a onClick={() => onKick(id)}>kick</a>)</span> : null}
+
+              </li>
             )) }
             { (new Array(Math.max(0, minPlayers - players.length))).fill(null).map((v, i) => (
               <li key={i}>&lt;waiting&gt;</li>

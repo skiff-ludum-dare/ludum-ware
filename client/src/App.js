@@ -42,6 +42,7 @@ const Lobby = connect(
       players,
       ownPlayerId: state.userId,
       canStart: isOwner && players.length >= MIN_PLAYERS,
+      canKick: isOwner,
       minPlayers: MIN_PLAYERS,
     };
   },

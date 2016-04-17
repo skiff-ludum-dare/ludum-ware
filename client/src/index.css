@@ -4,6 +4,13 @@
  *  Layout
  *  --
  */
+body {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;
+}
 
 .button {
   cursor: pointer;
@@ -39,7 +46,7 @@ aside#sounds {
   width: 50px;
   height: 50px;
   position: absolute;
-  top: 10px; right: 10px;
+  bottom: 10px; right: 10px;
   z-index: 2;
 }
 
@@ -109,8 +116,13 @@ h3, h4, h5, h6, .highlight {
   border: 2px dashed red;
 }
 
+form {
+  margin: 0;
+  padding: 0;
+}
+
 h1.offset, h2.offset, h3.offset, h4.offset, h5.offset, h6.offset {
-  margin-top: 90px;
+  margin-top: 15px;
 }
 
 h1 {
@@ -440,6 +452,7 @@ button.primary::before {
  box-shadow: 1px 1px 8px white;
  position: relative;
 }
+
 .mute-all:focus {
   outline: none;
 }
