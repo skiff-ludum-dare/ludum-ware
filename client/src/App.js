@@ -92,7 +92,9 @@ const Narrative = connect(
   state => ({
     survivingPlayers: _.where(state.game.players, {alive: true}),
     deadPlayers: _.where(state.game.players, {alive: false}),
-    // lastVictim:
+    lastVictim: _.where(state.game.players, {id: state.game.lastVictimUserId}),
+    round: state.game.round,
+    seed: state.game.seed,
   }),
   dispatch => bindActionCreators({onFinish: cancel}, dispatch),
 )(views.Narrative);
@@ -128,7 +130,7 @@ const App = React.createClass({
         Content = phases[game.phase];
       }
     } else {
-      Content = Pages[page];
+      Content = pages[page];
     }
 
     return <article>
