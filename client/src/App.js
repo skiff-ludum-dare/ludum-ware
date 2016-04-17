@@ -55,18 +55,9 @@ const Reveal = connect(
   dispatch => bindActionCreators({ onReady: revealReady }, dispatch),
 )(views.Reveal);
 
-const Day = connect(
+const DayOrNight = connect(
   state => ({
-    type: 'day',
-    players: state.game.players,
-    ownPlayerId: state.userId,
-  }),
-  dispatch => bindActionCreators({ onSelect: selectVictim, onUnselect: unselectVictim }, dispatch),
-)(views.GameRound);
-
-const Night = connect(
-  state => ({
-    type: 'night',
+    type: (state.game.phase === PHASE_DAY) ? 'day' : 'night',
     players: state.game.players,
     ownPlayerId: state.userId,
   }),
@@ -97,8 +88,8 @@ const pages = {
 const phases = {
   [PHASE_LOBBY]: Lobby,
   [PHASE_REVEAL]: Reveal,
-  [PHASE_DAY]: Day,
-  [PHASE_NIGHT]: Night,
+  [PHASE_DAY]: DayOrNight,
+  [PHASE_NIGHT]: DayOrNight,
   // [PHASE_VOTE]: Vote,
   [PHASE_END]: GameEnd,
 }
