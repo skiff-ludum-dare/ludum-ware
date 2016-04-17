@@ -28,10 +28,6 @@ aside#credits {
   background-color: rgba(0, 0, 0, 0.8);
   overflow-y: scroll;
 }
-
-aside#credits {
-}
-
 aside#credits div {
   line-height: 24px;
 }
@@ -84,8 +80,12 @@ h1, h2 {
   text-fill-color: transparent;
 }
 
-h3, h4, h5, h6, .highlight {
+h3, h4, .highlight {
   color: gold;
+}
+
+h5, h6 {
+  color: hotpink;
 }
 
 .danger {
@@ -424,8 +424,14 @@ button.primary::before {
   margin-top: 0;
 }
 
-/* Vote */
-.phase-vote {}
+/* Narrative */
+.phase-narrative {}
+.phase-narrative > .info {
+  flex: 6;
+}
+.phase-narrative > .actions {
+  flex: 1;
+}
 
 /* End */
 .phase-end {}

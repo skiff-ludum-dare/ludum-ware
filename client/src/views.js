@@ -297,7 +297,10 @@ export const Dead = React.createClass({
     return (
       <div className="phase phase-dead">
         <div className="info">
-          <h2 className="offset">You are DEAD!</h2>
+          <h2 className="offset">
+            <small>&#8220;Where did your head go?&#8221;</small>
+            <span>You are DEAD!</span>
+          </h2>
         </div>
 
         <div className="character">
@@ -385,35 +388,29 @@ export const Narrative = React.createClass({
 
   render () {
     const { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed, phase } = this.props;
-    let content;
-    if (round === 1 && phase === PHASE_DAY) {
-      content = (
-        <div className="info">
-          <h2 className="offset">One of the crew is now a terrormorph</h2>
-          <h2><small>As a group choose a crew member to eject from the airlock, choose wisely!</small></h2>
-        </div>
-      );
-    } else if (phase === PHASE_DAY) {
-      content = (
-        <div className="info">
-          <h2 className="offset">The crew awake to discover {lastVictim.name} torn to pices</h2>
-          <h2><small>The Terrormorph still walks among you, you must kill another crew member</small></h2>
-        </div>
-      );
-    } else {
-      content = (
-        <div className="info">
-          <h2 className="offset">The crew decide to put {lastVictim.name} out the airlock then retire for the night</h2>
-          <h2 className="offset">But they choose badly, terror stalks its prey</h2>
-          <h2><small>All crew must secretly select another person. Only the terrormorph will kill though.</small></h2>
-        </div>
-      );
-    }
 
     return (
       <div className="phase phase-narrative">
-        { content }
-
+        <div className="info">
+          {
+          if (round === 1 && phase === PHASE_DAY) {
+            <h3 className="offset">Earth Day {100 + round}:</h3>
+            <h2>The crew has been asleep for 100 earth days.</h2>
+            <h4>&#8220;BEEEEEP BEEEEEP&#8221;</h4>
+            <h5>The warning rings throughout the ship, as the fluid is drained from around the sleeping bodies, and they are jolted suddenly awake.</h5>
+            <h4>&#8220;Non-human lifeform detected&#8221;</h4>
+            <h5>The blurry-eyed space sailors assemble in the Galley...</h5>
+          } else if (phase === PHASE_DAY) {
+            <h3 className="offset">Earth Day {100 + round}:</h3>
+            <h2>The crew awake to discover {lastVictim.name} torn to pieces</h2>
+            <h5>The Terrormorph still walks among you, you must expel it immediately!</h5>
+          } else {
+            <h3 className="offset">Earth Day {100 + round}:</h3>
+            <h2>{lastVictim.name} has become a space firework.</h2>
+            <h5>But danger still lurks... in the night, another crew member will fall prey to the Terrormorph.</h5>
+          }
+          }
+        </div>
         <div className="actions">
           <button
             type="button"
@@ -439,7 +436,7 @@ export const GameEnd = React.createClass({
     const { winningTeam, isWinner, onFinish } = this.props;
 
     return (
-      <div className={ classNames("phase phase-end", {"winner": isWinner}) }>
+      <div className={ classNames('phase phase-end', { 'winner': isWinner }) }>
         { isWinner ? <Fireworks /> : null }
         { winningTeam === VILLAGER
         ?
@@ -459,10 +456,19 @@ export const GameEnd = React.createClass({
        }
 
         <div className="info">
-          <h2 className="offset">{ isWinner ? "You've won!" : winningTeam + " won"}</h2>
+          { winningTeam === VILLAGER
+          ?
+          <h2 className="offset">The crew of the SS-LUDUM has survivied.<h2>
+          :
+          <h2 className="offset">Non-human life forms are now the only life form.<h2>
+          }
+          <h3>{ isWinner ? "You've won. Celebrate." : winningTeam + " won. You become the devoured."}</h3>
         </div>
         <div className="actions">
-          <button onClick={onFinish}>Ready</button>
+          <button onClick={onFinish}>
+            <Icon name="repeat" />
+            <span>Replay</span>
+          </button>
         </div>
       </div>
     );
