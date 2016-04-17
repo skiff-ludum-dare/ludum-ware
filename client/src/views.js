@@ -115,7 +115,7 @@ export const Lobby = React.createClass({
   },
 
   render () {
-    const { gameCode, players, onStart, onCancel, isOwner } = this.props;
+    const { gameCode, players, onStart, onCancel, isOwner, ownPlayerId } = this.props;
     return (
       <div className="phase phase-lobby">
         <div className="info">
