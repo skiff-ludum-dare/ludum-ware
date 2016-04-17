@@ -1,4 +1,4 @@
-'use strict';
+'meuse strict';
 import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -50,37 +50,29 @@ const Lobby = connect(
 
 const Reveal = connect(
   state => ({
-    role: 'villager'
-    //role: _.findWhere(state.game.players, {id: state.userId}).role,
+    role: _.findWhere(state.game.players, {id: state.userId}).role,
   }),
   dispatch => bindActionCreators({ onReady: revealReady }, dispatch),
 )(views.Reveal);
 
-const Day = connect(
-  state => ({
-    type: 'day',
-    players: state.game.players,
-    ownPlayerId: state.userId,
-  }),
+const GameRound = connect(
+  state => {
+    return {
+      type: (state.game.phase === PHASE_DAY) ? 'day' : 'night',
+      votesNeeded: state.game.votesNeeded,
+      players: state.game.players.map(p => {
+        const votes = _.where(state.game.players, otherPlayer => otherPlayer.victimUserId === p.id).length;
+        return {
+          ...p,
+          killVotes: votes,
+        }
+      }),
+      ownPlayerId: state.userId,
+      victimUserId: _.findWhere(state.game.players, {id: state.userId}).victimUserId,
+    };
+  },
   dispatch => bindActionCreators({ onSelect: selectVictim, onUnselect: unselectVictim }, dispatch),
 )(views.GameRound);
-
-const Night = connect(
-  state => ({
-    type: 'night',
-    players: state.game.players,
-    ownPlayerId: state.userId,
-  }),
-  dispatch => bindActionCreators({ onSelect: selectVictim, onUnselect: unselectVictim }, dispatch),
-)(views.GameRound);
-
-// const Vote = connect(
-//   state => ({
-//     nominatedUser: _.findWhere(state.game.players, {id: state.game.nomination.nominatedUserId}),
-//     accuserUser: _.findWhere(state.game.players, {id: state.game.nomination.accuserUserId}),
-//   }),
-//   dispatch => bindActionCreators({ onVoteYes: voteYes, onVoteNo: voteNo }, dispatch),
-// )(views.Vote);
 
 const GameEnd = connect(
   state => ({
@@ -98,8 +90,8 @@ const pages = {
 const phases = {
   [PHASE_LOBBY]: Lobby,
   [PHASE_REVEAL]: Reveal,
-  [PHASE_DAY]: Day,
-  [PHASE_NIGHT]: Night,
+  [PHASE_DAY]: GameRound,
+  [PHASE_NIGHT]: DayOrNight,
   // [PHASE_VOTE]: Vote,
   [PHASE_END]: GameEnd,
 }

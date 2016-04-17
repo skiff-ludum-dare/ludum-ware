@@ -1,5 +1,6 @@
 import React from 'react';
 import Hammer from 'hammerjs';
+import {WEREWOLF, VILLAGER} from './constants';
 
 import {IntroSound} from './Sound';
 
@@ -118,6 +119,7 @@ export const Lobby = React.createClass({
 
   render () {
     const { gameCode, minPlayers, players, onStart, onCancel, canStart, ownPlayerId } = this.props;
+    console.log(players);
     return (
       <div className="phase phase-lobby">
         <div className="info">
@@ -146,7 +148,7 @@ export const Lobby = React.createClass({
                 key={id}
               >{ name }</li>
             )) }
-            { (new Array(minPlayers - players.length)).fill(null).map((v, i) => (
+            { (new Array(Math.max(0, minPlayers - players.length))).fill(null).map((v, i) => (
               <li key={i}>&lt;waiting&gt;</li>
             )) }
           </ol>
@@ -172,7 +174,7 @@ export const Reveal = React.createClass({
   displayName: 'Reveal',
 
   propTypes: {
-    role: React.PropTypes.oneOf(["villager", "wolf"]),
+    role: React.PropTypes.oneOf([WEREWOLF, VILLAGER]),
     onReady: React.PropTypes.func,
   },
 
@@ -224,7 +226,7 @@ export const Reveal = React.createClass({
           />
           <img
             className={`center-block img-responsive img-reveal img-reveal-${show ? 'opaque' : 'transparent'}`}
-            src={`images/astronaut_${role === 'wolf' ? 'terror' : 'human'}.png`}
+            src={`images/astronaut_${role === WEREWOLF ? 'terror' : 'human'}.png`}
             alt="Astronaut Revealed"
           />
         </div>
@@ -296,7 +298,7 @@ export const GameEnd = React.createClass({
     return (
       <div className="phase phase-end">
         <div className="info">
-          <h2 className="offset">{ winningTeam } wins</h2>
+          <h2 className="offset">{ winningTeam } win</h2>
         </div>
         <div className="actions">
           <button onClick={onFinish}>Done</button>

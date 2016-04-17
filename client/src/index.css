@@ -131,10 +131,10 @@ button {
   display: block;
   color: white;
   text-align: center;
-  text-indent: .9em;
+  text-indent: .425em;
   width: 100%;
   height: 40px;
-  padding-right: .9em;
+  padding-right: .425em;
   background-color: transparent;
   border: 1px solid transparent;
 }
@@ -148,12 +148,14 @@ button.primary {
 }
 
 button.primary::before {
-  content: '\25b6';
+  content: '\f0da';
   display: inline-block;
   vertical-align: middle;
+  font-family: 'FontAwesome', monospace;
+  font-size: 1.6em;
   position: relative;
-  top: -.225em;
-  left: -.45em;
+  top: -.125em;
+  left: -.3em;
 }
 
 /*
@@ -245,6 +247,18 @@ button.primary::before {
   flex: 1;
 }
 
+/* Dead */
+.phase-dead {}
+.phase-dead > .info {
+  flex: 2;
+}
+.phase-dead > .character {
+  flex: 6;
+}
+.phase-dead > .actions {
+  flex: 1;
+}
+
 /* Round */
 .phase-round {}
 .phase-round > .info {
@@ -273,6 +287,7 @@ button.primary::before {
 
 .mute-all {
  text-align: center;
+ text-indent: 0;
  width: 100%;
  height: 100%;
  padding-right: 0;
@@ -283,10 +298,6 @@ button.primary::before {
 }
 .mute-all:focus {
   outline: none;
-}
-.mute-all > .fa {
-  left: -17px;
-  position: relative;
 }
 
 .copyright {
