@@ -289,7 +289,7 @@ export const Dead = React.createClass({
         <div className="character">
           <img
             className="center-block img-responsive"
-            src="images/astronaut_dead.png"
+            src="images/astronaut_eaten.png"
             alt="Dead Astronaut"
           />
         </div>
@@ -315,7 +315,7 @@ export const GameRound = React.createClass({
 
     const player = _.find(players, {id: ownPlayerId});
     if (!player.alive) {
-      return <Dead {...props } />
+      return <Dead {...this.props } />
     }
 
     return (
