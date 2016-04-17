@@ -1,6 +1,7 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 import {WEREWOLF, VILLAGER} from './constants';
+import classNames from 'classnames';
 
 import {IntroSound} from './Sound';
 
@@ -119,13 +120,12 @@ export const Lobby = React.createClass({
 
   render () {
     const { gameCode, minPlayers, players, onStart, onCancel, canStart, ownPlayerId } = this.props;
-    console.log(players);
     return (
       <div className="phase phase-lobby">
         <div className="info">
           <form noValidate>
             <div className="form-group">
-              <input
+              Game Code: <input
                 type="text"
                 className="form-control"
                 defaultValue={gameCode}
@@ -270,7 +270,7 @@ export const GameRound = React.createClass({
             { players.map(({name, alive, id}) => (
               <li
                  key={id}
-                 className={ id === ownPlayerId ? 'highlight' : '' }
+                 className={classNames({highlight: id === ownPlayerId, alive, dead: !alive})}
                  onMouseDown={() => onSelect(id)}
                  onMouseUp={() => onUnselect(id)}
                  onTouchStart={() => onSelect(id)}

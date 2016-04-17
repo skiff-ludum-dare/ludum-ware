@@ -87,7 +87,7 @@ function voteInfo(state) {
 
 function dayOrNightReducer(state, action) {
   const isNight = (state.phase === c.PHASE_NIGHT);
-  let {votes, targets, votesNeeded} = voteInfo(state);
+  let {voters, targets, votesNeeded} = voteInfo(state);
 
   state = _.extend({}, state, {votesNeeded});
 
@@ -108,7 +108,7 @@ function dayOrNightReducer(state, action) {
     });
 
     // Recaluclate voters and targets
-    let {votes, targets, votesNeeded} = voteInfo(state);
+    let {voters, targets, votesNeeded} = voteInfo(state);
 
     if (_.find(voters, {id: action.userId}) && _.find(targets, {id: victimUserId})) {
       console.log('VALID SELECT');

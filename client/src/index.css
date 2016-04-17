@@ -256,6 +256,12 @@ button.primary::before {
   flex: 6;
 }
 
+.phase-round > .survivors li.dead {
+    text-decoration: line-through;
+    opacity: 0.2;
+    color: red;
+}
+
 /* Vote */
 .phase-vote {}
 

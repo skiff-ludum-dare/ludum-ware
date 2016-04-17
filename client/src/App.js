@@ -91,7 +91,7 @@ const phases = {
   [PHASE_LOBBY]: Lobby,
   [PHASE_REVEAL]: Reveal,
   [PHASE_DAY]: GameRound,
-  [PHASE_NIGHT]: DayOrNight,
+  [PHASE_NIGHT]: GameRound,
   // [PHASE_VOTE]: Vote,
   [PHASE_END]: GameEnd,
 }

@@ -108,5 +108,5 @@ export function selectVictim(victimUserId) {
 
 export function unselectVictim() {
   console.log('UNSELECT VICTIM');
-  return message(UNSELECT_VICTIM);
+  // return message(UNSELECT_VICTIM);
 }
