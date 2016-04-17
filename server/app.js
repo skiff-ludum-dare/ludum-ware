@@ -72,8 +72,8 @@ function createGame(userId) {
 
 function notifyPlayers(state) {
   state.players.forEach(({id}) => {
-    console.log(playerMap);
-    console.log("notify", id);
+    // console.log(playerMap);
+    // console.log("notify", id);
     const client = socketMap[playerMap[id]];
     client.send(JSON.stringify(state));
   });
@@ -121,23 +121,15 @@ io.on('connection', function connection(socket) {
 
     if (c[message.type]) {
       //dispatch
-      if (message.type === c.CREATE_GAME) {
-        console.log('deprecated');
-        const {state} = createGame(message.userId);
-        socket.send(JSON.stringify(state));
+
+      if (!message.gameCode || !games[message.gameCode]) {
+        socket.send(JSON.stringify({error: 'supply a gamecode or game not found'}));
         return;
-
-      } else {
-
-        if (!message.gameCode || !games[message.gameCode]) {
-          socket.send(JSON.stringify({error: 'supply a gamecode or game not found'}));
-          return;
-        }
-
-        const {update, state} = games[message.gameCode];
-        notifyPlayers(update(message));
-        return
       }
+
+      const {update, state} = games[message.gameCode];
+      notifyPlayers(update(message));
+      return
     } else {
       console.log('unknown command: %s', message.type);
       socket.send(JSON.stringify({error: 'unknown command'}));
