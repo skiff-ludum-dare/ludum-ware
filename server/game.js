@@ -26,7 +26,7 @@ function lobbyReducer(state, action) {
     if (action.userId !== state.ownerUserId) return state;
     // if (amount < 5) return state;
 
-    const werewolves = Math.floor(state.players.length / 2 - 1)
+    const werewolves = 1;
     const wolves = reservoir(action.wereWolves || werewolves, _.partial(getRand, state.seed));
     state.players.forEach(p => {
       wolves.pushSome(p.id);
