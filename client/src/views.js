@@ -2,7 +2,7 @@ import React from 'react';
 import Hammer from 'hammerjs';
 import classNames from 'classnames';
 import Credits from './Credits';
-
+import Fireworks from './Fireworks';
 
 import {GLOBAL_ANIMATION_SPEED} from './config';
 import {WEREWOLF, VILLAGER} from './constants';
@@ -398,23 +398,23 @@ export const GameEnd = React.createClass({
 
     return (
       <div className={ classNames("phase phase-end", {"winner": isWinner}) }>
-
-       { winningTeam === VILLAGER
-         ?
-          <div className="character">
-            <img
-              className="center-block img-responsive"
-              src="images/station.png"
-            />
-          </div>
-         :
-          <div className="character">
-            <img
-              className="center-block img-responsive"
-              src="images/station_ruined.png"
-            />
-          </div>
-        }
+        { isWinner ? <Fireworks /> : null }
+        { winningTeam === VILLAGER
+        ?
+         <div className="character">
+           <img
+             className="center-block img-responsive"
+             src="images/station.png"
+           />
+         </div>
+        :
+         <div className="character">
+           <img
+             className="center-block img-responsive"
+             src="images/station_ruined.png"
+           />
+         </div>
+       }
 
         <div className="info">
           <h2 className="offset">{ isWinner ? "You've won!" : winningTeam + " won"}</h2>
