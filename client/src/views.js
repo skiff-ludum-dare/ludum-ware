@@ -245,7 +245,7 @@ export const Reveal = React.createClass({
   },
 
   render () {
-    const { role, onReady } = this.props;
+    const { role, onReady, index } = this.props;
     const { show, hasShown } = this.state;
     const instruction = supportsMultiTouch() ? 'two-finger press' : 'click and hold';
     return (
@@ -263,7 +263,7 @@ export const Reveal = React.createClass({
           />
           <img
             className={`center-block img-responsive img-reveal img-reveal-${show ? 'opaque' : 'transparent'}`}
-            src={`images/astronaut_${role === WEREWOLF ? 'terror' : 'human'}.png`}
+            src={`images/astronaut_${role === WEREWOLF ? 'terror' : 'human' + (index % 4)}.png`}
             alt="Astronaut Revealed"
           />
         </div>

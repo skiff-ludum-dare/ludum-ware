@@ -51,6 +51,7 @@ const Lobby = connect(
 const Reveal = connect(
   state => ({
     role: _.findWhere(state.game.players, {id: state.userId}).role,
+    index: _.findIndex(_.where(state.game.players, {role: VILLAGER}), {id: state.userId}),
   }),
   dispatch => bindActionCreators({ onReady: ready }, dispatch),
 )(views.Reveal);
