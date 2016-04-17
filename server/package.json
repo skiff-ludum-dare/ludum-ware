@@ -14,14 +14,12 @@
     "chai": "^3.5.0",
     "cors": "^2.7.1",
     "express": "^4.13.4",
-    "key-mirror": "^1.0.1",
     "lodash": "^4.11.1",
     "pi": "^1.2.1",
     "react": "^15.0.1",
     "react-addons-update": "^15.0.1",
     "reservoir": "^0.1.2",
     "socket.io": "^1.4.5",
-    "uuid": "^2.0.2",
-    "ws": "^1.1.0"
+    "uuid": "^2.0.2"
   }
 }

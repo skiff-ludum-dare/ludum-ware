@@ -203,19 +203,30 @@ export const Reveal = React.createClass({
   render () {
     const { role, onReady } = this.props;
     const { show, hasShown } = this.state;
-    const normal = <div>Normal Identity</div>;
-    const secret = <div>{role}</div>;
-    const instruction = supportsMultiTouch() ? 'Press two fingers to reveal' : 'Click and hold to reveal';
+    const normal = <p>&lt;hidden&gt;</p>;
+    const secret = <p className={role}>{role.toUpperCase()}</p>;
+    const instruction = supportsMultiTouch() ? 'two-finger press' : 'click and hold';
     return (
       <div className="phase phase-reveal" ref="reveal">
-        <h2>Reveal <small>({instruction})</small></h2>
-        { show ? secret : normal }
-        { hasShown && (
-          <button onClick={onReady}>
-            Ready
-          </button>
-          )
-        }
+        <div className="info">
+          <h2 className="offset">Who are you really...?</h2>
+          <h2><small>&#91;{instruction}&#93;</small></h2>
+        </div>
+
+        <div className="character highlight">
+          { show ? secret : normal }
+        </div>
+
+        <div className="actions">
+          { hasShown && (
+            <button
+              type="button"
+              className="primary"
+              onClick={onReady}
+            >Ready</button>
+            )
+          }
+        </div>
       </div>
     );
   }
