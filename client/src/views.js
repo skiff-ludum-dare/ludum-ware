@@ -188,7 +188,7 @@ export const Lobby = React.createClass({
                 key={id}
               >
                 { name }
-                {canKick ? <span> (<a onClick={() => onKick(id)}>kick</a>)</span> : null}
+                {(canKick && ownPlayerId !== id) ? <span> (<a onClick={() => onKick(id)}>kick</a>)</span> : null}
 
               </li>
             )) }
