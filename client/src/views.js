@@ -200,12 +200,12 @@ export const Lobby = React.createClass({
 
         <div className="actions">
           <hr className="hidden-xs" />
-          { canStart && (
+          { canStart ? (
               <button
                 className="primary"
                 onClick={onStart}
               >Ready</button>
-            )
+            ) : <div>Waiting for owner</div>
           }
           <button onClick={onCancel}>Exit</button>
         </div>

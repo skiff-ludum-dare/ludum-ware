@@ -92,6 +92,11 @@ function voteInfo(state) {
 }
 
 function dayOrNightReducer(state, action) {
+  const isNight = (state.phase === c.PHASE_NIGHT);
+  let {voters, targets, votesNeeded} = voteInfo(state);
+
+  state = _.extend({}, state, {votesNeeded});
+
   if (state.showNarrative) {
     if (action.type === c.READY) {
       // console.log('MARK READY', action.userId);
@@ -109,10 +114,6 @@ function dayOrNightReducer(state, action) {
     return state;
   }
 
-  const isNight = (state.phase === c.PHASE_NIGHT);
-  let {voters, targets, votesNeeded} = voteInfo(state);
-
-  state = _.extend({}, state, {votesNeeded});
 
   switch(action.type) {
   case c.UNSELECT_VICTIM: {
