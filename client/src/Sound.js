@@ -1,10 +1,17 @@
 'use strict';
 import React from 'react';
 import Howler from 'react-howler';
+import Icon from 'react-fa';
 
 import {ENGINE_VOL, INTRO_VOL} from './config'
 
 export const Sound = React.createClass({
+
+  getInitialState() {
+    return {
+      muted: false
+    };
+  },
 
   componentDidMount() {
     this.setVolume.call(this, 'engine', ENGINE_VOL);
@@ -14,16 +21,33 @@ export const Sound = React.createClass({
     this.refs[ref]._howler._volume = vol;
   },
 
+  toggleGlobalMute() {
+    const {muted} = this.state;
+
+    window.Howler.mute(!muted);
+    this.setState({ muted: !muted });
+  },
+
   render() {
+    const {muted} = this.state;
+
     return (
-      <div id="sounds">
+      <aside id="sounds">
+        <button
+          type="button"
+          className="mute-all"
+          tabIndex="-1"
+          onClick={this.toggleGlobalMute}
+        >
+          <Icon name={`volume-${muted ? 'off' : 'up'}`} size="2x" />
+        </button>
         <Howler
           src='sound/engine.wav'
           playing={true}
           loop={true}
           ref="engine"
         />
-      </div>
+      </aside>
     );
   }
 
