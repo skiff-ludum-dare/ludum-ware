@@ -177,6 +177,30 @@ button.primary::before {
   opacity: 1;
 }
 
+.animated {
+  animation-duration: 12s;
+  animation-fill-mode: both;
+}
+
+.animated.infinite {
+  animation-iteration-count: infinite;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translate3d(160%, 0, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slide-in-right {
+  animation-name: slideInRight;
+}
+
 /*
  *  Game Phases (States)
  *  --
@@ -195,6 +219,13 @@ button.primary::before {
 
 .phase-menu > .spaceship {
   flex: 9;
+}
+.phase-menu > .spaceship > img:nth-of-type(1) {
+  margin-top: 100px;
+}
+.phase-menu > .spaceship > img:nth-of-type(2) {
+  margin-top: -210px;
+  padding-left: 60px;
 }
 
 .phase-menu > .actions {
