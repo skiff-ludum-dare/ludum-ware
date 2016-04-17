@@ -1,6 +1,8 @@
 Terrormorph
 ---
 
+Play it here (mobiles): http://terrormorph.com
+
 > Suddenly awoken by the on-board security systems, your space crew is threatened by an alien imposter - a parasitic force that morphs one of your crew to commit nightly terrors. Decide where this evil lurks and expel it, to preserve humankind.
 
 Entered in Ludum Dare's 35th game jam <http://ludumdare.com/compo/ludum-dare-35/?action=preview&uid=51092>.
