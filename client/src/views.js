@@ -3,6 +3,7 @@ import Hammer from 'hammerjs';
 import classNames from 'classnames';
 import Credits from './Credits';
 import Fireworks from './Fireworks';
+import Icon from 'react-fa';
 
 import {GLOBAL_ANIMATION_SPEED} from './config';
 import {WEREWOLF, VILLAGER, PHASE_DAY, PHASE_NIGHT} from './constants';
