@@ -404,13 +404,13 @@ button.primary::before {
 /* Round */
 .phase-round {}
 .phase-round > .info {
-  flex: 1;
+  /* flex: 1; */
 }
 .phase-round > .survivors {
   overflow-y: auto;
   margin-top: 15px;
   margin-bottom: 15px;
-  flex: 6;
+  /* flex: 6; */
 }
 .phase-round .survivors-list {
   display: inline-block;
