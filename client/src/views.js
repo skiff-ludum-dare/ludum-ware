@@ -315,11 +315,6 @@ export const GameRound = React.createClass({
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
 
-    const player = _.find(players, {id: ownPlayerId});
-    if (!player.alive) {
-      return <Dead {...this.props } />
-    }
-
     return (
       <div className="phase phase-round">
         <div className="info">
