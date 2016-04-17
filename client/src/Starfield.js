@@ -120,11 +120,11 @@ export const Starfield = React.createClass({
 
   componentDidMount() {
     new StarfieldGenerator(
-      document.getElementById('starfield')
+      this.refs.starfield
     ).start()
   },
 
   render() {
-    return <aside id="starfield"></aside>;
+    return <aside id="starfield" ref="starfield"></aside>;
   }
 });
