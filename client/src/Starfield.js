@@ -32,7 +32,7 @@ class StarfieldGenerator {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
-    window.addEventListener('resize', function resize(event) {
+    window.addEventListener('resize', event => {
       this.width = window.innerWidth;
       this.height = window.innerHeight;
       // this.canvas.width = this.width;
