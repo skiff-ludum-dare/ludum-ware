@@ -337,7 +337,7 @@ export const GameRound = React.createClass({
     return (
       <div className="phase phase-round">
         <div className="info">
-          <h2 className="offset">{ type }</h2>
+          <h2 className="offset">{ type.toUpperCase() }</h2>
           <small>
             <span className="highlight">{votesNeeded} votes for majority</span><br />
             <span>&#91;{`${supportsMultiTouch() ? 'press' : 'click'} and hold to vote`}&#93;</span>
