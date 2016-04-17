@@ -4,5 +4,6 @@ exports.MIN_PLAYERS = 5;
 // audio
 // --
 
+exports.MUTED_BY_DEFAULT = true;
 exports.ENGINE_VOL = .2;
 exports.INTRO_VOL = .8;

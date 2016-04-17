@@ -3,17 +3,18 @@ import React from 'react';
 import Howler from 'react-howler';
 import Icon from 'react-fa';
 
-import {ENGINE_VOL, INTRO_VOL} from './config'
+import {MUTED_BY_DEFAULT, ENGINE_VOL, INTRO_VOL} from './config'
 
 export const Sound = React.createClass({
 
   getInitialState() {
     return {
-      muted: false
+      muted: MUTED_BY_DEFAULT
     };
   },
 
   componentDidMount() {
+    window.Howler.mute(this.state.muted);
     this.setVolume.call(this, 'engine', ENGINE_VOL);
   },
 
