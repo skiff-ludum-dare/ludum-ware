@@ -1,5 +1,8 @@
+// Pollyfills
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
+require("babel-core/register");
+
 import 'normalize.css'
 import './index.css'
 
@@ -12,7 +15,7 @@ import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
-import {reducer} from './state';
+import reducer from './reducer';
 import App from './App'
 
 const store = createStore(

@@ -12,7 +12,7 @@ import {
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
   startGame, revealReady, chooseVictim, nominate, voteYes, voteNo
-} from './state';
+} from './actions';
 
 const Menu = connect(
   state => ({}),

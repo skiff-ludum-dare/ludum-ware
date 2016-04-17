@@ -11,7 +11,9 @@
     "test:watch": "nwb test --server"
   },
   "dependencies": {
+    "babel-polyfill": "^6.7.4",
     "es6-promise": "^3.1.2",
+    "events": "^1.1.0",
     "hammerjs": "^2.0.6",
     "isomorphic-fetch": "^2.2.1",
     "normalize.css": "^4.1.1",
