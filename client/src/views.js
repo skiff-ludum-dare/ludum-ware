@@ -1,8 +1,10 @@
 import React from 'react';
 import Hammer from 'hammerjs';
-import {WEREWOLF, VILLAGER} from './constants';
 import classNames from 'classnames';
 import _ from 'underscore';
+
+import {GLOBAL_ANIMATION_SPEED} from './config';
+import {WEREWOLF, VILLAGER} from './constants';
 
 import {IntroSound} from './Sound';
 
@@ -13,19 +15,38 @@ function supportsMultiTouch() {
 export const Menu = React.createClass({
   displayName: 'Menu',
 
+  getInitialState() {
+    return {
+      astronautSrc: 'images/ejected.png',
+      astronautAlt: 'Ejected Astronaut'
+    };
+  },
+
   propTypes: {
     onJoin: React.PropTypes.func,
     onHost: React.PropTypes.func,
   },
 
+  componentDidMount() {
+    window.setTimeout(() => {
+      this.setState({
+        astronautSrc: 'images/ship.png',
+        astronautAlt: 'Splattered Astronaut'
+      });
+    }, GLOBAL_ANIMATION_SPEED * .75)
+  },
+
   render () {
     const {onJoin, onHost} = this.props;
+    const {astronautSrc, astronautAlt} = this.state;
+
     return (
       <div className="phase phase-menu">
         <IntroSound/>
         <aside className="spaceship">
           <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
           <img className="center-block img-responsive slide-in-right animated" src="images/ship.png" alt="Space Ship" />
+          <img className="center-block img-responsive slide-out-left animated" src={astronautSrc} alt={astronautAlt} />
         </aside>
         <div className="actions">
           <h1>Terrormorph!</h1>
