@@ -10,9 +10,9 @@ const reservoir = require('reservoir');
 const initialGameState = {
   gameCode: null,
   phase: c.PHASE_LOBBY,
+  showNarrative: false,
   round: null,
   players: [],
-  nomination: null,
 };
 
 const WEREWOLVES = 2;
@@ -20,6 +20,10 @@ const WEREWOLVES = 2;
 function getRand(seed, len=10) {
   const rand = pi(seed + len + 2).slice(-len);
   return Number("0." +rand);
+}
+
+function markNotReady(state) {
+  return {...state, players: state.players.map(p => ({...p, ready: false}))};
 }
 
 function lobbyReducer(state, action) {
@@ -39,53 +43,67 @@ function lobbyReducer(state, action) {
       });
     });
 
-    return update(state, {
-      players: {$set: playersWithRoles},
-      phase: {$set: c.PHASE_REVEAL},
-    });
-
-    break;
-  }
-  }
-  return state;
-}
-
-function revealReducer(state, action) {
-  switch(action.type) {
-  case c.REVEAL_READY: {
-    const {userId} = action;
-    const idx = playerIndex(state, userId);
-    const newState = update(state, {
-      players: {
-        [idx]: { ready: {$set: true} }
-      },
-    });
-
-    if (_.every(newState.players, {ready: true})) {
-      //all ready
-      return update(newState, {
-        phase: {$set: c.PHASE_DAY},
-        players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
+    return update(markNotReady(state), {
+        players: {$set: playersWithRoles},
+        phase: {$set: c.PHASE_REVEAL},
       });
-    } else {
-      return newState;
+
+      break;
     }
-
-    break;
+    }
+    return state;
   }
+
+  function revealReducer(state, action) {
+    switch(action.type) {
+    case c.REVEAL_READY: {
+      const {userId} = action;
+      const idx = playerIndex(state, userId);
+      const newState = update(state, {
+        players: {
+          [idx]: { ready: {$set: true} }
+        },
+      });
+
+      if (_.every(newState.players, {ready: true})) {
+        //all ready
+        return update(markNotReady(newState), {
+          round: {$set: 1},
+          phase: {$set: c.PHASE_DAY},
+          showNarrative: {$set: true},
+          players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
+        });
+      } else {
+        return newState;
+      }
+
+      break;
+    }
+    }
+    return state;
   }
-  return state;
-}
 
-function voteInfo(state) {
-  const isNight = (state.phase === c.PHASE_NIGHT);
-  const voters = isNight ? werewolves(state) : living(state);
-  const targets = isNight ? villagers(state) : living(state);
-  const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
-  return {voters, targets, votesNeeded};
-}
+  function voteInfo(state) {
+    const isNight = (state.phase === c.PHASE_NIGHT);
+    const voters = isNight ? werewolves(state) : living(state);
+    const targets = isNight ? villagers(state) : living(state);
+    const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
+    return {voters, targets, votesNeeded};
+  }
 
-function dayOrNightReducer(state, action) {
+  function dayOrNightReducer(state, action) {
+    if (state.showNarrative) {
+      if (acton.type === c.READY) {
+        state = {...state, players: state.players.map(p => (p.id === action.userId) ? {...p, ready: true} : p)};
+        if (_.all(living(state), p => p.ready)) {
+          return {...state, showNarrative: false};
+        }
+      }
+    }
+    return state;
+  }
+
+
   const isNight = (state.phase === c.PHASE_NIGHT);
   let {voters, targets, votesNeeded} = voteInfo(state);
 
@@ -132,8 +150,10 @@ function dayOrNightReducer(state, action) {
             winner: {$set: villagersWin ? "villagers" : "wolves"},
           });
         } else {
-          state = update(state, {
+          state = update(markNotReady(state), {
+            round: {$set: isNight ? state.round + 1 : state.round },
             phase: {$set: isNight ? c.PHASE_DAY : c.PHASE_NIGHT},
+            showNarrative: {$set: true},
             players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
           });
         }

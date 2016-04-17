@@ -285,6 +285,20 @@ export const GameRound = React.createClass({
   }
 });
 
+export const Narrative = React.createClass({
+  displayName: 'Narrative',
+
+  propTypes: {
+  },
+
+  render () {
+    // const { winningTeam, onFinish } = this.props;
+    return (
+      <div>Narrative</div>
+    );
+  }
+});
+
 export const GameEnd = React.createClass({
   displayName: 'GameEnd',
 

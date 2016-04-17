@@ -81,6 +81,20 @@ const GameEnd = connect(
   dispatch => bindActionCreators({onFinish: cancel}, dispatch),
 )(views.GameEnd);
 
+  // - survivingPlayers
+  // - deadPlayers
+  // - lastDeath (full player object)
+  // - round (number, starting at 1, increments every DAY)
+  // - seed (number)
+  // - phase: PHASE_DAY/PHASE_NIGHT
+
+const Narrative = connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({onFinish: cancel}, dispatch),
+)(views.Narrative);
+
+
 const pages = {
   [PAGE_MENU]: Menu,
   [PAGE_HOST]: Host,
@@ -92,7 +106,6 @@ const phases = {
   [PHASE_REVEAL]: Reveal,
   [PHASE_DAY]: GameRound,
   [PHASE_NIGHT]: GameRound,
-  // [PHASE_VOTE]: Vote,
   [PHASE_END]: GameEnd,
 }
 
@@ -104,15 +117,22 @@ const App = React.createClass({
 
   render () {
     const { page, game, waiting } = this.props;
-    console.log(page);
-    const Page = (page === PAGE_GAME && game) ? phases[game.phase] : pages[page];
-    console.log(game && game.phase, page);
+    let Content;
+    if (page === PAGE_GAME && game) {
+      if (game.showNarrative) {
+        Content = Narrative;
+      } else {
+        Content = phases[game.phase];
+      }
+    } else {
+      Content = Pages[page];
+    }
 
     return <article>
       <Sound/>
       <Starfield/>
       <main id="page">
-        <Page waiting={waiting}/>
+        <Content waiting={waiting}/>
       </main>
       {waiting && <Waiter/>}
     </article>;
