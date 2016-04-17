@@ -1,4 +1,3 @@
-import uuid from 'uuid';
 import io from 'socket.io-client';
 import _ from 'underscore';
 
