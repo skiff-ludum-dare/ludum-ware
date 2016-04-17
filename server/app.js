@@ -17,13 +17,19 @@ const extend = require('lodash/fp/extend');
 const game = require('./game');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 app.use(cors());
 app.use(bodyParser.json());
 app.options('*', cors());
 
 const playerMap = {};
-const games = {};
+let games = {};
+try {
+  games = require('./gamestate.json');
+} catch (ex) {
+  console.log('no game state found');
+}
 
 function findGame(userId) {
   _.each(games, (v, k) => {
@@ -33,6 +39,14 @@ function findGame(userId) {
   });
   return null;
 }
+
+process.on('SIGINT', () => {
+  // write out gamestates
+  fs.writeFile('gamestate.json', JSON.stringify(games), (err) => {
+    console.log('saving gamestate...');
+    process.exit();
+  });
+});
 
 function createGame(userId) {
   const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
