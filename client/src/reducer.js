@@ -104,7 +104,24 @@ function revealReducer(state, action) {
 }
 
 function dayOrNightReducer(state, action) {
+
+
+  if (state.game.showNarrative) {
+    if (action.type === READY) {
+      return {
+          ...state,
+        waiting: true,
+      };
+    }
+  } else {
+    state = {
+        ...state,
+      waiting: false,
+    };
+  }
+
   switch (action.type) {
+
   case UNSELECT_VICTIM:
     return {
       ...state,
