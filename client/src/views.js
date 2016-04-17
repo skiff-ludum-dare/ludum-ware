@@ -388,28 +388,41 @@ export const Narrative = React.createClass({
 
   render () {
     const { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed, phase } = this.props;
+    let content;
+
+    if (round === 1 && phase === PHASE_DAY) {
+      content = (
+        <div>
+          <h3 className="offset">Earth Day {100 + round}:</h3>
+          <h2>The crew has been asleep for 100 earth days.</h2>
+          <h4>&#8220;BEEEEEP BEEEEEP&#8221;</h4>
+          <h5>The warning rings throughout the ship, as the fluid is drained from around the sleeping bodies, and they are jolted suddenly awake.</h5>
+          <h4>&#8220;Non-human lifeform detected&#8221;</h4>
+          <h5>The blurry-eyed space sailors assemble in the Galley...</h5>
+        </div>
+      );
+    } else if (phase === PHASE_DAY) {
+      content = (
+        <div>
+          <h3 className="offset">Earth Day {100 + round}:</h3>
+          <h2>The crew awake to discover {lastVictim.name} torn to pieces</h2>
+          <h5>The Terrormorph still walks among you, you must expel it immediately!</h5>
+        </div>
+      );
+    } else {
+      content = (
+        <div>
+          <h3 className="offset">Earth Day {100 + round}:</h3>
+          <h2>{lastVictim.name} has become a space firework.</h2>
+          <h5>But danger still lurks... in the night, another crew member will fall prey to the Terrormorph.</h5>
+        </div>
+      );
+    }
 
     return (
       <div className="phase phase-narrative">
         <div className="info">
-          {
-          if (round === 1 && phase === PHASE_DAY) {
-            <h3 className="offset">Earth Day {100 + round}:</h3>
-            <h2>The crew has been asleep for 100 earth days.</h2>
-            <h4>&#8220;BEEEEEP BEEEEEP&#8221;</h4>
-            <h5>The warning rings throughout the ship, as the fluid is drained from around the sleeping bodies, and they are jolted suddenly awake.</h5>
-            <h4>&#8220;Non-human lifeform detected&#8221;</h4>
-            <h5>The blurry-eyed space sailors assemble in the Galley...</h5>
-          } else if (phase === PHASE_DAY) {
-            <h3 className="offset">Earth Day {100 + round}:</h3>
-            <h2>The crew awake to discover {lastVictim.name} torn to pieces</h2>
-            <h5>The Terrormorph still walks among you, you must expel it immediately!</h5>
-          } else {
-            <h3 className="offset">Earth Day {100 + round}:</h3>
-            <h2>{lastVictim.name} has become a space firework.</h2>
-            <h5>But danger still lurks... in the night, another crew member will fall prey to the Terrormorph.</h5>
-          }
-          }
+          { content }
         </div>
         <div className="actions">
           <button
@@ -458,9 +471,9 @@ export const GameEnd = React.createClass({
         <div className="info">
           { winningTeam === VILLAGER
           ?
-          <h2 className="offset">The crew of the SS-LUDUM has survivied.<h2>
+          <h2 className="offset">The crew of the SS-LUDUM has survivied.</h2>
           :
-          <h2 className="offset">Non-human life forms are now the only life form.<h2>
+          <h2 className="offset">Non-human life forms are now the only life form.</h2>
           }
           <h3>{ isWinner ? "You've won. Celebrate." : winningTeam + " won. You become the devoured."}</h3>
         </div>
