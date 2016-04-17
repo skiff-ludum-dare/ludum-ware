@@ -24,12 +24,6 @@ exports.PAGE_HOST = "PAGE_HOST";
 exports.PAGE_JOIN  = "PAGE_JOIN";
 exports.PAGE_GAME = "PAGE_GAME";
 
-// exports.PAGE_REVEAL = "PAGE_REVEAL";
-// exports.PAGE_NIGHT = "PAGE_NIGHT";
-// exports.PAGE_VOTE = "PAGE_VOTE";
-// exports.PAGE_DAY = "PAGE_DAY";
-// exports.PAGE_END = "PAGE_END";
-
 exports.ERROR = "ERROR";
 
 exports.SHOW_HOST = "SHOW_HOST";

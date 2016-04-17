@@ -111,24 +111,12 @@ function revealReducer(state, action) {
 
 function dayReducer(state, action) {
   switch (action.type) {
-  case NOMINATE: {
-    return {
-        ...state,
-      page: PAGE_VOTE,
-    }
-  }
   }
   return state;
 }
 
 function nightReducer(state, action) {
   switch (action.type) {
-  case CHOOSE_VICTIM: {
-    return {
-        ...state,
-      page: PAGE_NIGHT,
-    }
-  }
   }
   return state;
 }
