@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import _ from 'underscore';
 import * as views from './views';
+import {Sound} from './Sound';
 import {Starfield} from './Starfield';
 import {
   PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
@@ -115,6 +116,7 @@ const App = React.createClass({
     console.log(game && game.phase, page);
 
     return <article>
+      <Sound/>
       <Starfield/>
       <main id="page">
         <Page waiting={waiting}/>
