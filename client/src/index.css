@@ -253,6 +253,23 @@ button.primary::before {
   animation-name: slideOutLeft;
 }
 
+@keyframes slideOutUp {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -99.9%, 0);
+  }
+}
+
+.slide-out-up {
+  animation-name: slideOutUp;
+  animation-duration: 120s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+
 /*
  *  Game Phases (States)
  *  --
@@ -397,6 +414,10 @@ button.primary::before {
 
 .game-code-input {
   text-transform: uppercase;
+}
+
+.thanks > small {
+  display: block;
 }
 
 .copyright {
