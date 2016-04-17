@@ -56,7 +56,7 @@ function lobbyReducer(state, action) {
 
 function revealReducer(state, action) {
   switch(action.type) {
-  case c.REVEAL_READY: {
+  case c.READY: {
     const {userId} = action;
     const idx = playerIndex(state, userId);
     const newState = update(state, {

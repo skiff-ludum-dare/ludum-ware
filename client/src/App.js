@@ -13,7 +13,7 @@ import {
 } from './constants';
 import {
   showHost, showJoin, joinGame, hostGame, cancel,
-  startGame, revealReady, selectVictim, unselectVictim
+  startGame, ready, selectVictim, unselectVictim
 } from './actions';
 import {MIN_PLAYERS} from './config';
 
@@ -52,7 +52,7 @@ const Reveal = connect(
   state => ({
     role: _.findWhere(state.game.players, {id: state.userId}).role,
   }),
-  dispatch => bindActionCreators({ onReady: revealReady }, dispatch),
+  dispatch => bindActionCreators({ onReady: ready }, dispatch),
 )(views.Reveal);
 
 const GameRound = connect(
@@ -81,20 +81,15 @@ const GameEnd = connect(
   dispatch => bindActionCreators({onFinish: cancel}, dispatch),
 )(views.GameEnd);
 
-  // - survivingPlayers
-  // - deadPlayers
-  // - lastDeath (full player object)
-  // - round (number, starting at 1, increments every DAY)
-  // - seed (number)
-  // - phase: PHASE_DAY/PHASE_NIGHT
-
 const Narrative = connect(
   state => ({
-    survivingPlayers: _.where(state.game.players, {alive: true}),
-    deadPlayers: _.where(state.game.players, {alive: false}),
-    // lastVictim:
+    survivingPlayers: _.where(state.game.players, {alive: true}).length,
+    deadPlayers: _.where(state.game.players, {alive: false}).length,
+    lastVictim: _.findWhere(state.game.players, {id: state.game.lastVictimUserId}),
+    round: state.game.round,
+    seed: state.game.seed,
   }),
-  dispatch => bindActionCreators({onFinish: cancel}, dispatch),
+  dispatch => bindActionCreators({ onReady: ready }, dispatch),
 )(views.Narrative);
 
 
@@ -128,7 +123,7 @@ const App = React.createClass({
         Content = phases[game.phase];
       }
     } else {
-      Content = Pages[page];
+      Content = pages[page];
     }
 
     return <article>

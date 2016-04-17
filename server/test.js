@@ -69,14 +69,9 @@ describe('gameState', function() {
     }).players[0].online, false);
   });
 
-  const revealReadyState = _.reduce(_.range(6), (state, userId) => {
-    return reducer(state, {
-      type: c.REVEAL_READY,
-      userId: 'p' + userId,
-    });
-  }, readyState);
+  const revealReadyState = clearNarrative(readyState);
 
-  it(c.REVEAL_READY, () => {
+  it(c.READY, () => {
     assert.equal(revealReadyState.players[0].ready, true);
     assert.equal(revealReadyState.phase, c.PHASE_DAY);
   });

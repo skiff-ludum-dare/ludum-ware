@@ -3,7 +3,7 @@ import _ from 'underscore';
 
 import {
   PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
-  CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, SELECT_VICTIM, UNSELECT_VICTIM, UPDATE_STATE,
+  CREATE_GAME, START_GAME, JOIN_GAME, READY, SELECT_VICTIM, UNSELECT_VICTIM, UPDATE_STATE,
   PHASE_LOBBY, PHASE_REVEAL,
   ERROR,
   SHOW_HOST, SHOW_JOIN,
@@ -38,6 +38,9 @@ export function showJoin() {
 }
 
 export function gameStateUpdate(data) {
+  if (data.error) {
+    console.error("SIMON ERROR, PLEASE REPLACE YOUR SIMON:", data.error)
+  }
   return {
     type: GAME_STATE_UPDATE,
     game: data,
@@ -95,8 +98,8 @@ export function startGame() {
   return message(START_GAME);
 }
 
-export function revealReady() {
-  return message(REVEAL_READY);
+export function ready() {
+  return message(READY);
 }
 
 export function selectVictim(victimUserId) {

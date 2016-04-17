@@ -2,7 +2,7 @@
 import uuid from 'uuid';
 import {
   PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
-  CREATE_GAME, START_GAME, JOIN_GAME, REVEAL_READY, SELECT_VICTIM, UNSELECT_VICTIM, UPDATE_STATE,
+  CREATE_GAME, START_GAME, JOIN_GAME, READY, SELECT_VICTIM, UNSELECT_VICTIM, UPDATE_STATE,
   PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END,
   ERROR,
   SHOW_HOST, SHOW_JOIN,
@@ -93,7 +93,7 @@ function lobbyReducer(state, action) {
 
 function revealReducer(state, action) {
   switch (action.type) {
-  case REVEAL_READY: {
+  case READY: {
     return {
         ...state,
       waiting: true,

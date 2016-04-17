@@ -23,7 +23,10 @@ export const Menu = React.createClass({
     return (
       <div className="phase phase-menu">
         <IntroSound/>
-        <aside className="spaceship"></aside>
+        <aside className="spaceship">
+          <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
+          <img className="center-block img-responsive slide-in-right animated" src="images/ship.png" alt="Space Ship" />
+        </aside>
         <div className="actions">
           <h1>Terrormorph!</h1>
           <button
@@ -328,12 +331,32 @@ export const Narrative = React.createClass({
   displayName: 'Narrative',
 
   propTypes: {
+    survivingPlayers: React.PropTypes.number,
+    deadPlayers: React.PropTypes.number,
+    lastVictim: React.PropTypes.object,
+    round: React.PropTypes.number,
+    seed: React.PropTypes.number,
+
+    onReady: React.PropTypes.func,
   },
 
   render () {
-    // const { winningTeam, onFinish } = this.props;
+    let { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed } = this.props;
     return (
-      <div>Narrative</div>
+      <div className="phase phase-narrative">
+        <div className="info">
+          <h2 className="offset">Narrative n shit...?</h2>
+          <h2><small>Stuff is like... happening</small></h2>
+        </div>
+
+        <div className="actions">
+          <button
+            type="button"
+            className="primary"
+            onClick={onReady}
+          >Ready</button>
+        </div>
+      </div>
     );
   }
 });
