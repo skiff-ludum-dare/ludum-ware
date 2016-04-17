@@ -6,6 +6,7 @@ import _ from 'underscore';
 import * as views from './views';
 import {Sound} from './Sound';
 import {Starfield} from './Starfield';
+import {Waiter} from './Waiter';
 import {
   PAGE_MENU, PAGE_HOST, PAGE_JOIN, PAGE_GAME,
   PHASE_LOBBY, PHASE_REVEAL, PHASE_DAY, PHASE_NIGHT, PHASE_END
@@ -120,6 +121,7 @@ const App = React.createClass({
       <main id="page">
         <Page waiting={waiting}/>
       </main>
+      {waiting && <Waiter/>}
     </article>;
   }
 });
