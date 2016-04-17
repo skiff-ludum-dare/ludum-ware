@@ -27,9 +27,10 @@ const playerMap = {};
 const socketMap = {};
 let games = {};
 try {
-  games = require('./gamestate.json');
+  const staticGames = require('./gamestate.json');
+  _.each(staticGames, (k, v) => hydrateGame(v));
 } catch (ex) {
-  console.log('no game state found');
+  console.log('no game state found', ex);
 }
 
 function findGame(userId) {
@@ -49,10 +50,11 @@ process.on('SIGINT', () => {
   });
 });
 
-function createGame(userId) {
-  const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
-  const reducer = game(code, userId, _.random(1, 1000));
-  const state = reducer(undefined, {});
+function hydrateGame(src) {
+  if (!src.state || !src.state.code || src.options) { throw new Error("delete your gamestate.json"); }
+  const {code, userId, seed} = src.state;
+  const reducer = game(code, userId, seed);
+  const state = reducer(undefined, src.state || {});
 
   return games[code] = {
     update: (action) => {
@@ -70,10 +72,14 @@ function createGame(userId) {
   };
 }
 
+function createGame(userId) {
+  const code = String.fromCharCode(..._.range(4).map(x => _.random(65, 90)));
+  const seed = _.random(1, 1000);
+  return hydrateGame({state: {code, userId, seed}});
+}
+
 function notifyPlayers(state) {
   state.players.forEach(({id}) => {
-    // console.log(playerMap);
-    // console.log("notify", id);
     const client = socketMap[playerMap[id]];
     client.send(JSON.stringify(state));
   });

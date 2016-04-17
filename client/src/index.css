@@ -63,6 +63,10 @@ h3, h4, h5, h6, .highlight {
   color: gold;
 }
 
+.dead {
+  text-decoration: line-through;
+}
+
 h1.offset, h2.offset, h3.offset, h4.offset, h5.offset, h6.offset {
   margin-top: 90px;
 }
@@ -201,6 +205,20 @@ button.primary::before {
   animation-name: slideInRight;
 }
 
+@keyframes slideOutLeft {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-160%, -80%, 0);
+  }
+}
+
+.slide-out-left {
+  animation-name: slideOutLeft;
+}
+
 /*
  *  Game Phases (States)
  *  --
@@ -226,6 +244,10 @@ button.primary::before {
 .phase-menu > .spaceship > img:nth-of-type(2) {
   margin-top: -210px;
   padding-left: 60px;
+}
+.phase-menu > .spaceship > img:nth-of-type(3) {
+  margin-top: -120px;
+  padding-right: 30px;
 }
 
 .phase-menu > .actions {

@@ -1,7 +1,10 @@
 import React from 'react';
 import Hammer from 'hammerjs';
-import {WEREWOLF, VILLAGER} from './constants';
 import classNames from 'classnames';
+import _ from 'underscore';
+
+import {GLOBAL_ANIMATION_SPEED} from './config';
+import {WEREWOLF, VILLAGER} from './constants';
 
 import {IntroSound} from './Sound';
 
@@ -12,19 +15,40 @@ function supportsMultiTouch() {
 export const Menu = React.createClass({
   displayName: 'Menu',
 
+  getInitialState() {
+    return {
+      astronautSrc: 'images/ejected.png',
+      astronautAlt: 'Ejected Astronaut'
+    };
+  },
+
   propTypes: {
     onJoin: React.PropTypes.func,
     onHost: React.PropTypes.func,
   },
 
+  componentDidMount() {
+    window.setTimeout(() => {
+      const {astronautSrc, astronautAlt} = this.state;
+
+      this.setState({
+        astronautSrc: astronautSrc.replace('ejected', 'ejected_splatter'),
+        astronautAlt: astronautAlt.replace('Ejected', 'Splattered')
+      });
+    }, GLOBAL_ANIMATION_SPEED * .75)
+  },
+
   render () {
     const {onJoin, onHost} = this.props;
+    const {astronautSrc, astronautAlt} = this.state;
+
     return (
       <div className="phase phase-menu">
         <IntroSound/>
         <aside className="spaceship">
           <img className="center-block img-responsive" src="images/station.png" alt="Space Station" />
           <img className="center-block img-responsive slide-in-right animated" src="images/ship.png" alt="Space Ship" />
+          <img className="center-block img-responsive slide-out-left animated" src={astronautSrc} alt={astronautAlt} />
         </aside>
         <div className="actions">
           <h1>Terrormorph!</h1>
@@ -249,6 +273,34 @@ export const Reveal = React.createClass({
   }
 });
 
+export const Dead = React.createClass({
+  displayName: 'Dead',
+
+  propTypes: { },
+
+  componentDidMount() {
+  },
+
+  render () {
+    return (
+      <div className="phase phase-dead">
+        <div className="info">
+          <h2 className="offset">You are DEAD!</h2>
+        </div>
+
+        <div className="character">
+          <img
+            className="center-block img-responsive"
+            src="images/astronaut_eaten.png"
+            alt="Dead Astronaut"
+          />
+        </div>
+
+      </div>
+    );
+  }
+});
+
 export const GameRound = React.createClass({
   displayName: 'GameRound',
 
@@ -262,6 +314,12 @@ export const GameRound = React.createClass({
 
   render () {
     const { type, players, ownPlayerId, onSelect, onUnselect } = this.props;
+
+    const player = _.find(players, {id: ownPlayerId});
+    if (!player.alive) {
+      return <Dead {...this.props } />
+    }
+
     return (
       <div className="phase phase-round">
         <div className="info">
@@ -270,17 +328,21 @@ export const GameRound = React.createClass({
 
         <div className="survivors">
           <ul>
-            { players.map(({name, alive, id}) => (
-              <li
-                 key={id}
-                 className={classNames({highlight: id === ownPlayerId, alive, dead: !alive})}
-                 onMouseDown={() => onSelect(id)}
-                 onMouseUp={() => onUnselect(id)}
-                 onTouchStart={() => onSelect(id)}
-                 onTouchEnd={() => onUnselect(id)}
-                 onTouchCancel={() => onUnselect(id)}
+            { players.map(({name, alive, id}) => {
+              return(
+                alive ?
+                <li
+                  key={id}
+                  className={ id === ownPlayerId ? 'highlight' : '' }
+                  onMouseDown={() => onSelect(id)}
+                  onMouseUp={() => onUnselect(id)}
+                  onTouchStart={() => onSelect(id)}
+                  onTouchEnd={() => onUnselect(id)}
+                  onTouchCancel={() => onUnselect(id)}
                 >{ name }</li>
-            )) }
+                :
+                <li className="dead" key={id}>{ name }</li>);
+            }) }
           </ul>
         </div>
       </div>
