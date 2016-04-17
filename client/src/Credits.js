@@ -9,6 +9,7 @@ export default (props) => {
           <h4>Simon Elliott</h4>
           <h4>Thomas Parslow</h4>
           <h4>Yann Eves</h4>
+          <h4>Crying 'Chizzo' Blades</h4>
         </div>
         <div className="button" onClick={ props.onClose }>Close</div>
         <div className="thanks">

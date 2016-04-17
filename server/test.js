@@ -38,6 +38,15 @@ describe('gameState', function() {
     });
   }, undefined);
 
+  it(c.KICK, () => {
+    assert.equal(
+      reducer(fullState, {
+        type: c.KICK,
+        userId: 'test',
+        kickUserId: 'p1',
+      }).players.length, 5);
+  });
+
   const randomTest = reducer(fullState, {
     type: c.START_GAME,
     userId: 'test',

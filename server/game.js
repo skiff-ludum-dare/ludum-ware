@@ -223,6 +223,19 @@ module.exports = function game(gameCode, ownerUserId, seed) {
 
         break;
       }
+
+      case c.KICK: {
+        const {userId, kickUserId} = action;
+        if (state.phase !== c.PHASE_LOBBY) return state;
+        const index = playerIndex(state, kickUserId);
+        if (index < 0) return state;
+
+        return update(state, {
+          players: {$splice: [[index, 1]]},
+        });
+
+        break;
+      }
     }
 
     switch (state.phase) {
