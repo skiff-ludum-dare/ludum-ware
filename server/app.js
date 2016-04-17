@@ -51,7 +51,7 @@ process.on('SIGINT', () => {
 });
 
 function hydrateGame(src) {
-  if (!src.code || src.options) { throw new Error("delete your gamestate.json"); }
+  if (!src.state || !src.state.code || src.options) { throw new Error("delete your gamestate.json"); }
   const {code, userId, seed} = src.state;
   const reducer = game(code, userId, seed);
   const state = reducer(undefined, src.state || {});
