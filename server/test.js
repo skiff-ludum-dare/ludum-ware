@@ -23,7 +23,7 @@ describe('gameState', function() {
       reducer(initialState, {
         type: c.JOIN_GAME,
         userId: 'test',
-        name: 'me',
+        playerName: 'me',
       }).players[0].owner, true
     );
   });
@@ -32,7 +32,7 @@ describe('gameState', function() {
     return reducer(state, {
       type: c.JOIN_GAME,
       userId: 'p' + userId,
-      name: userId
+      playerName: 'ms '+ userId
     });
   }, undefined);
 
@@ -57,6 +57,14 @@ describe('gameState', function() {
     assert.equal(
       readyState.players[1].role, c.VILLAGER
     );
+  });
+
+  it(c.PLAYER_PRESENCE, () => {
+    assert.equal(reducer(readyState, {
+      type: c.PLAYER_PRESENCE,
+      userId: 'p0',
+      online: false,
+    }).players[0].online, false);
   });
 
   const revealState = reducer(readyState, {

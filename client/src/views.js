@@ -143,8 +143,8 @@ export const Lobby = React.createClass({
                 key={id}
               >{ name }</li>
             )) }
-            { (new Array(minPlayers - players.length)).fill(null).map(() => (
-              <li>&lt;waiting&gt;</li>
+            { (new Array(minPlayers - players.length)).fill(null).map((v, i) => (
+              <li key={i}>&lt;waiting&gt;</li>
             )) }
           </ol>
         </div>
