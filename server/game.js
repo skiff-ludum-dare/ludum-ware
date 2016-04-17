@@ -23,7 +23,7 @@ function getRand(seed, len=10) {
 }
 
 function markNotReady(state) {
-  return {...state, players: state.players.map(p => ({...p, ready: false}))};
+  return _.extend({}, state, {players: state.players.map(p => (_.extend({}, p, {ready: false})))});
 }
 
 function lobbyReducer(state, action) {
@@ -52,57 +52,55 @@ function lobbyReducer(state, action) {
     }
     }
     return state;
-  }
+}
 
-  function revealReducer(state, action) {
-    switch(action.type) {
-    case c.REVEAL_READY: {
-      const {userId} = action;
-      const idx = playerIndex(state, userId);
-      const newState = update(state, {
-        players: {
-          [idx]: { ready: {$set: true} }
-        },
+function revealReducer(state, action) {
+  switch(action.type) {
+  case c.REVEAL_READY: {
+    const {userId} = action;
+    const idx = playerIndex(state, userId);
+    const newState = update(state, {
+      players: {
+        [idx]: { ready: {$set: true} }
+      },
+    });
+
+    if (_.every(newState.players, {ready: true})) {
+      //all ready
+      return update(markNotReady(newState), {
+        round: {$set: 1},
+        phase: {$set: c.PHASE_DAY},
+        showNarrative: {$set: true},
+        players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
       });
-
-      if (_.every(newState.players, {ready: true})) {
-        //all ready
-        return update(markNotReady(newState), {
-          round: {$set: 1},
-          phase: {$set: c.PHASE_DAY},
-          showNarrative: {$set: true},
-          players: {$set: state.players.map(p => _.extend({}, p, {victimUserId: null}))},
-        });
-      } else {
-        return newState;
-      }
-
-      break;
+    } else {
+      return newState;
     }
-    }
-    return state;
-  }
 
-  function voteInfo(state) {
-    const isNight = (state.phase === c.PHASE_NIGHT);
-    const voters = isNight ? werewolves(state) : living(state);
-    const targets = isNight ? villagers(state) : living(state);
-    const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
-    return {voters, targets, votesNeeded};
+    break;
   }
+  }
+  return state;
+}
 
-  function dayOrNightReducer(state, action) {
-    if (state.showNarrative) {
-      if (acton.type === c.READY) {
-        state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? {...p, ready: true} : p)});
-        if (_.all(living(state), p => p.ready)) {
-          return _.extend({}, state, {showNarrative: false});
-        }
+function voteInfo(state) {
+  const isNight = (state.phase === c.PHASE_NIGHT);
+  const voters = isNight ? werewolves(state) : living(state);
+  const targets = isNight ? villagers(state) : living(state);
+  const votesNeeded = isNight ? voters.length : Math.ceil(voters.length / 2);
+  return {voters, targets, votesNeeded};
+}
+
+function dayOrNightReducer(state, action) {
+  if (state.showNarrative) {
+    if (acton.type === c.READY) {
+      state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
+      if (_.all(living(state), p => p.ready)) {
+        return _.extend({}, state, {showNarrative: false});
       }
     }
     return state;
   }
-
 
   const isNight = (state.phase === c.PHASE_NIGHT);
   let {voters, targets, votesNeeded} = voteInfo(state);
@@ -174,10 +172,10 @@ module.exports = function game(gameCode, ownerUserId, seed) {
 
     switch(action.type) {
 
-      case c.JOIN_GAME: {
-        const {userId, playerName} = action;
-        if (state.phase !== c.PHASE_LOBBY) return state;
-        if (state.players.indexOf(userId) > -1) return state;
+    case c.JOIN_GAME: {
+      const {userId, playerName} = action;
+      if (state.phase !== c.PHASE_LOBBY) return state;
+      if (state.players.indexOf(userId) > -1) return state;
 
         const player = {
           id: userId,
