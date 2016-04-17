@@ -1,8 +1,6 @@
 import React from 'react';
 import Hammer from 'hammerjs';
 
-const MIN_PLAYERS = 5;
-
 function supportsMultiTouch() {
   return window.navigator.maxTouchPoints > 1
 }
@@ -108,14 +106,15 @@ export const Lobby = React.createClass({
     gameCode: React.PropTypes.string,
     players: React.PropTypes.arrayOf(React.PropTypes.object),
     ownPlayerId: React.PropTypes.string,
-    isOwner: React.PropTypes.bool,
+    canStart: React.PropTypes.bool,
+    minPlayers: React.PropTypes.number,
 
     onStart: React.PropTypes.func,
     onCancel: React.PropTypes.func,
   },
 
   render () {
-    const { gameCode, players, onStart, onCancel, isOwner, ownPlayerId } = this.props;
+    const { gameCode, minPlayers, players, onStart, onCancel, canStart, ownPlayerId } = this.props;
     return (
       <div className="phase phase-lobby">
         <div className="info">
@@ -130,8 +129,8 @@ export const Lobby = React.createClass({
             </div>
           </form>
           <h2>Flight roster:</h2>
-          <small>{players.length < MIN_PLAYERS && (
-            `Minimum of ${MIN_PLAYERS} players required.`
+          <small>{players.length < minPlayers && (
+            `Minimum of ${minPlayers} players required.`
           )}
           &nbsp;</small>
         </div>
@@ -144,7 +143,7 @@ export const Lobby = React.createClass({
                 key={id}
               >{ name }</li>
             )) }
-            { (new Array(MIN_PLAYERS - players.length)).fill(null).map(() => (
+            { (new Array(minPlayers - players.length)).fill(null).map(() => (
               <li>&lt;waiting&gt;</li>
             )) }
           </ol>
@@ -152,7 +151,7 @@ export const Lobby = React.createClass({
 
         <div className="actions">
           <hr className="hidden-xs" />
-          { isOwner && (
+          { canStart && (
               <button
                 className="primary"
                 onClick={onStart}

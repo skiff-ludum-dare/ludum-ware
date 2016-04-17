@@ -94,17 +94,15 @@ function lobbyReducer(state, action) {
   }
 
   case START_GAME: {
-    return {
-        ...state,
-      loading: true,
-    }
-  }
-
-  case GAME_STATE_UPDATE: {
-    if (state.game.phase === PHASE_REVEAL) {
+    if (action.status == "request") {
       return {
           ...state,
-        loading: false,
+        waiting: true,
+      };
+    } else if (action.status === 'response') {
+      return {
+          ...state,
+        waiting: false,
         page: PAGE_REVEAL,
       }
     }
@@ -118,19 +116,17 @@ function revealReducer(state, action) {
   case REVEAL_READY: {
     return {
         ...state,
-      page: PAGE_DAY,
+      waiting: true,
     }
   }
-  }
-  return state;
-}
 
-function nightReducer(state, action) {
-  switch (action.type) {
-  case CHOOSE_VICTIM: {
-    return {
-        ...state,
-      page: PAGE_NIGHT,
+  case GAME_STATE_UPDATE: {
+    if (state.game.phase === PHASE_DAY) {
+      return {
+          ...state,
+        waiting: false,
+        page: PAGE_DAY,
+      }
     }
   }
   }
@@ -143,6 +139,18 @@ function dayReducer(state, action) {
     return {
         ...state,
       page: PAGE_VOTE,
+    }
+  }
+  }
+  return state;
+}
+
+function nightReducer(state, action) {
+  switch (action.type) {
+  case CHOOSE_VICTIM: {
+    return {
+        ...state,
+      page: PAGE_NIGHT,
     }
   }
   }

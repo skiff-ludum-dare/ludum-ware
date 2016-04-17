@@ -13,6 +13,7 @@ import {
   showHost, showJoin, joinGame, hostGame, cancel,
   startGame, revealReady, chooseVictim, nominate, voteYes, voteNo
 } from './actions';
+import {MIN_PLAYERS} from './config';
 
 const Menu = connect(
   state => ({}),
@@ -30,13 +31,18 @@ const Join = connect(
 )(views.StartGame);
 
 const Lobby = connect(
-  state => ({
-    gameCode: state.game.gameCode,
-    players: state.game.players,
-    ownPlayerId: state.userId,
-    isOwner: _.findWhere(state.game.players, {id: state.userId}).owner,
-
-  }),
+  state => {
+    const isOwner = _.findWhere(state.game.players, {id: state.userId}).owner;
+    const players = state.game.players;
+    console.log(players, MIN_PLAYERS);
+    return {
+      gameCode: state.game.gameCode,
+      players,
+      ownPlayerId: state.userId,
+      canStart: isOwner && players.length >= MIN_PLAYERS,
+      minPlayers: MIN_PLAYERS,
+    };
+  },
   dispatch => bindActionCreators({onStart: startGame, onCancel: cancel}, dispatch),
 )(views.Lobby);
 
@@ -100,14 +106,14 @@ const App = React.createClass({
   },
 
   render () {
-    const { page } = this.props;
+    const { page, waiting } = this.props;
     console.log(page);
     const Page = pages[page];
 
     return <article>
       <Starfield/>
       <main id="page">
-        <Page/>
+        <Page waiting={waiting}/>
       </main>
     </article>;
   }
