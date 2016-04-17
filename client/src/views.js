@@ -37,7 +37,7 @@ export const Menu = React.createClass({
         astronautSrc: astronautSrc.replace('ejected', 'ejected_splatter'),
         astronautAlt: astronautAlt.replace('Ejected', 'Splattered')
       });
-    }, GLOBAL_ANIMATION_SPEED * .75)
+    }, GLOBAL_ANIMATION_SPEED * .5)
   },
 
   render () {
@@ -107,6 +107,7 @@ export const StartGame = React.createClass({
               placeholder="Enter name"
               value={name}
               onChange={e => this.setState({name: e.target.value})}
+              maxLength={25}
               required
             />
           </div>
@@ -114,10 +115,11 @@ export const StartGame = React.createClass({
             <div className="form-group">
               <input
                 type="text"
-                className="form-control"
+                className="form-control game-code-input"
                 placeholder="Enter code"
                 value={gameCode}
                 onChange={e => this.setState({gameCode: e.target.value})}
+                maxLength={4}
                 required
               />
             </div>
@@ -158,7 +160,10 @@ export const Lobby = React.createClass({
         <div className="info">
           <form noValidate>
             <div className="form-group">
-              Game Code: <input
+              <label className="form-control-label">
+                <small>Game Code:</small>
+              </label>
+              <input
                 type="text"
                 className="form-control"
                 defaultValue={gameCode}

@@ -103,7 +103,7 @@ describe('gameState', function() {
 
   it(c.DEVOUR, () => {
     assert.equal(devouredState.players[1].alive, false);
-    assert.equal(devouredState.phase, c.PHASE_END);
+    assert.equal(devouredState.phase, c.PHASE_DAY);
   });
 
 });

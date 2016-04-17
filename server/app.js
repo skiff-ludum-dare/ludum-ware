@@ -127,13 +127,13 @@ io.on('connection', function connection(socket) {
 
     if (c[message.type]) {
       //dispatch
-
-      if (!message.gameCode || !games[message.gameCode]) {
+      const gameCode = (message.gameCode || "").toUpperCase()
+      if (!gameCode || !games[gameCode]) {
         socket.send(JSON.stringify({error: 'supply a gamecode or game not found'}));
         return;
       }
 
-      const {update, state} = games[message.gameCode];
+      const {update, state} = games[gameCode];
       notifyPlayers(update(message));
       return
     } else {
