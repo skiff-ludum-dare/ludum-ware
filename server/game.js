@@ -56,7 +56,7 @@ function lobbyReducer(state, action) {
 
 function revealReducer(state, action) {
   switch(action.type) {
-  case c.REVEAL_READY: {
+  case c.READY: {
     const {userId} = action;
     const idx = playerIndex(state, userId);
     const newState = update(state, {
@@ -95,7 +95,7 @@ function dayOrNightReducer(state, action) {
   if (state.showNarrative) {
     if (action.type === c.READY) {
       state = _.extend({}, state, {players: state.players.map(p => (p.id === action.userId) ? _.extend({}, p, { ready: true}) : p)});
-      if (_.all(living(state), p => p.ready)) {
+      if (_.every(living(state), p => p.ready)) {
         return _.extend({}, state, {showNarrative: false});
       }
     }

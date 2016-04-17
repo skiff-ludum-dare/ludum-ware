@@ -289,12 +289,32 @@ export const Narrative = React.createClass({
   displayName: 'Narrative',
 
   propTypes: {
+    survivingPlayers: React.PropTypes.number,
+    deadPlayers: React.PropTypes.number,
+    lastVictim: React.PropTypes.object,
+    round: React.PropTypes.number,
+    seed: React.PropTypes.number,
+
+    onReady: React.PropTypes.func,
   },
 
   render () {
-    // const { winningTeam, onFinish } = this.props;
+    let { onReady, survivingPlayers, deadPlayers, lastVictim, round, seed } = this.props;
     return (
-      <div>Narrative</div>
+      <div className="phase phase-narrative">
+        <div className="info">
+          <h2 className="offset">Narrative n shit...?</h2>
+          <h2><small>Stuff is like... happening</small></h2>
+        </div>
+
+        <div className="actions">
+          <button
+            type="button"
+            className="primary"
+            onClick={onReady}
+          >Ready</button>
+        </div>
+      </div>
     );
   }
 });

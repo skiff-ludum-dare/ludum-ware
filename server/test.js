@@ -68,11 +68,11 @@ describe('gameState', function() {
   });
 
   const revealState = reducer(readyState, {
-    type: c.REVEAL_READY,
+    type: c.READY,
     userId: 'p3',
   });
 
-  it(c.REVEAL_READY, () => {
+  it(c.READY, () => {
     assert.equal(revealState.players[3].ready, true);
   });
 
