@@ -478,7 +478,7 @@ export const GameEnd = React.createClass({
           :
           <h2 className="offset">Non-human life forms are now the only life form.</h2>
           }
-          <h3>{ isWinner ? "You've won. Celebrate." : winningTeam + " won. You become the devoured."}</h3>
+          <h3>{ isWinner ? "You've won. Celebrate." : ((winningTeam === WEREWOLF) ? "Terrormorphs won. You become the devoured." : "Humans won. No more devouring for you.")}</h3>
         </div>
         <div className="actions">
           <button onClick={onFinish}>
